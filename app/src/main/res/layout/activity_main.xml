@@ -15,12 +15,15 @@
         android:paddingRight="24dp">
 
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="298dp"
+            android:layout_height="247dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="0dp"
+            android:adjustViewBounds="true"
             android:contentDescription="@string/description"
-            android:src="@drawable/logo_size" />
+            android:cropToPadding="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/logo" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -67,7 +70,10 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
+            android:clickable="true"
+            android:focusable="true"
             android:gravity="center"
+            android:onClick="onSignUpClicked"
             android:text="@string/signup"
             android:textSize="16sp" />
 

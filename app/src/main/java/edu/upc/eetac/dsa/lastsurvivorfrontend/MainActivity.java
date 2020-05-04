@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         //TODO After user input, send the data to server and ask for authentication
 
         //TODO Else if user chose register than open register and transfer the connection
-        LaunchRegisterActivity();
+
     }
 
     private void LaunchRegisterActivity() {
@@ -97,5 +97,9 @@ public class MainActivity extends AppCompatActivity {
     private void NotifyUser(String MSG){
         Toast toast = Toast.makeText(MainActivity.this,MSG,Toast.LENGTH_SHORT);
         toast.show();
+    }
+
+    public void onSignUpClicked(View view) {
+        LaunchRegisterActivity();
     }
 }
