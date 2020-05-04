@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">LastSurvivorFrontend</string>
+    <string name="description">LogoImageOfLastSurvivor</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="signup">No account yet? Create one</string>
+    <string name="username">Username</string>
 </resources>
