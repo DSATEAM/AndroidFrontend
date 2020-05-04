@@ -13,6 +13,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Player;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -44,6 +45,35 @@ public class MainActivity extends AppCompatActivity {
         //TODO After user input, send the data to server and ask for authentication
 
         //TODO Else if user chose register than open register and transfer the connection
+        LaunchRegisterActivity();
+    }
+
+    private void LaunchRegisterActivity() {
+        Intent intent = new Intent(MainActivity.this ,RegisterActivity.class);
+        intent.putExtra("DATA_1", "TestString");
+        intent.putExtra("DATA_2", true);
+        intent.putExtra("DATA_3", 6969);
+        intent.putExtra("DATA_4",0.6969);
+        startActivityForResult(intent,1);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==1){
+            if(resultCode == RESULT_OK){
+                //Means the activity REGISTER was closed successfully and thus the Player was
+                // registered correctly!
+                String tmp_ID = data.getStringExtra("RETRIEVE_Player_ID");
+                String tmp_pass = data.getStringExtra("RETRIEVE_PLAYER_PASSWORD");
+                String tmp_username = data.getStringExtra("RETRIEVE_PLAYER_USERNAME");
+                //TODO GET THE PLAYER STATS FROM THE SERVER
+
+                //TODO GET THE ITEMS FROM THE SERVER FOR THE PLAYER
+
+                //TODO GET THE MATERIALS FROM THE SERVER FOR THE PLAYER
+            }
+            //Means user didn't register and so don't do anything and wait...
+        }
 
     }
     private static void startRetrofit(){
