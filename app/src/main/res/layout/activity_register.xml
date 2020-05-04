@@ -8,10 +8,10 @@
 
     <EditText
         android:id="@+id/input_password2"
-        android:layout_width="330dp"
+        android:layout_width="337dp"
         android:layout_height="44dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="16dp"
         android:autofillHints=""
         android:hint="@string/password"
         android:inputType="textPassword"
@@ -22,8 +22,8 @@
         android:id="@+id/input_username2"
         android:layout_width="333dp"
         android:layout_height="45dp"
-        android:layout_marginStart="39dp"
-        android:layout_marginTop="205dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="192dp"
         android:hint="@string/username"
         android:importantForAutofill="no"
         android:inputType="textPersonName"
@@ -32,17 +32,16 @@
 
     <Button
         android:id="@+id/goBackBtn"
-        android:layout_width="138dp"
-        android:layout_height="59dp"
+        android:layout_width="119dp"
+        android:layout_height="47dp"
         android:onClick="onGoBackClicked"
         android:text="GO BACK!"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
 
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.665"
+        app:layout_constraintTop_toBottomOf="@+id/input_password2"
+        app:layout_constraintVertical_bias="0.372"
         tools:ignore="OnClick" />
 
     <Button
@@ -55,4 +54,27 @@
         android:text="@string/register"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/input_password2" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="293dp"
+        android:layout_height="399dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="23dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.025"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/input_password2"
+        app:srcCompat="@drawable/dragon_black_and_white_silhouette" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="225dp"
+        android:layout_height="166dp"
+        android:layout_marginStart="97dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/sword_png_icon_20" />
 </androidx.constraintlayout.widget.ConstraintLayout>
