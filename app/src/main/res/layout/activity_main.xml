@@ -2,42 +2,52 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:fitsSystemWindows="true">
+    android:alpha="1"
+    android:background="#C6A9FA"
+    android:backgroundTint="#a7ffeb"
+    android:fitsSystemWindows="true"
+    android:foregroundGravity="fill">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"
-        android:backgroundTint="#FFFFFF"
+        android:alpha="100"
+        android:backgroundTintMode="add"
         android:orientation="vertical"
         android:paddingLeft="24dp"
         android:paddingTop="56dp"
-        android:paddingRight="24dp">
+        android:paddingRight="24dp"
+        android:theme="@style/AppTheme">
 
         <ImageView
-            android:layout_width="298dp"
-            android:layout_height="247dp"
+            android:layout_width="277dp"
+            android:layout_height="232dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="0dp"
             android:adjustViewBounds="true"
+            android:alpha="20"
             android:contentDescription="@string/description"
             android:cropToPadding="true"
             android:scaleType="centerInside"
-            android:src="@drawable/logo" />
+            android:src="@drawable/sword_png_icon_20" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="8dp"
+            android:focusable="auto"
+            android:focusableInTouchMode="true">
 
             <EditText
                 android:id="@+id/username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:backgroundTint="#f0f4c3"
                 android:hint="@string/username"
                 android:importantForAutofill="no"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:textColor="#FFFFFF" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Password Label -->
@@ -52,6 +62,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints=""
+                android:backgroundTint="#f0f4c3"
                 android:hint="@string/password"
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -62,6 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
+            android:backgroundTint="#f0f4c3"
             android:onClick="onSignInClicked"
             android:padding="12dp"
             android:text="@string/login" />
@@ -72,6 +84,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             android:clickable="true"
+            android:backgroundTint="#f0f4c3"
             android:focusable="true"
             android:gravity="center"
             android:onClick="onSignUpClicked"
