@@ -4,7 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
+    <!-- java.net.UnknownServiceException: CLEARTEXT communication to 10.0.2.2 not permitted by network security policy -->
     <application
         android:allowBackup="true"
         android:icon="@drawable/logo"

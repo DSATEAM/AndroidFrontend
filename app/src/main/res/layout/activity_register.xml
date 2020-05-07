@@ -65,8 +65,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.025"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/input_password2"
-        app:srcCompat="@drawable/dragon_black_and_white_silhouette" />
+        app:layout_constraintTop_toBottomOf="@+id/input_password2"/>
+        <!--app:srcCompat="@drawable/dragon_black_and_white_silhouette" -->
+
 
     <ImageView
         android:id="@+id/imageView2"
@@ -75,6 +76,6 @@
         android:layout_marginStart="97dp"
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/sword_png_icon_20" />
+        app:layout_constraintTop_toTopOf="parent" />
+    <!-- app:srcCompat="@drawable/sword_png_icon_20"-->
 </androidx.constraintlayout.widget.ConstraintLayout>

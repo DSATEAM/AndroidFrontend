@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Player;
-import edu.upc.eetac.dsa.lastsurvivorfrontend.services.SignUpService;
+import edu.upc.eetac.dsa.lastsurvivorfrontend.services.PlayerService;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -26,8 +26,8 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        Button registerBtn = (Button) findViewById(R.id.RegisterBtn);
-        Button goBack = (Button) findViewById(R.id.goBackBtn);
+        Button registerBtn = findViewById(R.id.RegisterBtn);
+        Button goBack = findViewById(R.id.goBackBtn);
     }
 
     private static void startRetrofit(){
@@ -53,16 +53,16 @@ public class RegisterActivity extends AppCompatActivity {
         startActivity(intent);
     }
     public void onRegisterClick(View view){
-        EditText username = (EditText)findViewById(R.id.input_username2);
-        EditText password = (EditText)findViewById(R.id.input_password2);
+        EditText username = findViewById(R.id.input_username2);
+        EditText password = findViewById(R.id.input_password2);
         if (username.getText().toString().equals(null)||password.getText().toString().equals(null)||password.getText().toString().equals("Password")||username.getText().toString().equals("Username")){
             Toast.makeText(getApplicationContext(), "Error.Campos vacíos.", Toast.LENGTH_LONG).show();
         }
         else{
             startRetrofit();
-            SignUpService service = retrofit.create(SignUpService.class);
-            Player player = new Player(username.getText().toString(),password.getText().toString());
-            service.addPlayer(player).enqueue(new Callback() {
+            PlayerService service = retrofit.create(PlayerService.class);
+            Player player = new Player(); player.setUsername(username.getText().toString());player.setPassword(password.getText().toString());
+            service.signUp(username.getText().toString(),password.getText().toString()).enqueue(new Callback() {
                 @Override
                 public void onResponse(Call call, Response response) {
                     if(response.isSuccessful())
