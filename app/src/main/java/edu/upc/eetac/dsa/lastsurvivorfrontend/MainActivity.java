@@ -29,6 +29,8 @@ import retrofit2.http.Body;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
+
 
 public class MainActivity extends AppCompatActivity {
     // RETROFIT OBJECT
@@ -39,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     //TextViews
     public TextView usernameTextview ;
     public TextView passwordTextview ;
+    //Player Objects
+    Player player;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         //Remember when using Local host on windows the IP is 10.0.2.2 for Android
         //Also added NullOnEmptyConverterFactory when the response from server is empty
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8080/BDD-DAO/")
+                .baseUrl("http://10.0.2.2:8080/Backend/")
                 .addConverterFactory(new NullOnEmptyConverterFactory())
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
@@ -133,10 +137,12 @@ public class MainActivity extends AppCompatActivity {
             //Now we can send the data to Server and ask for login
             String TAG = "onSignIn";
             try {
-                Player player = new Player(username,password,0,0,0,0,0);
+                player = new Player(username,password,0,0,0,0,0);
                 player.setUsername(username);player.setPassword(password);
                 Call<Player> playerID = playerService.signIn(player);
-
+                Gson gson = new Gson();
+                String jsonInString = gson.toJson(player);
+                Log.d(TAG, "PlayerGson: "+jsonInString);
                 Log.d(TAG, "onSignInClicked: "+playerID.toString());
                 /* Android Doesn't allow synchronous execution of Http Request and so we must put it in queue*/
                 playerID.enqueue(new Callback<Player>() {
@@ -148,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
                             NotifyUser("Successful");
                             //Successful we can get the ID, and call again to ask for PLayer
                             if(response.isSuccessful()){
-                              Player player =  response.body();
+                              player =  response.body();
                               NotifyUser("The Player ID is: "+player.getId());
                             }else{ NotifyUser("Something went horribly wrong!");}
                         } else if(response.code() == 404){ // Not Found User

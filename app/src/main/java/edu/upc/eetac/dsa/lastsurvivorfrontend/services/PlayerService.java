@@ -16,7 +16,7 @@ public interface PlayerService {
 
    /*@HTTP(method = "GET", path = "/access/signIn", hasBody = true)
     Call<Player> signIn(@Body Player player);*/
-    @POST("/access/signIn")
+    @POST("access/signIn")
     Call<Player> signIn(@Body Player player);
     //Posts a new Player as String value to server and gets the result if the user was registered
     @POST("access/signUp/{username}/{password}")
