@@ -58,21 +58,29 @@ public class RegisterActivity extends AppCompatActivity {
         if (username.getText().toString().equals(null)||password.getText().toString().equals(null)||password.getText().toString().equals("Password")||username.getText().toString().equals("Username")){
             Toast.makeText(getApplicationContext(), "Error.Campos vacíos.", Toast.LENGTH_LONG).show();
         }
+
         else{
             startRetrofit();
             PlayerService service = retrofit.create(PlayerService.class);
-            Player player = new Player(); player.setUsername(username.getText().toString());player.setPassword(password.getText().toString());
-            service.signUp(username.getText().toString(),password.getText().toString()).enqueue(new Callback() {
+            Player player = new Player();
+            player.setUsername(username.getText().toString());
+            player.setPassword(password.getText().toString());
+            service.signUp(username.getText().toString(),password.getText().toString()).enqueue(new Callback<Integer>() {
                 @Override
                 public void onResponse(Call call, Response response) {
-                    if(response.isSuccessful())
-                        Toast.makeText(getApplicationContext(),"Signed Up successfully",Toast.LENGTH_LONG).show();
+                    if (response.code() == 201) {
+                        Toast.makeText(getApplicationContext(), "Signed Up successfully", Toast.LENGTH_LONG).show();
+
+                    }
+                    else if (response.code() == 404){
+                        Toast.makeText(getApplicationContext(),"Something happened...",Toast.LENGTH_LONG).show();
+                    }
                 }
 
                 @Override
                 public void onFailure(Call call, Throwable t) {
 
-                        Toast.makeText(getApplicationContext(),"Something happened...",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),"Failed...",Toast.LENGTH_LONG).show();
                 }
             });
 
