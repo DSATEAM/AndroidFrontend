@@ -65,7 +65,7 @@ public class RegisterActivity extends AppCompatActivity {
             Player player = new Player();
             player.setUsername(username.getText().toString());
             player.setPassword(password.getText().toString());
-            service.signUp(username.getText().toString(),password.getText().toString()).enqueue(new Callback<Integer>() {
+            service.signUp(player).enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call call, Response response) {
                     if (response.code() == 201) {
