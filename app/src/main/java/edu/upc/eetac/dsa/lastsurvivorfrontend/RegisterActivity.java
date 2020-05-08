@@ -28,6 +28,7 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         Button registerBtn = findViewById(R.id.RegisterBtn);
         Button goBack = findViewById(R.id.goBackBtn);
+        startRetrofit();
     }
 
     private static void startRetrofit(){
@@ -60,14 +61,13 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         else{
-            startRetrofit();
             PlayerService service = retrofit.create(PlayerService.class);
             Player player = new Player();
             player.setUsername(username.getText().toString());
             player.setPassword(password.getText().toString());
-            service.signUp(player).enqueue(new Callback<String>() {
+            service.signUp(username.getText().toString(),password.getText().toString()).enqueue(new Callback<String>() {
                 @Override
-                public void onResponse(Call call, Response response) {
+                public void onResponse(Call<String> call, Response<String> response) {
                     if (response.code() == 201) {
                         Toast.makeText(getApplicationContext(), "Signed Up successfully", Toast.LENGTH_LONG).show();
 
