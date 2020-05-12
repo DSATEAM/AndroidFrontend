@@ -20,7 +20,7 @@ public interface PlayerService {
     Call<Player> signIn(@Body Player player);
     //Posts a new Player as String value to server and gets the result if the user was registered
     @POST("access/signUp")
-    Call<String> signUp(@Body Player player);
+    Call<Player> signUp(@Body Player player);
     //Edits a existing Track to the server
     @PUT("access/")
     Call<Player> updatePlayer(@Body Player player);
