@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -21,13 +23,25 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RegisterActivity extends AppCompatActivity {
     private static Retrofit retrofit;
+    Player player;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         setContentView(R.layout.activity_register);
         Button registerBtn = findViewById(R.id.RegisterBtn);
         Button goBack = findViewById(R.id.goBackBtn);
+
         startRetrofit();
     }
 
@@ -62,14 +76,16 @@ public class RegisterActivity extends AppCompatActivity {
 
         else{
             PlayerService service = retrofit.create(PlayerService.class);
-            Player player = new Player();
+            player = new Player();
             player.setUsername(username.getText().toString());
             player.setPassword(password.getText().toString());
-            service.signUp(username.getText().toString(),password.getText().toString()).enqueue(new Callback<String>() {
+            service.signUp(player).enqueue(new Callback<Player>() {
                 @Override
-                public void onResponse(Call<String> call, Response<String> response) {
+                public void onResponse(Call<Player> call, Response<Player> response) {
                     if (response.code() == 201) {
                         Toast.makeText(getApplicationContext(), "Signed Up successfully", Toast.LENGTH_LONG).show();
+                         player = response.body();
+                        Toast.makeText(getApplicationContext(),"Welcome to Last Survivor, "+player.getUsername(), Toast.LENGTH_LONG).show();
 
                     }
                     else if (response.code() == 404){

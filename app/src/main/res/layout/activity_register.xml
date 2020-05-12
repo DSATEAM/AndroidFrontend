@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FA5252"
     tools:context=".RegisterActivity">
 
     <EditText
@@ -34,14 +35,13 @@
         android:id="@+id/goBackBtn"
         android:layout_width="119dp"
         android:layout_height="47dp"
+        android:layout_marginBottom="235dp"
         android:onClick="onGoBackClicked"
-        android:text="GO BACK!"
+        android:text="@string/go_back"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/input_password2"
-        app:layout_constraintVertical_bias="0.372"
         tools:ignore="OnClick" />
 
     <Button
@@ -55,20 +55,23 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/input_password2" />
 
+    <!---->
+
+
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="293dp"
-        android:layout_height="399dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="23dp"
+        android:layout_width="288dp"
+        android:layout_height="401dp"
+        android:layout_marginTop="13dp"
+        android:layout_marginBottom="13dp"
+        android:foregroundTint="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.025"
+        app:layout_constraintHorizontal_bias="0.042"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/dragon_black_and_white_silhouette"
-        app:layout_constraintTop_toBottomOf="@+id/input_password2"/>
-        <!---->
-
+        app:layout_constraintTop_toBottomOf="@+id/input_password2"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/dragon_black_and_white_silhouette" />
 
     <ImageView
         android:id="@+id/imageView2"
@@ -78,6 +81,6 @@
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/sword_png_icon_20"/>
+        app:srcCompat="@drawable/sword_png_icon_20" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
