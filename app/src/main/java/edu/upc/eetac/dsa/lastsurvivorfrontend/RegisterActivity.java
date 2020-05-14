@@ -64,8 +64,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void onGoBackClicked(View view) {
-        Intent intent = new Intent(RegisterActivity.this,MainActivity.class);
-        startActivity(intent);
+        this.finish();
     }
     public void onRegisterClick(View view){
         EditText username = findViewById(R.id.input_username2);
@@ -84,7 +83,8 @@ public class RegisterActivity extends AppCompatActivity {
                 public void onResponse(Call<Player> call, Response<Player> response) {
                     if (response.code() == 201) {
                         Toast.makeText(getApplicationContext(), "Signed Up successfully", Toast.LENGTH_LONG).show();
-                         player = response.body();
+                        player = response.body();
+                        //Close Register and return result to login which will also close the activity for splash
                         Toast.makeText(getApplicationContext(),"Welcome to Last Survivor, "+player.getUsername(), Toast.LENGTH_LONG).show();
 
                     }

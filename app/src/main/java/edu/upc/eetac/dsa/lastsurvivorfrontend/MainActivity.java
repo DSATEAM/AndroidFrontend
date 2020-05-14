@@ -33,35 +33,32 @@ import com.google.gson.Gson;
 
 
 public class MainActivity extends AppCompatActivity {
+    //TOKEN
+    private boolean temp_token = false;
     // RETROFIT OBJECT
     private static Retrofit retrofit;
-
     //Player Service Object
     PlayerService playerService;
-    //TextViews
-    public TextView usernameTextview ;
-    public TextView passwordTextview ;
     //Player Objects
     Player player;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Start Login
         setContentView(R.layout.activity_main);
-        //Starting Retrofit
-        startRetrofit();
-        playerService = retrofit.create(PlayerService.class);
-        //Get the TextViews
-        usernameTextview = this.findViewById(R.id.username);
-        passwordTextview  = this.findViewById(R.id.password);
-        //TODO Get the Current Data Saved as Token in Local Device
-
-        //TODO If the above not true, than wait for user input
-
-        //TODO After user input, send the data to server and ask for authentication
-
-        //TODO Else if user chose register than open register and transfer the connection
-
+        //After launch check if token
+        if(!temp_token){
+            LaunchLoginActivity();
+        }else{
+            //Connect with retrofit
+            try{
+                startRetrofit();
+                //Succesfully connected
+            }catch(Exception e){
+                //Not possible to connect to server
+                e.printStackTrace();
+                NotifyUser("Can't Connect to Server!");
+            }
+        }
     }
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -97,8 +94,12 @@ public class MainActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
-    private void LaunchRegisterActivity() {
-        Intent intent = new Intent(MainActivity.this ,RegisterActivity.class);
+
+    public void onSignInClicked(View view) {
+        LaunchLoginActivity();
+    }
+    private void LaunchLoginActivity() {
+        Intent intent = new Intent(MainActivity.this ,LoginActivity.class);
         /*
         intent.putExtra("DATA_1", "TestString");
         intent.putExtra("DATA_2", true);
@@ -106,30 +107,6 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("DATA_4",0.6969);
         */
         startActivityForResult(intent,1);
-    }
-    @Override
-    public void onBackPressed(){
-        hideSystemUI();
-    }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==1){
-            if(resultCode == RESULT_OK){
-                //Means the activity REGISTER was closed successfully and thus the Player was
-                // registered correctly!
-                String tmp_ID = data.getStringExtra("RETRIEVE_Player_ID");
-                String tmp_pass = data.getStringExtra("RETRIEVE_PLAYER_PASSWORD");
-                String tmp_username = data.getStringExtra("RETRIEVE_PLAYER_USERNAME");
-                //TODO GET THE PLAYER STATS FROM THE SERVER
-
-                //TODO GET THE ITEMS FROM THE SERVER FOR THE PLAYER
-
-                //TODO GET THE MATERIALS FROM THE SERVER FOR THE PLAYER
-            }
-            //Means user didn't register and so don't do anything and wait...
-        }
-
     }
     private static void startRetrofit(){
         //HTTP &
@@ -148,69 +125,9 @@ public class MainActivity extends AppCompatActivity {
                 .client(client)
                 .build();
     }
-
     //User Notifier Handler using Toast
     private void NotifyUser(String showMessage){
         Toast toast = Toast.makeText(MainActivity.this,showMessage,Toast.LENGTH_SHORT);
         toast.show();
-    }
-
-    public void onSignUpClicked(View view) {
-        LaunchRegisterActivity();
-    }
-
-    public void onSignInClicked(View view) {
-        //Login Player and Retrieve the ID
-        String username,password;
-        username =  this.usernameTextview.getText().toString();
-        password =  this.passwordTextview.getText().toString();
-        if(username == null|| password== null){
-            NotifyUser("Please fill the fields!");
-        }else if(username.isEmpty()|| password.isEmpty()){
-            NotifyUser("Please Type something other than space");
-        }else if(username.contains(" ")|| password.contains(" ")){
-            NotifyUser("Please Type that doesn't contain spaces");
-        }else{
-            //Now we can send the data to Server and ask for login
-            String TAG = "onSignIn";
-            try {
-                player = new Player(username,password,0,0,0,0,0);
-                player.setUsername(username);player.setPassword(password);
-                Call<Player> playerID = playerService.signIn(player);
-                Gson gson = new Gson();
-                String jsonInString = gson.toJson(player);
-                Log.d(TAG, "PlayerGson: "+jsonInString);
-                Log.d(TAG, "onSignInClicked: "+playerID.toString());
-                /* Android Doesn't allow synchronous execution of Http Request and so we must put it in queue*/
-                playerID.enqueue(new Callback<Player>() {
-                    @Override
-                    public void onResponse(Call<Player> call, Response<Player> response) {
-                        Log.d(TAG, "onSignInClicked: "+call.toString());
-                        //SingIn Successful
-                        if (response.code() == 201) {
-                            NotifyUser("Successful");
-                            //Successful we can get the ID, and call again to ask for PLayer
-                            if(response.isSuccessful()){
-                              player =  response.body();
-                              NotifyUser("The Player ID is: "+player.getId());
-                            }else{ NotifyUser("Something went horribly wrong!");}
-                        } else if(response.code() == 404){ // Not Found User
-                            NotifyUser("Unsuccessful!");
-                        }else if(response.code() == 401){ //Incorrect Password
-                            NotifyUser("Incorrect Password");
-                        }else{
-                            NotifyUser("Something went horribly wrong!");
-                        }
-                    }
-                    @Override
-                    public void onFailure(Call<Player> call, Throwable t) {
-                        NotifyUser("Error");
-                    }
-                });
-            }catch (Exception e){
-                e.printStackTrace();
-                Log.d(TAG, "onSignInClicked: "+e.toString());
-            }
-        }
     }
 }

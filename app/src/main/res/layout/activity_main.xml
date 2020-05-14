@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:alpha="1"
     android:background="#C6A9FA"
-    android:backgroundTint="#a7ffeb"
-    android:fitsSystemWindows="true"
-    android:foregroundGravity="fill">
+    android:backgroundTint="#FFE1EB"
+    tools:context=".MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,64 +31,28 @@
             android:scaleType="centerInside"
             android:src="@drawable/sword_png_icon_20" />
 
-        <com.google.android.material.textfield.TextInputLayout
+        <TextView
+            android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:focusable="auto"
-            android:focusableInTouchMode="true">
-
-            <EditText
-                android:id="@+id/username"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="#f0f4c3"
-                android:hint="@string/username"
-                android:importantForAutofill="no"
-                android:inputType="textPersonName"
-                android:textColor="#FFFFFF" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Password Label -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-
-            <EditText
-                android:id="@+id/password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:autofillHints=""
-                android:backgroundTint="#f0f4c3"
-                android:hint="@string/password"
-                android:inputType="textPassword" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <Button
-            android:id="@+id/btn_login"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
-            android:backgroundTint="#f0f4c3"
-            android:onClick="onSignInClicked"
-            android:padding="12dp"
-            android:text="@string/login" />
+            android:text="SPLASH SCREEN"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textIsSelectable="false"
+            android:textSize="36sp"
+            android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/link_signup"
+            android:id="@+id/link_signin"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:clickable="true"
             android:backgroundTint="#f0f4c3"
+            android:clickable="true"
             android:focusable="true"
             android:gravity="center"
-            android:onClick="onSignUpClicked"
-            android:text="@string/signup"
+            android:onClick="onSignInClicked"
+            android:text="@string/signIn"
             android:textSize="16sp" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -96,4 +60,5 @@
             android:layout_height="match_parent" />
 
     </LinearLayout>
-</ScrollView>
+
+</FrameLayout>
