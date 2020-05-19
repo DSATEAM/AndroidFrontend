@@ -110,12 +110,19 @@ public class MainActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
 
-    public void onSignInClicked(View view) {
-        LaunchLoginActivity();
-    }
-    public void onStartGameClicked(){
+    public void onStartGameClicked(View view){
         //Launch Unity Game and after starting the game also get the data back from the unity to update the server
         NotifyUser("Game Started: " + player.getUsername());
+    }
+    public void onSignOutClicked(View view){
+        //Launch Unity Game and after starting the game also get the data back from the unity to update the server
+        SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("Username","");
+        editor.putString("Password","");
+        editor.putString("Id","");
+        editor.commit();
+        LaunchLoginActivity();
     }
     public void onCurrentRankingClicked(View view){
         Intent intent = new Intent(MainActivity.this ,RankingActivity.class);
