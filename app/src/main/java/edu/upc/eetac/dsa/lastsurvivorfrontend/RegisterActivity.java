@@ -3,6 +3,7 @@ package edu.upc.eetac.dsa.lastsurvivorfrontend;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -86,10 +87,16 @@ public class RegisterActivity extends AppCompatActivity {
                         player = response.body();
                         //Close Register and return result to login which will also close the activity for splash
                         Toast.makeText(getApplicationContext(),"Welcome to Last Survivor, "+player.getUsername(), Toast.LENGTH_LONG).show();
-
+                        SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putString("Username",player.getUsername());
+                        editor.putString("Password",player.getPassword());
+                        editor.putString("Id",player.getId());
+                        editor.commit();
+                        finish();
                     }
                     else if (response.code() == 404){
-                        Toast.makeText(getApplicationContext(),"Something happened...",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),"Couldn't Register...",Toast.LENGTH_LONG).show();
                     }
                 }
 

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.Nullable;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -40,25 +41,39 @@ public class MainActivity extends AppCompatActivity {
     //Player Service Object
     PlayerService playerService;
     //Player Objects
-    Player player;
+    Player player = new Player();
+    //Text Splash
+    public TextView textView2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        textView2  = this.findViewById(R.id.textView2);
         //After launch check if token
-        if(!temp_token){
+        if(!ExistPlayer()){
             LaunchLoginActivity();
         }else{
+            //Show Username in the SplashScreen
+            textView2.setText("Welcome Back "+player.getUsername());
             //Connect with retrofit
             try{
                 startRetrofit();
-                //Succesfully connected
+                //Succesfully created Retrofit
             }catch(Exception e){
                 //Not possible to connect to server
                 e.printStackTrace();
                 NotifyUser("Can't Connect to Server!");
             }
         }
+    }
+    private boolean ExistPlayer(){
+
+        SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+
+        player.setUsername(settings.getString("Username", ""));
+        player.setPassword(settings.getString("Password", ""));
+        player.setId(settings.getString("Id", ""));
+        return !player.getId().equals("");
     }
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -100,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void onStartGameClicked(){
         //Launch Unity Game and after starting the game also get the data back from the unity to update the server
+        NotifyUser("Game Started: " + player.getUsername());
     }
     public void onCurrentRankingClicked(View view){
         Intent intent = new Intent(MainActivity.this ,RankingActivity.class);
@@ -113,12 +129,6 @@ public class MainActivity extends AppCompatActivity {
     }
     private void LaunchLoginActivity() {
         Intent intent = new Intent(MainActivity.this ,LoginActivity.class);
-        /*
-        intent.putExtra("DATA_1", "TestString");
-        intent.putExtra("DATA_2", true);
-        intent.putExtra("DATA_3", 6969);
-        intent.putExtra("DATA_4",0.6969);
-        */
         startActivityForResult(intent,1);
     }
     private static void startRetrofit(){

@@ -7,6 +7,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -68,14 +69,6 @@ public class LoginActivity extends AppCompatActivity {
         //Get the TextViews
         usernameTextview = this.findViewById(R.id.username);
         passwordTextview  = this.findViewById(R.id.password);
-        //TODO Get the Current Data Saved as Token in Local Device
-
-        //TODO If the above not true, than wait for user input
-
-        //TODO After user input, send the data to server and ask for authentication
-
-        //TODO Else if user chose register than open register and transfer the connection
-
     }
     private void LaunchRegisterActivity() {
         Intent intent = new Intent(LoginActivity.this ,RegisterActivity.class);
@@ -86,6 +79,17 @@ public class LoginActivity extends AppCompatActivity {
         intent.putExtra("DATA_4",0.6969);
         */
         startActivityForResult(intent,1);
+        //After Launching check if userExists in SharedPreference if Yes than close this LoginActivity
+        if(ExistPlayer()){
+            finish();
+        }
+    }
+    private boolean ExistPlayer(){
+        SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+        player.setUsername(settings.getString("Username", ""));
+        player.setPassword(settings.getString("Password", ""));
+        player.setId(settings.getString("Id", ""));
+        return !player.getId().equals("");
     }
     @Override
     public void onBackPressed(){
@@ -170,7 +174,7 @@ public class LoginActivity extends AppCompatActivity {
             //Now we can send the data to Server and ask for login
             String TAG = "onSignIn";
             try {
-                player = new Player(username,password,0,0,0,0,0);
+                player = new Player(username,password,0,0,0,0);
                 player.setUsername(username);player.setPassword(password);
                 Call<Player> playerID = playerService.signIn(player);
                 Gson gson = new Gson();
@@ -190,6 +194,13 @@ public class LoginActivity extends AppCompatActivity {
                                 player =  response.body();
                                 NotifyUser("The Player ID is: "+player.getId());
                                 //We can close the Login Activity and get back to Splash Screen
+                                SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+                                SharedPreferences.Editor editor = settings.edit();
+                                editor.putString("Username",player.getUsername());
+                                editor.putString("Password",player.getPassword());
+                                editor.putString("Id",player.getId());
+                                editor.commit();
+                                finish();
 
                             }else{ NotifyUser("Something went horribly wrong!");}
                         } else if(response.code() == 404){ // Not Found User
