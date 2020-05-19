@@ -1,6 +1,5 @@
 package edu.upc.eetac.dsa.lastsurvivorfrontend.models;
 
-import java.util.LinkedList;
 import java.util.List;
 
 public class Player {
@@ -10,18 +9,18 @@ public class Player {
     private int gamesPlayed;
     private int kills;
     private int experience;
-    private int coins;
+    private int credits;
     //TODO Recursive Mapping of Objects Item and Material
     List<Item> listItems;
     //Empty Constructor
     public Player(){}
-    public Player(String username, String password, int gamesPlayed, int kills,int experience, int coins) {
+    public Player(String username, String password, int gamesPlayed, int kills,int experience, int credits) {
         this.username = username;
         this.password = password;
         this.gamesPlayed = gamesPlayed;
         this.kills = kills;
         this.experience = experience;
-        this.coins = coins;
+        this.credits = credits;
     }
     public String getId() {
         return id;
@@ -70,12 +69,12 @@ public class Player {
         this.experience = experience;
     }
 
-    public int getCoins() {
-        return coins;
+    public int getCredits() {
+        return credits;
     }
 
-    public void setCoins(int coins) {
-        this.coins = coins;
+    public void setCredits(int credits) {
+        this.credits = credits;
     }
 
     public List<Item> getListItems() {
