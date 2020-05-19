@@ -98,6 +98,19 @@ public class MainActivity extends AppCompatActivity {
     public void onSignInClicked(View view) {
         LaunchLoginActivity();
     }
+    public void onStartGameClicked(){
+        //Launch Unity Game and after starting the game also get the data back from the unity to update the server
+    }
+    public void onCurrentRankingClicked(View view){
+        Intent intent = new Intent(MainActivity.this ,RankingActivity.class);
+        /*
+        intent.putExtra("DATA_1", "TestString");
+        intent.putExtra("DATA_2", true);
+        intent.putExtra("DATA_3", 6969);
+        intent.putExtra("DATA_4",0.6969);
+        */
+        startActivityForResult(intent,1);
+    }
     private void LaunchLoginActivity() {
         Intent intent = new Intent(MainActivity.this ,LoginActivity.class);
         /*

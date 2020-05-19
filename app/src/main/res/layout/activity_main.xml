@@ -43,17 +43,31 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/link_signin"
-            android:layout_width="fill_parent"
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:backgroundTint="#f0f4c3"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:onClick="onSignInClicked"
-            android:text="@string/signIn"
-            android:textSize="16sp" />
+            android:text="Welcome Back UserX"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textIsSelectable="false"
+            android:textSize="36sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#BBEAFF"
+            android:onClick="onStartGameClicked"
+            android:text="Start Game" />
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#BBEAFF"
+            android:onClick="onCurrentRankingClicked"
+            android:text="Current Ranking" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"

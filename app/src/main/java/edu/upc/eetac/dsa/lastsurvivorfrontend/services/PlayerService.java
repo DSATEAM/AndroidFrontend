@@ -27,5 +27,4 @@ public interface PlayerService {
     //Delete the selected Track given the Id
     @DELETE("access/{playerId}")
     Call<Player> deletePlayer(@Path("playerId") String playerId);
-
 }
