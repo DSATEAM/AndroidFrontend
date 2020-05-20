@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Player;
@@ -26,13 +27,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class RankingActivity extends AppCompatActivity {
     // RETROFIT OBJECT
-    Retrofit retrofit;
+    private static Retrofit retrofit;
     //HTTP INTERCEPTOR
 
     //TRACKS SERVICE OBJECT
     RankingService rankingService;
     //List<Repo> Repo_List;
-    List<Player> playerList;
+    List<Player> playerList ;
     private RecyclerView recyclerView;
     //As we added new methods inside our custom Adapter, we need to create our own type of adapter
     private MyAdapter mAdapter;
@@ -61,37 +62,26 @@ public class RankingActivity extends AppCompatActivity {
         // Running Retrofit to get result from Local tracks service Interface
         //Remember when using Local host on windows the IP is 10.0.2.2 for Android
         //Also added NullOnEmptyConverterFactory when the response from server is empty
+        startRetrofit();
+        rankingService = retrofit.create(RankingService.class);
+
+    }
+    private static void startRetrofit(){
+        //HTTP &
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        //Attaching Interceptor to a client
+        OkHttpClient client = new OkHttpClient().newBuilder().addInterceptor(interceptor).build();
+
+        // Running Retrofit to get result from Local tracks service Interface
+        //Remember when using Local host on windows the IP is 10.0.2.2 for Android
+        //Also added NullOnEmptyConverterFactory when the response from server is empty
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8080/dsaApp/")
+                .baseUrl("http://10.0.2.2:8080/Backend/")
                 .addConverterFactory(new NullOnEmptyConverterFactory())
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
-        rankingService = retrofit.create(RankingService.class);
-    }
-    //Inserts Item in List
-    public void insertItem(Player track){
-        if(playerList!=null) {
-            playerList.add(track);
-        }
-        else
-        {
-            playerList = new ArrayList<>();
-            playerList.add(track);
-        }
-        int pos = playerList.size()-1;
-        mAdapter.notifyDataSetChanged();
-    }
-    //Removes Item from List
-    public void removeItem(int position)
-    {
-        playerList.remove(position);
-        mAdapter.notifyItemRemoved(position);
-    }
-    //Changes Item in List
-    public void changeItem(int position,Player track){
-        playerList.set(position,track);
-        mAdapter.notifyItemChanged(position);
     }
     //User Notifier Handler using Toast
     private void NotifyUser(String MSG){
@@ -113,9 +103,8 @@ public class RankingActivity extends AppCompatActivity {
                     if (!response.body().isEmpty()) {
                         // non empty response, Mapping Json via Gson...
                         NotifyUser("Server Response Ok");
-                        RankingActivity.this.playerList = response.body();
+                        playerList = response.body();
                         buildRecyclerView();
-                        //Succesfully retrieved the Ranking list from the server
                     } else {
                         // empty response...
                         NotifyUser("Request Failed!");
@@ -140,7 +129,7 @@ public class RankingActivity extends AppCompatActivity {
             @Override
             public void onItemClick(int position) {
                 //TODO NEED TO IMPLEMENT PLAYER STATS DETAIL ACTIVITY
-                //LaunchPlayerDetailedActivity(position,false);
+                NotifyUser("On Item Clicked!");
             }
         });
     }

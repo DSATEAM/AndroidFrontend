@@ -3,7 +3,6 @@ package edu.upc.eetac.dsa.lastsurvivorfrontend;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,8 +16,6 @@ import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Player;
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     //Repo List
     private List<Player> playerList;
-    //Intent Request ID
-    public static final int TRACK_REQUEST = 1;
     // Adding Listener to call it from Main Activity
     private OnItemClickListener mListener;
     //Through this we get the click and the position to our main activity
@@ -35,7 +32,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         // each data item is just a string in our viewHolder
         public TextView playerExperience;
         public TextView playerUsername;
-        public ImageView imageDelete;
         public View layout;
 
         public ViewHolder(View itemView, OnItemClickListener listener) {
@@ -82,8 +78,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
        // final String name = values.get(position);
+        String s = "Testy";
         holder.playerUsername.setText(playerList.get(position).getUsername());
-        holder.playerExperience.setText(playerList.get(position).getExperience());
+        holder.playerExperience.setText(String.valueOf(playerList.get(position).getExperience()));
+        s = "Testy";
     }
     @Override
     public int getItemCount() {

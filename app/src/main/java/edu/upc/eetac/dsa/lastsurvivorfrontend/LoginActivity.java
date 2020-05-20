@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -48,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
     public TextView usernameTextview ;
     public TextView passwordTextview ;
     //Player Objects
-    Player player;
+    Player player = new Player();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,20 +115,15 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==1){
-            if(resultCode == RESULT_OK){
-                //Means the activity REGISTER was closed successfully and thus the Player was
-                // registered correctly!
-                String tmp_ID = data.getStringExtra("RETRIEVE_Player_ID");
-                String tmp_pass = data.getStringExtra("RETRIEVE_PLAYER_PASSWORD");
-                String tmp_username = data.getStringExtra("RETRIEVE_PLAYER_USERNAME");
-                //TODO GET THE PLAYER STATS FROM THE SERVER
-
-                //TODO GET THE ITEMS FROM THE SERVER FOR THE PLAYER
-
-                //TODO GET THE MATERIALS FROM THE SERVER FOR THE PLAYER
+        if (requestCode == 1) {
+            if(resultCode == Activity.RESULT_OK){
+                Intent returnIntent = new Intent();
+                setResult(Activity.RESULT_OK,returnIntent);
+                finish();
             }
-            //Means user didn't register and so don't do anything and wait...
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Do nothing as user not registered properly
+            }
         }
 
     }
@@ -200,6 +196,8 @@ public class LoginActivity extends AppCompatActivity {
                                 editor.putString("Password",player.getPassword());
                                 editor.putString("Id",player.getId());
                                 editor.commit();
+                                Intent returnIntent = new Intent();
+                                setResult(Activity.RESULT_OK,returnIntent);
                                 finish();
 
                             }else{ NotifyUser("Something went horribly wrong!");}

@@ -1,20 +1,16 @@
 package edu.upc.eetac.dsa.lastsurvivorfrontend;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Player;
 import edu.upc.eetac.dsa.lastsurvivorfrontend.services.PlayerService;
@@ -25,10 +21,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Body;
-
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 
@@ -50,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         textView2  = this.findViewById(R.id.textView2);
         //After launch check if token
-        if(!ExistPlayer()){
+        if(!ExistPlayerAndSetData()){
             LaunchLoginActivity();
         }else{
             //Show Username in the SplashScreen
@@ -58,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
             //Connect with retrofit
             try{
                 startRetrofit();
+                playerService = retrofit.create(PlayerService.class);
+                LoginUser();
                 //Succesfully created Retrofit
             }catch(Exception e){
                 //Not possible to connect to server
@@ -66,10 +60,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    private boolean ExistPlayer(){
+    private boolean ExistPlayerAndSetData(){
 
         SharedPreferences settings = getSharedPreferences("UserInfo", 0);
-
         player.setUsername(settings.getString("Username", ""));
         player.setPassword(settings.getString("Password", ""));
         player.setId(settings.getString("Id", ""));
@@ -126,17 +119,27 @@ public class MainActivity extends AppCompatActivity {
     }
     public void onCurrentRankingClicked(View view){
         Intent intent = new Intent(MainActivity.this ,RankingActivity.class);
-        /*
-        intent.putExtra("DATA_1", "TestString");
-        intent.putExtra("DATA_2", true);
-        intent.putExtra("DATA_3", 6969);
-        intent.putExtra("DATA_4",0.6969);
-        */
         startActivityForResult(intent,1);
     }
     private void LaunchLoginActivity() {
         Intent intent = new Intent(MainActivity.this ,LoginActivity.class);
         startActivityForResult(intent,1);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if(resultCode == Activity.RESULT_OK){
+                ExistPlayerAndSetData();
+                textView2.setText("Welcome Back "+player.getUsername());
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Do nothing as user not registered properly
+                ExistPlayerAndSetData();
+                textView2.setText("Welcome Back "+player.getUsername());
+            }
+        }
+
     }
     private static void startRetrofit(){
         //HTTP &
@@ -154,6 +157,57 @@ public class MainActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
+    }
+    private void LoginUser(){
+        String username,password;
+        username =  player.getUsername();
+        password =  player.getPassword();
+        if(username == null|| password== null){
+            NotifyUser("Please fill the fields!");
+        }else if(username.isEmpty()|| password.isEmpty()){
+            NotifyUser("Please Type something other than space");
+        }else if(username.contains(" ")|| password.contains(" ")){
+            NotifyUser("Please Type that doesn't contain spaces");
+        }else{
+            //Now we can send the data to Server and ask for login
+            String TAG = "onSignIn";
+            try {
+                player = new Player(username,password,0,0,0,0);
+                player.setUsername(username);player.setPassword(password);
+                Call<Player> playerID = playerService.signIn(player);
+                Gson gson = new Gson();
+                String jsonInString = gson.toJson(player);
+                Log.d(TAG, "PlayerGson: "+jsonInString);
+                Log.d(TAG, "Player Logging In from Splash: "+playerID.toString());
+                /* Android Doesn't allow synchronous execution of Http Request and so we must put it in queue*/
+                playerID.enqueue(new Callback<Player>() {
+                    @Override
+                    public void onResponse(Call<Player> call, Response<Player> response) {
+                        Log.d(TAG, "Player Logging In from splash response Server: "+call.toString());
+                        //SingIn Successful
+                        if (response.code() == 201) {
+                            //Successful we can get the ID, and call again to ask for PLayer
+                            if(response.isSuccessful()){
+                                player =  response.body();
+                                Log.d(TAG,"The Player ID is: "+player.getId());
+                            }else{ Log.d(TAG,"Something went horribly wrong!");}
+                        } else if(response.code() == 404){ // Not Found User
+                            NotifyUser("Unsuccessful!");
+                        }else if(response.code() == 401){ //Incorrect Password
+                            NotifyUser("Incorrect Password");
+                        }else{
+                            NotifyUser("Something went horribly wrong!");
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<Player> call, Throwable t) {
+                        NotifyUser("Error");
+                    }
+                });
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
     }
     //User Notifier Handler using Toast
     private void NotifyUser(String showMessage){

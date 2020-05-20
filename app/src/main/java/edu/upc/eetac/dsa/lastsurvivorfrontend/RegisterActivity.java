@@ -2,6 +2,7 @@ package edu.upc.eetac.dsa.lastsurvivorfrontend;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -93,6 +94,8 @@ public class RegisterActivity extends AppCompatActivity {
                         editor.putString("Password",player.getPassword());
                         editor.putString("Id",player.getId());
                         editor.commit();
+                        Intent returnIntent = new Intent();
+                        setResult(Activity.RESULT_OK,returnIntent);
                         finish();
                     }
                     else if (response.code() == 404){
