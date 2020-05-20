@@ -2,17 +2,17 @@ package edu.upc.eetac.dsa.lastsurvivorfrontend;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Player;
-import edu.upc.eetac.dsa.lastsurvivorfrontend.services.PlayerService;
 import edu.upc.eetac.dsa.lastsurvivorfrontend.services.RankingService;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -129,27 +129,30 @@ public class RankingActivity extends AppCompatActivity {
             @Override
             public void onItemClick(int position) {
                 //TODO NEED TO IMPLEMENT PLAYER STATS DETAIL ACTIVITY
-                NotifyUser("On Item Clicked!");
+                LaunchPlayerStatsDetailPopup(position);
             }
         });
     }
     //Launch New Activity to Edit-Add Track
-    private void LaunchPlayerDetailedActivity(int position){
-        /*
-        //New View to edit Current Track
-        //Launches a new activity to edit the current selected Track Item
-        //Creates a Edit Track Activity
-        //TO LAUNCH A NEW ACTIVITY WE CREATE A INTENT OF OUR Player Details Activity
-        Intent intent = new Intent(RankingActivity.this ,PlayerDetailsActivity.class);
-        // Pass the data to our Activity as there exists no object instance of our PlayerDetailedActivity class,
-        // The only easy method to Pass data between activity is Intent,as singleton is not recommended
-        intent.putExtra("PlayerUsername", playerList.get(position).getUsername());
-        intent.putExtra("PlayerExperience", playerList.get(position).getExperience());
-        intent.putExtra("PlayerKills", playerList.get(position).getKills());
-        intent.putExtra("PlayerGamesPlayed", playerList.get(position).getGamesPlayed());
-        intent.putExtra("PlayerCoins", playerList.get(position).getCoins());
-            //STARTS THE ACTIVITY FOR RESULT INTENT TO GET THE NEW VALUES
-        startActivityForResult(intent,playerStatsDetail);
-    */
+    private void LaunchPlayerStatsDetailPopup(int position){
+        String statsString = "Experience: "+ playerList.get(position).getExperience() +"\n Kills: "+playerList.get(position).getKills() +
+                "\n GamesPlayed: " + playerList.get(position).getGamesPlayed() + "\n Credits: " +playerList.get(position).getCredits();
+        final Dialog dialog=new Dialog(RankingActivity.this);
+        dialog.setContentView(R.layout.dialog_custom);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
+        LinearLayout button_back = dialog.findViewById(R.id.button_back);
+        TextView headText = dialog.findViewById(R.id.text_Username);
+        EditText multilineText = dialog.findViewById(R.id.text_multiline);
+        button_back.setOnClickListener(
+                new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v){
+                        dialog.dismiss();
+                    }
+                });
+        headText.setText(playerList.get(position).getUsername());
+        headText.setText(statsString);
+        dialog.show();
     }
 }
