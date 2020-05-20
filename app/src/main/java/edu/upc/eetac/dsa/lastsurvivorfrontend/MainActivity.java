@@ -34,25 +34,25 @@ public class MainActivity extends AppCompatActivity {
     PlayerService playerService;
     //Player Objects
     Player player = new Player();
-    //Text Splash
-    public TextView textView2;
+    //TextView of Splash
+    public TextView splashTextView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        textView2  = this.findViewById(R.id.textView2);
-        //After launch check if token
+        splashTextView = this.findViewById(R.id.textView2);
+        //After launch check if a user exists in preferences and also set the player
         if(!ExistPlayerAndSetData()){
             LaunchLoginActivity();
         }else{
             //Show Username in the SplashScreen
-            textView2.setText("Welcome Back "+player.getUsername());
-            //Connect with retrofit
+            splashTextView.setText("Welcome Back "+player.getUsername());
+            //Connect with retrofit & Login Automatically and Retrieve the Player Data
             try{
                 startRetrofit();
                 playerService = retrofit.create(PlayerService.class);
+                //Login with Player Object player which was written using (ExistPlayerAndSetData)
                 LoginUser();
-                //Succesfully created Retrofit
             }catch(Exception e){
                 //Not possible to connect to server
                 e.printStackTrace();
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     private boolean ExistPlayerAndSetData(){
-
+        //Access the shared preference UserInfo and obtain the parameters, default =string empty
         SharedPreferences settings = getSharedPreferences("UserInfo", 0);
         player.setUsername(settings.getString("Username", ""));
         player.setPassword(settings.getString("Password", ""));
@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
+        //If the focus has been changed,means we are on the activity than hide the bar again behind the activity
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
             hideSystemUI();
@@ -93,8 +94,8 @@ public class MainActivity extends AppCompatActivity {
                     | View.SYSTEM_UI_FLAG_FULLSCREEN);
     }
 
-    // Shows the system bars by removing all the flags
-// except for the ones that make the content appear under the system bars.
+    /* Shows the system bars by removing all the flags
+        except for the ones that make the content appear under the system bars.*/
     private void showSystemUI() {
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(
@@ -115,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("Password","");
         editor.putString("Id","");
         editor.commit();
+        //After logout from phone, set the screen to LoginActivity
         LaunchLoginActivity();
     }
     public void onCurrentRankingClicked(View view){
@@ -128,15 +130,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        //If login activity closed means the user has logged in, and the data is stored in the database
         if (requestCode == 1) {
             if(resultCode == Activity.RESULT_OK){
                 ExistPlayerAndSetData();
-                textView2.setText("Welcome Back "+player.getUsername());
+                splashTextView.setText("Welcome Back "+player.getUsername());
+                //Now we must retrieve the data from login activity
+                //TODO RETRIEVE PLAYER DATA FROM THE LOGIN ACTIVITY
             }
             if (resultCode == Activity.RESULT_CANCELED) {
-                //Do nothing as user not registered properly
-                ExistPlayerAndSetData();
-                textView2.setText("Welcome Back "+player.getUsername());
+                //Not possible as login will only close when logged in properly!
             }
         }
 
@@ -201,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     @Override
                     public void onFailure(Call<Player> call, Throwable t) {
-                        NotifyUser("Error");
+                        NotifyUser("Failure to logIn");
                     }
                 });
             }catch (Exception e){

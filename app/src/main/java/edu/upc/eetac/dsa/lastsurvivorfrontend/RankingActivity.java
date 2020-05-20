@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -102,12 +103,19 @@ public class RankingActivity extends AppCompatActivity {
                     //Retrieve the result containing in the body
                     if (!response.body().isEmpty()) {
                         // non empty response, Mapping Json via Gson...
-                        NotifyUser("Server Response Ok");
+                        Log.d("RankingActivity","Server Response Ok");
                         playerList = response.body();
-                        buildRecyclerView();
+                        //If clicked once then new player list else update the recyclerview
+                        if(mAdapter == null){
+                            buildRecyclerView();
+                        }else{
+                            mAdapter = null;
+                            buildRecyclerView();
+                        }
+
                     } else {
                         // empty response...
-                        NotifyUser("Request Failed!");
+                        Log.d("RankingActivity","Request Failed!");
                     }
                 }
 
@@ -118,7 +126,7 @@ public class RankingActivity extends AppCompatActivity {
             });
         }
         catch(Exception e){
-            NotifyUser("Exception: " + e.toString());
+            Log.d("RankingActivity","Exception: " + e.toString());
         }
     }
     //Builds the RecyclerView
@@ -135,12 +143,15 @@ public class RankingActivity extends AppCompatActivity {
     }
     //Launch New Activity to Edit-Add Track
     private void LaunchPlayerStatsDetailPopup(int position){
+        //Create Multiline String of Choosen Player Stats
         String statsString = "Experience: "+ playerList.get(position).getExperience() +"\n Kills: "+playerList.get(position).getKills() +
                 "\n GamesPlayed: " + playerList.get(position).getGamesPlayed() + "\n Credits: " +playerList.get(position).getCredits();
+        //Create a dialog as unchanging
         final Dialog dialog=new Dialog(RankingActivity.this);
         dialog.setContentView(R.layout.dialog_custom);
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);
+        //Get the Views of the created dialog
         LinearLayout button_back = dialog.findViewById(R.id.button_back);
         TextView headText = dialog.findViewById(R.id.text_Username);
         EditText multilineText = dialog.findViewById(R.id.text_multiline);
@@ -151,8 +162,9 @@ public class RankingActivity extends AppCompatActivity {
                         dialog.dismiss();
                     }
                 });
+        //Set the username and Multiline String of Choosen Player Stats
         headText.setText(playerList.get(position).getUsername());
-        headText.setText(statsString);
+        multilineText.setText(statsString);
         dialog.show();
     }
 }

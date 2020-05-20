@@ -66,7 +66,9 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void onGoBackClicked(View view) {
-        this.finish();
+        Intent returnIntent = new Intent();
+        setResult(Activity.RESULT_CANCELED,returnIntent);
+        finish();
     }
     public void onRegisterClick(View view){
         EditText username = findViewById(R.id.input_username2);
@@ -87,7 +89,6 @@ public class RegisterActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Signed Up successfully", Toast.LENGTH_LONG).show();
                         player = response.body();
                         //Close Register and return result to login which will also close the activity for splash
-                        Toast.makeText(getApplicationContext(),"Welcome to Last Survivor, "+player.getUsername(), Toast.LENGTH_LONG).show();
                         SharedPreferences settings = getSharedPreferences("UserInfo", 0);
                         SharedPreferences.Editor editor = settings.edit();
                         editor.putString("Username",player.getUsername());
