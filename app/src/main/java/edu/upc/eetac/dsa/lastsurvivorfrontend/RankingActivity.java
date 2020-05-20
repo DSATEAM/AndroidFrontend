@@ -65,7 +65,7 @@ public class RankingActivity extends AppCompatActivity {
         //Also added NullOnEmptyConverterFactory when the response from server is empty
         startRetrofit();
         rankingService = retrofit.create(RankingService.class);
-
+        getRank();
     }
     private static void startRetrofit(){
         //HTTP &
@@ -89,8 +89,14 @@ public class RankingActivity extends AppCompatActivity {
         Toast toast = Toast.makeText(RankingActivity.this,MSG,Toast.LENGTH_SHORT);
         toast.show();
     }
+    public void onBackButtonClick(View view){
+        finish();
+    }
     //Gets the List of Tracks from LocalHost
     public void onButtonMyCurrentRankClick(View view) {
+        getRank();
+    }
+    private void getRank(){
         //Retrofit Implementation on Button Press
         //Adding Interceptor
         try {

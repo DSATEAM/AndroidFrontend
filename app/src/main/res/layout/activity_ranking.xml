@@ -23,7 +23,20 @@
                 android:layout_weight="0.5"
                 android:clickable="true"
                 android:onClick="onButtonMyCurrentRankClick"
-                android:text="My Current Rank"
+                android:text="Update Rank"
+                app:layout_constraintBottom_toTopOf="@+id/textView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/BackButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:clickable="true"
+                android:onClick="onBackButtonClick"
+                android:text="@string/go_back"
                 app:layout_constraintBottom_toTopOf="@+id/textView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
