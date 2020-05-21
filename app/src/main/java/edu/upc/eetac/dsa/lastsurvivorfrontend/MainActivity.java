@@ -133,14 +133,15 @@ public class MainActivity extends AppCompatActivity {
         //If login activity closed means the user has logged in, and the data is stored in the database
         if (requestCode == 1) {
             if(resultCode == Activity.RESULT_OK){
-                ExistPlayerAndSetData();
+                player = data.getParcelableExtra("Player");
                 splashTextView.setText("Welcome Back "+player.getUsername());
                 //Now we must retrieve the data from login activity
                 //TODO RETRIEVE PLAYER DATA FROM THE LOGIN ACTIVITY
             }
             if (resultCode == Activity.RESULT_CANCELED) {
-                //Not possible as login will only close when logged in properly!
+                finish();
             }
+
         }
 
     }

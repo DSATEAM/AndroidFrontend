@@ -42,7 +42,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 public class LoginActivity extends AppCompatActivity {
     // RETROFIT OBJECT
     private static Retrofit retrofit;
-
     //Player Service Object
     PlayerService playerService;
     //TextViews
@@ -92,9 +91,14 @@ public class LoginActivity extends AppCompatActivity {
         player.setId(settings.getString("Id", ""));
         return !player.getId().equals("");
     }
+
     @Override
     public void onBackPressed(){
         hideSystemUI();
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("Exit",false);
+        setResult(Activity.RESULT_CANCELED,returnIntent);
+        finish();
     }
     private void hideSystemUI() {
         // Enables regular immersive mode.
@@ -117,12 +121,15 @@ public class LoginActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if(resultCode == Activity.RESULT_OK){
+                //Means we registered succesfully
+                player = data.getParcelableExtra("Player");
                 Intent returnIntent = new Intent();
+                returnIntent.putExtra("Player",player);
                 setResult(Activity.RESULT_OK,returnIntent);
                 finish();
             }
             if (resultCode == Activity.RESULT_CANCELED) {
-                //Do nothing as user not registered properly
+                //Do nothing as user cancelled operation
             }
         }
 
@@ -199,7 +206,6 @@ public class LoginActivity extends AppCompatActivity {
                                 Intent returnIntent = new Intent();
                                 setResult(Activity.RESULT_OK,returnIntent);
                                 finish();
-
                             }else{ NotifyUser("Something went horribly wrong!");}
                         } else if(response.code() == 404){ // Not Found User
                             NotifyUser("Unsuccessful!");

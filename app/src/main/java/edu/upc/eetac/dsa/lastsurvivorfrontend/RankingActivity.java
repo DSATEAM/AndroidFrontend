@@ -100,6 +100,7 @@ public class RankingActivity extends AppCompatActivity {
         //Retrofit Implementation on Button Press
         //Adding Interceptor
         try {
+
             Call<List<Player>> playersStats = rankingService.rankingList();
             /* Android Doesn't allow synchronous execution of Http Request and so we must put it in queue*/
             playersStats.enqueue(new Callback<List<Player>>() {

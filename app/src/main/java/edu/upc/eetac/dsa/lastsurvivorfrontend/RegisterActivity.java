@@ -96,6 +96,7 @@ public class RegisterActivity extends AppCompatActivity {
                         editor.putString("Id",player.getId());
                         editor.commit();
                         Intent returnIntent = new Intent();
+                        returnIntent.putExtra("Player",player);
                         setResult(Activity.RESULT_OK,returnIntent);
                         finish();
                     }

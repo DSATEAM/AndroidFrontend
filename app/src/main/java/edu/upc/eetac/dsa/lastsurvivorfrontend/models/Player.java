@@ -1,8 +1,11 @@
 package edu.upc.eetac.dsa.lastsurvivorfrontend.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
-public class Player {
+public class Player implements Parcelable {
     private String id;
     private String username;
     private String password;
@@ -22,6 +25,29 @@ public class Player {
         this.experience = experience;
         this.credits = credits;
     }
+
+    protected Player(Parcel in) {
+        id = in.readString();
+        username = in.readString();
+        password = in.readString();
+        gamesPlayed = in.readInt();
+        kills = in.readInt();
+        experience = in.readInt();
+        credits = in.readInt();
+    }
+
+    public static final Creator<Player> CREATOR = new Creator<Player>() {
+        @Override
+        public Player createFromParcel(Parcel in) {
+            return new Player(in);
+        }
+
+        @Override
+        public Player[] newArray(int size) {
+            return new Player[size];
+        }
+    };
+
     public String getId() {
         return id;
     }
@@ -86,4 +112,19 @@ public class Player {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(username);
+        dest.writeString(password);
+        dest.writeInt(gamesPlayed);
+        dest.writeInt(kills);
+        dest.writeInt(experience);
+        dest.writeInt(credits);
+    }
 }
