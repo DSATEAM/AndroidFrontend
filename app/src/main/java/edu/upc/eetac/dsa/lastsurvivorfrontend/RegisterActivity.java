@@ -3,14 +3,17 @@ package edu.upc.eetac.dsa.lastsurvivorfrontend;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Player;
@@ -43,7 +46,6 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         Button registerBtn = findViewById(R.id.RegisterBtn);
         Button goBack = findViewById(R.id.goBackBtn);
-
         startRetrofit();
     }
 
@@ -65,11 +67,39 @@ public class RegisterActivity extends AppCompatActivity {
                 .build();
     }
 
-    public void onGoBackClicked(View view) {
-        Intent returnIntent = new Intent();
-        setResult(Activity.RESULT_CANCELED,returnIntent);
-        finish();
+
+   public void onGoBackClicked(View view) {
+       exitDialog();
+   }
+    @Override
+    public void onBackPressed() {
+        // do something on back.
+         exitDialog();
     }
+   private void exitDialog(){
+       final Dialog dialog=new Dialog(this);
+       dialog.setContentView(R.layout.dialog_exit);
+       dialog.setCanceledOnTouchOutside(true);
+       dialog.setCancelable(true);
+       LinearLayout cancel= dialog.findViewById(R.id.cancelbtn);
+       LinearLayout exit=dialog.findViewById(R.id.button_back);
+       cancel.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               dialog.dismiss();
+           }
+       });
+       exit.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               Intent returnIntent = new Intent();
+               setResult(Activity.RESULT_CANCELED,returnIntent);
+               finish();
+           }
+       });
+       dialog.show();
+
+   }
     public void onRegisterClick(View view){
         EditText username = findViewById(R.id.input_username2);
         EditText password = findViewById(R.id.input_password2);

@@ -7,6 +7,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +44,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 public class LoginActivity extends AppCompatActivity {
     // RETROFIT OBJECT
     private static Retrofit retrofit;
+
     //Player Service Object
     PlayerService playerService;
     //TextViews
@@ -99,6 +102,7 @@ public class LoginActivity extends AppCompatActivity {
         returnIntent.putExtra("Exit",false);
         setResult(Activity.RESULT_CANCELED,returnIntent);
         finish();
+        exitDialog();
     }
     private void hideSystemUI() {
         // Enables regular immersive mode.
@@ -157,6 +161,30 @@ public class LoginActivity extends AppCompatActivity {
         Toast toast = Toast.makeText(LoginActivity.this,showMessage,Toast.LENGTH_SHORT);
         toast.show();
     }
+    private void exitDialog(){
+        final Dialog dialog=new Dialog(this);
+        dialog.setContentView(R.layout.dialog_exit);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
+        LinearLayout cancel= dialog.findViewById(R.id.cancelbtn);
+        LinearLayout exit=dialog.findViewById(R.id.button_back);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent returnIntent = new Intent();
+                setResult(Activity.RESULT_CANCELED,returnIntent);
+                finish();
+            }
+        });
+        dialog.show();
+
+    }
 
     public void onSignUpClicked(View view) {
         LaunchRegisterActivity();
@@ -206,6 +234,7 @@ public class LoginActivity extends AppCompatActivity {
                                 Intent returnIntent = new Intent();
                                 setResult(Activity.RESULT_OK,returnIntent);
                                 finish();
+
                             }else{ NotifyUser("Something went horribly wrong!");}
                         } else if(response.code() == 404){ // Not Found User
                             NotifyUser("Unsuccessful!");

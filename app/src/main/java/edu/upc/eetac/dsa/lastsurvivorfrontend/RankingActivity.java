@@ -2,7 +2,9 @@ package edu.upc.eetac.dsa.lastsurvivorfrontend;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -90,7 +92,7 @@ public class RankingActivity extends AppCompatActivity {
         toast.show();
     }
     public void onBackButtonClick(View view){
-        finish();
+        exitDialog();
     }
     //Gets the List of Tracks from LocalHost
     public void onButtonMyCurrentRankClick(View view) {
@@ -148,7 +150,35 @@ public class RankingActivity extends AppCompatActivity {
             }
         });
     }
-    //Launch New Activity to Edit-Add Track
+    @Override
+    public void onBackPressed() {
+        // do something on back.
+        exitDialog();
+    }
+    private void exitDialog(){
+        final Dialog dialog=new Dialog(this);
+        dialog.setContentView(R.layout.dialog_exit);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
+        LinearLayout cancel= dialog.findViewById(R.id.cancelbtn);
+        LinearLayout exit=dialog.findViewById(R.id.button_back);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent returnIntent = new Intent();
+                setResult(Activity.RESULT_CANCELED,returnIntent);
+                finish();
+            }
+        });
+        dialog.show();
+
+    }
     private void LaunchPlayerStatsDetailPopup(int position){
         //Create Multiline String of Choosen Player Stats
         String statsString = "Experience: "+ playerList.get(position).getExperience() +"\n Kills: "+playerList.get(position).getKills() +
@@ -174,4 +204,5 @@ public class RankingActivity extends AppCompatActivity {
         multilineText.setText(statsString);
         dialog.show();
     }
+
 }
