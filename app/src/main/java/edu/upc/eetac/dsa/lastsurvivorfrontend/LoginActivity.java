@@ -7,6 +7,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -95,6 +97,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onBackPressed(){
         hideSystemUI();
+        exitDialog();
     }
     private void hideSystemUI() {
         // Enables regular immersive mode.
@@ -149,6 +152,30 @@ public class LoginActivity extends AppCompatActivity {
     private void NotifyUser(String showMessage){
         Toast toast = Toast.makeText(LoginActivity.this,showMessage,Toast.LENGTH_SHORT);
         toast.show();
+    }
+    private void exitDialog(){
+        final Dialog dialog=new Dialog(this);
+        dialog.setContentView(R.layout.dialog_exit);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
+        LinearLayout cancel= dialog.findViewById(R.id.cancelbtn);
+        LinearLayout exit=dialog.findViewById(R.id.button_back);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent returnIntent = new Intent();
+                setResult(Activity.RESULT_CANCELED,returnIntent);
+                finish();
+            }
+        });
+        dialog.show();
+
     }
 
     public void onSignUpClicked(View view) {
