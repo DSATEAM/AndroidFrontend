@@ -31,7 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class RankingActivity extends AppCompatActivity {
     // RETROFIT OBJECT
     private static Retrofit retrofit;
-    //HTTP INTERCEPTOR
+    private static String retrofitIpAddress;
 
     //TRACKS SERVICE OBJECT
     RankingService rankingService;
@@ -65,6 +65,8 @@ public class RankingActivity extends AppCompatActivity {
         // Running Retrofit to get result from Local tracks service Interface
         //Remember when using Local host on windows the IP is 10.0.2.2 for Android
         //Also added NullOnEmptyConverterFactory when the response from server is empty
+        ResourceFileReader rs =  new ResourceFileReader();
+        retrofitIpAddress = ResourceFileReader.ReadResourceFileFromStringNameKey("retrofit.IpAddress",this);
         startRetrofit();
         rankingService = retrofit.create(RankingService.class);
         getRank();

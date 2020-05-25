@@ -7,7 +7,6 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -29,7 +28,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RegisterActivity extends AppCompatActivity {
     private static Retrofit retrofit;
     Player player;
-
+    private static String retrofitIpAddress;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +45,8 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         Button registerBtn = findViewById(R.id.RegisterBtn);
         Button goBack = findViewById(R.id.goBackBtn);
+        ResourceFileReader rs =  new ResourceFileReader();
+        retrofitIpAddress = ResourceFileReader.ReadResourceFileFromStringNameKey("retrofit.IpAddress",this);
         startRetrofit();
     }
 

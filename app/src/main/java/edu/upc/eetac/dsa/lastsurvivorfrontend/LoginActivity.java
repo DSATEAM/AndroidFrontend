@@ -1,9 +1,7 @@
 package edu.upc.eetac.dsa.lastsurvivorfrontend;
 
-import android.annotation.SuppressLint;
 import androidx.annotation.Nullable;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -11,18 +9,13 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Player;
 import edu.upc.eetac.dsa.lastsurvivorfrontend.services.PlayerService;
@@ -33,9 +26,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Body;
+
 import com.google.gson.Gson;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -44,7 +36,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 public class LoginActivity extends AppCompatActivity {
     // RETROFIT OBJECT
     private static Retrofit retrofit;
-
+    private static String retrofitIpAddress;
     //Player Service Object
     PlayerService playerService;
     //TextViews
@@ -66,6 +58,8 @@ public class LoginActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         setContentView(R.layout.activity_login_activity);
+        ResourceFileReader rs =  new ResourceFileReader();
+        retrofitIpAddress = ResourceFileReader.ReadResourceFileFromStringNameKey("retrofit.IpAddress",this);
         //Starting Retrofit
         startRetrofit();
         playerService = retrofit.create(PlayerService.class);
@@ -98,10 +92,6 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onBackPressed(){
         hideSystemUI();
-        Intent returnIntent = new Intent();
-        returnIntent.putExtra("Exit",false);
-        setResult(Activity.RESULT_CANCELED,returnIntent);
-        finish();
         exitDialog();
     }
     private void hideSystemUI() {
@@ -138,6 +128,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
     }
+
     private static void startRetrofit(){
         //HTTP &
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
@@ -149,7 +140,7 @@ public class LoginActivity extends AppCompatActivity {
         //Remember when using Local host on windows the IP is 10.0.2.2 for Android
         //Also added NullOnEmptyConverterFactory when the response from server is empty
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8080/Backend/")
+                .baseUrl("http://"+retrofitIpAddress+":8080/Backend/")
                 .addConverterFactory(new NullOnEmptyConverterFactory())
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
@@ -232,6 +223,7 @@ public class LoginActivity extends AppCompatActivity {
                                 editor.putString("Id",player.getId());
                                 editor.commit();
                                 Intent returnIntent = new Intent();
+                                returnIntent.putExtra("Player",player);
                                 setResult(Activity.RESULT_OK,returnIntent);
                                 finish();
 

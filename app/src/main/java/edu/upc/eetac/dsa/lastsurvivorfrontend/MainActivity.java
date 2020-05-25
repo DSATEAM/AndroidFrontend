@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean temp_token = false;
     // RETROFIT OBJECT
     private static Retrofit retrofit;
+    private static String retrofitIpAddress;
     //Player Service Object
     PlayerService playerService;
     //Player Objects
@@ -51,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
             splashTextView.setText("Welcome Back "+player.getUsername());
             //Connect with retrofit & Login Automatically and Retrieve the Player Data
             try{
+                ResourceFileReader rs =  new ResourceFileReader();
+                retrofitIpAddress = ResourceFileReader.ReadResourceFileFromStringNameKey("retrofit.IpAddress",this);
                 startRetrofit();
                 playerService = retrofit.create(PlayerService.class);
                 //Login with Player Object player which was written using (ExistPlayerAndSetData)
