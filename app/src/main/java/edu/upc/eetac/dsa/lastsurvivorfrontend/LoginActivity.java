@@ -126,6 +126,9 @@ public class LoginActivity extends AppCompatActivity {
                 //Do nothing as user cancelled operation
             }
         }
+        if(requestCode == 2){
+            //Ranking Return Activity Do Nothing
+        }
 
     }
 

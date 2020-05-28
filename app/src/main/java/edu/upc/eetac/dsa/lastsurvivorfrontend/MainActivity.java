@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void onCurrentRankingClicked(View view){
         Intent intent = new Intent(MainActivity.this ,RankingActivity.class);
-        startActivityForResult(intent,1);
+        startActivityForResult(intent,2);
     }
     private void LaunchLoginActivity() {
         Intent intent = new Intent(MainActivity.this ,LoginActivity.class);
