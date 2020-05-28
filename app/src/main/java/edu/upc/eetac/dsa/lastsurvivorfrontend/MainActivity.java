@@ -38,18 +38,14 @@ public class MainActivity extends AppCompatActivity {
     //Player Objects
     Player player = new Player();
     //TextView of Splash
-    public TextView splashTextView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        splashTextView = this.findViewById(R.id.textView2);
         //After launch check if a user exists in preferences and also set the player
         if(!ExistPlayerAndSetData()){
             LaunchLoginActivity();
         }else{
-            //Show Username in the SplashScreen
-            splashTextView.setText("Welcome Back "+player.getUsername());
             //Connect with retrofit & Login Automatically and Retrieve the Player Data
             try{
                 ResourceFileReader rs =  new ResourceFileReader();
@@ -113,6 +109,14 @@ public class MainActivity extends AppCompatActivity {
         //Launch Unity Game and after starting the game also get the data back from the unity to update the server
         NotifyUser("Game Started: " + player.getUsername());
     }
+    public void onButtonMyStatsClick(View view){
+        //Launch Unity Game and after starting the game also get the data back from the unity to update the server
+        NotifyUser("My Profile Click for: " + player.getUsername());
+    }
+    public void onButtonModifyProfileClick(View view){
+        //Launch Unity Game and after starting the game also get the data back from the unity to update the server
+        NotifyUser("Modify Profile Click: " + player.getUsername());
+    }
     public void onSignOutClicked(View view){
         //Launch Unity Game and after starting the game also get the data back from the unity to update the server
         SharedPreferences settings = getSharedPreferences("UserInfo", 0);
@@ -139,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if(resultCode == Activity.RESULT_OK){
                 player = data.getParcelableExtra("Player");
-                splashTextView.setText("Welcome Back "+player.getUsername());
                 //Now we must retrieve the data from login activity
                 //TODO RETRIEVE PLAYER DATA FROM THE LOGIN ACTIVITY
             }

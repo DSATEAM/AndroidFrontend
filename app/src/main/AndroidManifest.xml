@@ -12,7 +12,7 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".RankingActivity"></activity>
+        <activity android:name=".RankingActivity" />
         <activity
             android:name=".LoginActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -21,7 +21,7 @@
         <activity android:name=".RegisterActivity" />
         <activity
             android:name=".MainActivity"
-            android:theme="@style/SplashTheme">
+            android:theme="@style/SplashTheme"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

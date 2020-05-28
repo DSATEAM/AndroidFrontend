@@ -1,86 +1,219 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:alpha="1"
-    android:background="#C6A9FA"
-    android:backgroundTint="#FFE1EB"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@color/white">
 
-    <LinearLayout
+    <RelativeLayout
+
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:alpha="100"
-        android:backgroundTintMode="add"
-        android:orientation="vertical"
-        android:paddingLeft="24dp"
-        android:paddingTop="56dp"
-        android:paddingRight="24dp"
-        android:theme="@style/AppTheme">
-
-        <ImageView
-            android:layout_width="277dp"
-            android:layout_height="232dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="0dp"
-            android:adjustViewBounds="true"
-            android:alpha="20"
-            android:contentDescription="@string/description"
-            android:cropToPadding="true"
-            android:scaleType="centerInside"
-            android:src="@drawable/sword_png_icon_20" />
-
-        <TextView
-            android:id="@+id/textView"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp">
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="SPLASH SCREEN"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textIsSelectable="false"
-            android:textSize="36sp"
-            android:textStyle="bold" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp">
+                <RelativeLayout
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Welcome Back UserX"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textIsSelectable="false"
-            android:textSize="36sp"
-            android:textStyle="bold" />
+                    android:id="@+id/startGame"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/red"
+                    android:layout_weight="0.55"
+                    android:clickable="true"
+                    android:onClick="onStartGameClicked"
+                    android:foreground="?attr/selectableItemBackground">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true">
 
-        <Button
-            android:id="@+id/button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#BBEAFF"
-            android:onClick="onStartGameClicked"
-            android:text="Start Game" />
+                        <ImageView
+                            android:id="@+id/imgView1"
+                            android:layout_width="240dp"
+                            android:layout_height="160dp"
+                            android:layout_centerHorizontal="true"
+                            android:adjustViewBounds="true"
+                            android:padding="8dp"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/sword_png_icon_20" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Start Game"
+                            android:textSize="24sp"
+                            android:layout_below="@+id/imgView1"
+                            android:layout_centerHorizontal="true"/>
+                    </RelativeLayout>
+                </RelativeLayout>
 
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#BBEAFF"
-            android:onClick="onCurrentRankingClicked"
-            android:text="Current Ranking" />
 
-        <Button
-            android:id="@+id/button3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#BBEAFF"
-            android:onClick="onSignOutClicked"
-            android:text="LOGOUT" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp">
+                <RelativeLayout
+                    android:id="@+id/rellay_contacts"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/line"
+                    android:layout_weight="0.45"
+                    android:clickable="true"
+                    android:foreground="?attr/selectableItemBackground">
+                    <RelativeLayout
+                        android:id="@+id/profile"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.75"
+                        android:background="@color/yellow"
+                        android:clickable="true"
+                        android:onClick="onButtonMyStatsClick"
+                        android:foreground="?attr/selectableItemBackground">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true">
 
-    </LinearLayout>
+                            <ImageView
+                                android:id="@+id/imgView2"
+                                android:layout_width="160dp"
+                                android:layout_height="160dp"
+                                android:layout_centerHorizontal="true"
+                                android:adjustViewBounds="true"
+                                android:padding="8dp"
+                                android:scaleType="centerInside"
+                                android:src="@drawable/dragon_black_and_white_silhouette"
+                                android:tint="@color/material_on_surface_emphasis_high_type"/>
 
-</FrameLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/imgView2"
+                                android:layout_centerHorizontal="true"
+                                android:text="Stats"
+                                android:textSize="24sp" />
+                        </RelativeLayout>
+                    </RelativeLayout>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/currentRanking"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/green"
+                    android:layout_weight="0.35"
+                    android:clickable="true"
+                    android:onClick="onCurrentRankingClicked"
+                    android:foreground="?attr/selectableItemBackground">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true">
+
+                        <ImageView
+                            android:id="@+id/imgView4"
+                            android:layout_width="140dp"
+                            android:layout_height="160dp"
+                            android:layout_centerHorizontal="true"
+                            android:adjustViewBounds="true"
+                            android:padding="8dp"
+
+                            android:scaleType="centerInside"
+                            android:src="@drawable/rank" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Ranking"
+                            android:textSize="24sp"
+                            android:layout_below="@+id/imgView4"
+                            android:layout_centerHorizontal="true"/>
+                    </RelativeLayout>
+                </RelativeLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp" >
+                <RelativeLayout
+                    android:id="@+id/rellay_settings"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/violet"
+                    android:layout_weight="0.35"
+                    android:clickable="true"
+                    android:onClick="onButtonModifyProfileClick"
+                    android:foreground="?attr/selectableItemBackground">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true">
+
+                        <ImageView
+                            android:id="@+id/imgView5"
+                            android:layout_width="160dp"
+                            android:layout_height="160dp"
+                            android:layout_centerHorizontal="true"
+                            android:adjustViewBounds="true"
+                            android:padding="8dp"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/modify" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Modify"
+                            android:textSize="24sp"
+                            android:layout_below="@+id/imgView5"
+                            android:layout_centerHorizontal="true"/>
+                    </RelativeLayout>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/rellay_help"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/darkblue"
+                    android:layout_weight="0.45"
+                    android:clickable="true"
+                    android:onClick="onSignOutClicked"
+                    android:foreground="?attr/selectableItemBackground">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true">
+                        <ImageView
+                            android:id="@+id/imgView6"
+                            android:layout_width="160dp"
+                            android:layout_height="160dp"
+                            android:layout_centerHorizontal="true"
+                            android:adjustViewBounds="true"
+                            android:padding="8dp"
+                            android:scaleType="centerInside"
+                            android:tint="@color/white"
+                            android:src="@drawable/logout" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Logout"
+                            android:textSize="24sp"
+                            android:layout_below="@+id/imgView6"
+                            android:layout_centerHorizontal="true"/>
+
+                    </RelativeLayout>
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>
