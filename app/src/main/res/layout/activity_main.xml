@@ -74,13 +74,13 @@
                     android:clickable="true"
                     android:foreground="?attr/selectableItemBackground">
                     <RelativeLayout
-                        android:id="@+id/profile"
+                        android:id="@+id/redirectWeb"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="0.75"
                         android:background="@color/yellow"
                         android:clickable="true"
-                        android:onClick="onButtonMyStatsClick"
+                        android:onClick="onButtonRedirectWebClick"
                         android:foreground="?attr/selectableItemBackground">
 
                         <RelativeLayout
@@ -96,15 +96,15 @@
                                 android:adjustViewBounds="true"
                                 android:padding="8dp"
                                 android:scaleType="centerInside"
-                                android:src="@drawable/dragon_black_and_white_silhouette"
-                                android:tint="@color/material_on_surface_emphasis_high_type"/>
+                                android:src="@drawable/browser"
+                                />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/imgView2"
                                 android:layout_centerHorizontal="true"
-                                android:text="Stats"
+                                android:text="Go To Web"
                                 android:textSize="24sp" />
                         </RelativeLayout>
                     </RelativeLayout>
