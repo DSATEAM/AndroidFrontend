@@ -4,9 +4,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -14,6 +20,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import java.io.ByteArrayOutputStream;
 
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Player;
 import edu.upc.eetac.dsa.lastsurvivorfrontend.services.PlayerService;
@@ -27,7 +35,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RegisterActivity extends AppCompatActivity {
     private static Retrofit retrofit;
-    Player player;
+    Player player;private Context mContext;
     private static String retrofitIpAddress;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +51,7 @@ public class RegisterActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         setContentView(R.layout.activity_register);
-        Button registerBtn = findViewById(R.id.RegisterBtn);
+        Button registerBtn = findViewById(R.id.RegisterBtn);mContext = this.getApplicationContext();
         Button goBack = findViewById(R.id.goBackBtn);
         ResourceFileReader rs =  new ResourceFileReader();
         retrofitIpAddress = ResourceFileReader.ReadResourceFileFromStringNameKey("retrofit.IpAddress",this);
@@ -101,6 +109,34 @@ public class RegisterActivity extends AppCompatActivity {
        dialog.show();
 
    }
+    private Bitmap StringToBitmap(String encodedImage){
+        byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        return bitmap;
+    }
+    private String imageToString(Bitmap bitmap){
+        ByteArrayOutputStream byteArrayOutputStream =  new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG,100,byteArrayOutputStream);
+        byte[] imgByte = byteArrayOutputStream.toByteArray();
+        return Base64.encodeToString(imgByte,Base64.DEFAULT);
+    }
+    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+                bm, 0, 0, width, height, matrix, false);
+        bm.recycle();
+        return resizedBitmap;
+    }
+
     public void onRegisterClick(View view){
         EditText username = findViewById(R.id.input_username2);
         EditText password = findViewById(R.id.input_password2);
@@ -113,6 +149,9 @@ public class RegisterActivity extends AppCompatActivity {
             player = new Player();
             player.setUsername(username.getText().toString());
             player.setPassword(password.getText().toString());
+            Bitmap icon = BitmapFactory.decodeResource(mContext.getResources(),R.drawable.userlogo);
+            icon = getResizedBitmap(icon,120,120);
+            player.setAvatar(imageToString(icon));
             service.signUp(player).enqueue(new Callback<Player>() {
                 @Override
                 public void onResponse(Call<Player> call, Response<Player> response) {

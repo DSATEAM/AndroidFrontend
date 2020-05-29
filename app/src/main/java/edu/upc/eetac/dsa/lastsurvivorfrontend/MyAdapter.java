@@ -1,8 +1,12 @@
 package edu.upc.eetac.dsa.lastsurvivorfrontend;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -32,6 +36,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         // each data item is just a string in our viewHolder
         public TextView playerExperience;
         public TextView playerUsername;
+        public ImageView imageIcon;
         public View layout;
 
         public ViewHolder(View itemView, OnItemClickListener listener) {
@@ -39,6 +44,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             layout = itemView;
             playerExperience = itemView.findViewById(R.id.secondLine);
             playerUsername = itemView.findViewById(R.id.firstLine);
+            imageIcon = itemView.findViewById(R.id.avatarImg);
             //Click Handler for the whole Item
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -81,7 +87,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         String s = "Testy";
         holder.playerUsername.setText(playerList.get(position).getUsername());
         holder.playerExperience.setText(String.valueOf(playerList.get(position).getExperience()));
+        Bitmap bitmapImg  = StringToBitmap(playerList.get(position).getAvatar());
+        holder.imageIcon.setImageBitmap(bitmapImg);
         s = "Testy";
+    }
+    private Bitmap StringToBitmap(String encodedImage){
+        byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        return bitmap;
     }
     @Override
     public int getItemCount() {

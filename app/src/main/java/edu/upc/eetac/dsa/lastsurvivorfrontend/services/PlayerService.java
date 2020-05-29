@@ -1,16 +1,11 @@
 package edu.upc.eetac.dsa.lastsurvivorfrontend.services;
 
-import java.util.List;
-
+import edu.upc.eetac.dsa.lastsurvivorfrontend.NullOnEmptyConverterFactory;
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Player;
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.DELETE;
-import retrofit2.http.GET;
-import retrofit2.http.HTTP;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
-import retrofit2.http.Path;
 
 public interface PlayerService {
 
@@ -22,9 +17,9 @@ public interface PlayerService {
     @POST("access/signUp")
     Call<Player> signUp(@Body Player player);
     //Edits a existing Track to the server
-    @PUT("access/")
+    @PUT("access/updatePlayer")
     Call<Player> updatePlayer(@Body Player player);
     //Delete the selected Track given the Id
-    @DELETE("access/{playerId}")
-    Call<Player> deletePlayer(@Path("playerId") String playerId);
+    @PUT("access/deletePlayer")
+    Call<Player> deletePlayer(@Body Player player);
 }

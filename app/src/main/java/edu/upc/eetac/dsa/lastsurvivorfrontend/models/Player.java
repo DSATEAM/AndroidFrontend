@@ -1,8 +1,11 @@
 package edu.upc.eetac.dsa.lastsurvivorfrontend.models;
 
+import android.graphics.Bitmap;
+import android.media.Image;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.File;
 import java.util.List;
 
 public class Player implements Parcelable {
@@ -13,11 +16,10 @@ public class Player implements Parcelable {
     private int kills;
     private int experience;
     private int credits;
-    //TODO Recursive Mapping of Objects Item and Material
+    private String avatar;
     List<Item> listItems;
-    //Empty Constructor
-    public Player(){}
-    public Player(String username, String password, int gamesPlayed, int kills,int experience, int credits) {
+
+    public Player(String username, String password, int gamesPlayed, int kills, int experience, int credits) {
         this.username = username;
         this.password = password;
         this.gamesPlayed = gamesPlayed;
@@ -26,10 +28,15 @@ public class Player implements Parcelable {
         this.credits = credits;
     }
 
+
+    //Empty Constructor
+    public Player(){}
+
     protected Player(Parcel in) {
         id = in.readString();
         username = in.readString();
         password = in.readString();
+        avatar = in.readString();
         gamesPlayed = in.readInt();
         kills = in.readInt();
         experience = in.readInt();
@@ -48,9 +55,14 @@ public class Player implements Parcelable {
         }
     };
 
+    public String getAvatar() {return avatar;}
+
+    public void setAvatar(String avatar) {this.avatar = avatar;}
+
     public String getId() {
         return id;
     }
+
     public void setId(String id) {
         this.id = id;
     }
@@ -122,6 +134,7 @@ public class Player implements Parcelable {
         dest.writeString(id);
         dest.writeString(username);
         dest.writeString(password);
+        dest.writeString(avatar);
         dest.writeInt(gamesPlayed);
         dest.writeInt(kills);
         dest.writeInt(experience);

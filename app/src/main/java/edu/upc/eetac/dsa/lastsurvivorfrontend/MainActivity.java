@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Player;
@@ -115,7 +114,9 @@ public class MainActivity extends AppCompatActivity {
     }
     public void onButtonModifyProfileClick(View view){
         //Launch Unity Game and after starting the game also get the data back from the unity to update the server
-        NotifyUser("Modify Profile Click: " + player.getUsername());
+        Intent intent = new Intent(MainActivity.this , ProfileActivity.class);
+        intent.putExtra("Player",player);
+        startActivityForResult(intent,3);
     }
     public void onSignOutClicked(View view){
         //Launch Unity Game and after starting the game also get the data back from the unity to update the server
@@ -143,15 +144,24 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if(resultCode == Activity.RESULT_OK){
                 player = data.getParcelableExtra("Player");
-                //Now we must retrieve the data from login activity
-                //TODO RETRIEVE PLAYER DATA FROM THE LOGIN ACTIVITY
+                Log.w("s","Test");
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 finish();
             }
 
         }
-
+        //Profile Modified request code 3
+        if (requestCode == 3) {
+            if(resultCode == Activity.RESULT_OK){
+                player = data.getParcelableExtra("Player");
+                //Retrieved updated data from Profile Modified
+                Log.w("Main Modify",player.getAvatar());
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+               //Do nothing as nothing updated
+            }
+        }
     }
     private static void startRetrofit(){
         //HTTP &
