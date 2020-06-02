@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -108,9 +109,13 @@ public class MainActivity extends AppCompatActivity {
         //Launch Unity Game and after starting the game also get the data back from the unity to update the server
         NotifyUser("Game Started: " + player.getUsername());
     }
-    public void onButtonMyStatsClick(View view){
+    public void onButtonRedirectWebClick(View view){
         //Launch Unity Game and after starting the game also get the data back from the unity to update the server
-        NotifyUser("My Profile Click for: " + player.getUsername());
+        NotifyUser("Web Redirect: " + player.getUsername());
+        String url = "http://"+retrofitIpAddress+":8080/LastSurvivor/Register/main.html";
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse(url));
+        startActivity(i);
     }
     public void onButtonModifyProfileClick(View view){
         //Launch Unity Game and after starting the game also get the data back from the unity to update the server

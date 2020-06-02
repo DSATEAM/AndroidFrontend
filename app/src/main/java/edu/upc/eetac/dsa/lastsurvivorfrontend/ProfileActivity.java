@@ -3,6 +3,7 @@ package edu.upc.eetac.dsa.lastsurvivorfrontend;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -21,6 +22,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -106,6 +108,69 @@ public class ProfileActivity extends AppCompatActivity {
     public void onChangeAvatarClicked(View view){
         //Choose image from gallery
         openGallery();
+    }
+    public void onChangePasswordClicked(View view){
+        changePasswordDialog();
+    }
+    private void changePasswordDialog(){
+        final Dialog dialog=new Dialog(this);
+        dialog.setContentView(R.layout.dialog_changepassword);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
+        LinearLayout cancel= dialog.findViewById(R.id.cancel_btn);
+        LinearLayout accept =dialog.findViewById(R.id.button_accept);
+        TextView currentPass = dialog.findViewById(R.id.currPassText);
+        TextView newPass = dialog.findViewById(R.id.newPassText);
+        TextView newPassRe = dialog.findViewById(R.id.newPassRetypeText);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        accept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Check if the password is correct and new password and retype password is same
+                if(newPass.getText().equals(newPassRe.getText()) && !newPass.getText().equals("")&&!newPass.getText().toString().contains(" ")){
+                    //New pass and old pass is same
+                    if(currentPass.getText().equals(player.getPassword())){
+                        player.setPassword((String) newPass.getText());
+                        dialog.dismiss();
+                    }else{
+                        //Incorrect Current Password NOTIFY
+                        NotifyUser("Incorrect Current Password");
+                    }
+                }else{
+                    NotifyUser("Please type new Password without spaces");
+                }
+            }
+        });
+        dialog.show();
+    }
+    private void exitDialog(){
+        final Dialog dialog=new Dialog(this);
+        dialog.setContentView(R.layout.dialog_exit);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
+        LinearLayout cancel= dialog.findViewById(R.id.cancelbtn);
+        LinearLayout exit=dialog.findViewById(R.id.button_back);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent returnIntent = new Intent();
+                setResult(Activity.RESULT_CANCELED,returnIntent);
+                finish();
+            }
+        });
+        dialog.show();
+
     }
     public void onCancelClicked(View view){
         Intent returnIntent = new Intent();
