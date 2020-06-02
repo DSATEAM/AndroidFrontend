@@ -215,4 +215,12 @@
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>
+    <ProgressBar
+        android:id="@+id/progressBar_cyclic"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"/>
 </RelativeLayout>

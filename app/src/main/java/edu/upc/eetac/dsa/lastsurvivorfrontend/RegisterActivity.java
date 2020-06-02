@@ -19,6 +19,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
@@ -37,6 +38,7 @@ public class RegisterActivity extends AppCompatActivity {
     private static Retrofit retrofit;
     Player player;private Context mContext;
     private static String retrofitIpAddress;
+    private ProgressBar pb_circular;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,11 +53,13 @@ public class RegisterActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         setContentView(R.layout.activity_register);
+        pb_circular = findViewById(R.id.progressBar_cyclic);
         Button registerBtn = findViewById(R.id.RegisterBtn);mContext = this.getApplicationContext();
         Button goBack = findViewById(R.id.goBackBtn);
         ResourceFileReader rs =  new ResourceFileReader();
         retrofitIpAddress = ResourceFileReader.ReadResourceFileFromStringNameKey("retrofit.IpAddress",this);
         startRetrofit();
+        pb_circular.setVisibility(View.GONE);
     }
 
     private static void startRetrofit(){
@@ -140,6 +144,7 @@ public class RegisterActivity extends AppCompatActivity {
     public void onRegisterClick(View view){
         EditText username = findViewById(R.id.input_username2);
         EditText password = findViewById(R.id.input_password2);
+        pb_circular.setVisibility(View.VISIBLE);
         if (username.getText().toString().equals(null)||password.getText().toString().equals(null)||password.getText().toString().equals("Password")||username.getText().toString().equals("Username")){
             Toast.makeText(getApplicationContext(), "Error.Campos vacíos.", Toast.LENGTH_LONG).show();
         }
@@ -154,7 +159,9 @@ public class RegisterActivity extends AppCompatActivity {
             player.setAvatar(imageToString(icon));
             service.signUp(player).enqueue(new Callback<Player>() {
                 @Override
+
                 public void onResponse(Call<Player> call, Response<Player> response) {
+                    pb_circular.setVisibility(View.GONE);
                     if (response.code() == 201) {
                         Toast.makeText(getApplicationContext(), "Signed Up successfully", Toast.LENGTH_LONG).show();
                         player = response.body();

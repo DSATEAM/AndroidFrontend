@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +44,7 @@ public class RankingActivity extends AppCompatActivity {
     private static int playerStatsDetail = 3;
     private boolean aBooleanServedAlready =false;
     private RecyclerView.LayoutManager layoutManager;
+    private ProgressBar pb_circular;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +52,7 @@ public class RankingActivity extends AppCompatActivity {
 
         //Implementing RecyclerView
         recyclerView = findViewById(R.id.my_recycler_view);
+        pb_circular = findViewById(R.id.progressBar_cyclic);
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         recyclerView.setHasFixedSize(false);
@@ -103,6 +106,7 @@ public class RankingActivity extends AppCompatActivity {
     private void getRank(){
         //Retrofit Implementation on Button Press
         //Adding Interceptor
+        pb_circular.setVisibility(View.VISIBLE);
         try {
 
             Call<List<Player>> playersStats = rankingService.rankingList();
@@ -111,6 +115,7 @@ public class RankingActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<List<Player>> call, Response<List<Player>> response) {
 
+                    pb_circular.setVisibility(View.GONE);
                     //Retrieve the result containing in the body
                     if (!response.body().isEmpty()) {
                         // non empty response, Mapping Json via Gson...
@@ -183,6 +188,7 @@ public class RankingActivity extends AppCompatActivity {
     }
     private void LaunchPlayerStatsDetailPopup(int position){
         //Create Multiline String of Choosen Player Stats
+        pb_circular.setVisibility(View.VISIBLE);
         String statsString = "Experience: "+ playerList.get(position).getExperience() +"\n Kills: "+playerList.get(position).getKills() +
                 "\n GamesPlayed: " + playerList.get(position).getGamesPlayed() + "\n Credits: " +playerList.get(position).getCredits();
         //Create a dialog as unchanging
@@ -204,6 +210,7 @@ public class RankingActivity extends AppCompatActivity {
         //Set the username and Multiline String of Choosen Player Stats
         headText.setText(playerList.get(position).getUsername());
         multilineText.setText(statsString);
+        pb_circular.setVisibility(View.INVISIBLE);
         dialog.show();
     }
 

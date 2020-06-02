@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,10 +59,12 @@ public class ProfileActivity extends AppCompatActivity {
     Player player = new Player();
     TextView statsText;
     TextView usernameText;
+    private ProgressBar pb_circular;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        pb_circular = findViewById(R.id.progressBar_cyclic);
         imageView = this.findViewById(R.id.avatarImg);
         statsText = this.findViewById(R.id.statsText);
         usernameText = this.findViewById(R.id.playerNameText);
@@ -86,6 +89,7 @@ public class ProfileActivity extends AppCompatActivity {
         String stats = "Credits : " +player.getCredits()+ "\nExperience : "+player.getExperience() + "\nKills : "+ player.getKills()+"\nGamesPlayed : "+player.getGamesPlayed();
         statsText.setText(stats);
         usernameText.setText(intro);
+        pb_circular.setVisibility(View.GONE);
     }
 
     private static void startRetrofit(){
@@ -183,6 +187,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
     private void updatePlayer(){
+        pb_circular.setVisibility(View.VISIBLE);
         try {
             Call<Player> playerTmp = playerService.updatePlayer(player);
             Gson gson = new Gson();
@@ -192,6 +197,7 @@ public class ProfileActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<Player> call, Response<Player> response) {
                     //Update Successful
+                    pb_circular.setVisibility(View.GONE);
                     if (response.code() == 201) {
                         //Successful we can get the ID, and call again to ask for PLayer
                         if(response.isSuccessful()){
@@ -225,6 +231,7 @@ public class ProfileActivity extends AppCompatActivity {
         toast.show();
     }
     private void openGallery() {
+        pb_circular.setVisibility(View.VISIBLE);
         Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
         // Sets the type as image/*. This ensures only components of type image are selected
         gallery.setType("image/*");
@@ -232,6 +239,7 @@ public class ProfileActivity extends AppCompatActivity {
         String[] mimeTypes = {"image/jpeg", "image/png"};
         gallery.putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes);
         startActivityForResult(gallery, GALLERY_REQUEST_CODE);
+        pb_circular.setVisibility(View.GONE);
     }
 
     @Override

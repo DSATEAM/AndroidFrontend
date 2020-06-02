@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Player;
@@ -38,10 +39,13 @@ public class MainActivity extends AppCompatActivity {
     //Player Objects
     Player player = new Player();
     //TextView of Splash
+    private ProgressBar pb_circular;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        pb_circular = findViewById(R.id.progressBar_cyclic);
         //After launch check if a user exists in preferences and also set the player
         if(!ExistPlayerAndSetData()){
             LaunchLoginActivity();
@@ -60,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
                 NotifyUser("Can't Connect to Server!");
             }
         }
+        pb_circular.setVisibility(View.GONE);
     }
     private boolean ExistPlayerAndSetData(){
         //Access the shared preference UserInfo and obtain the parameters, default =string empty
@@ -106,24 +111,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onStartGameClicked(View view){
+        pb_circular.setVisibility(View.VISIBLE);
         //Launch Unity Game and after starting the game also get the data back from the unity to update the server
         NotifyUser("Game Started: " + player.getUsername());
+        pb_circular.setVisibility(View.GONE);
     }
     public void onButtonRedirectWebClick(View view){
+        pb_circular.setVisibility(View.VISIBLE);
         //Launch Unity Game and after starting the game also get the data back from the unity to update the server
         NotifyUser("Web Redirect: " + player.getUsername());
         String url = "http://"+retrofitIpAddress+":8080/LastSurvivor/Register/main.html";
         Intent i = new Intent(Intent.ACTION_VIEW);
         i.setData(Uri.parse(url));
         startActivity(i);
+        pb_circular.setVisibility(View.GONE);
     }
     public void onButtonModifyProfileClick(View view){
+
+        pb_circular.setVisibility(View.VISIBLE);
         //Launch Unity Game and after starting the game also get the data back from the unity to update the server
         Intent intent = new Intent(MainActivity.this , ProfileActivity.class);
         intent.putExtra("Player",player);
         startActivityForResult(intent,3);
+        pb_circular.setVisibility(View.GONE);
     }
     public void onSignOutClicked(View view){
+        pb_circular.setVisibility(View.VISIBLE);
         //Launch Unity Game and after starting the game also get the data back from the unity to update the server
         SharedPreferences settings = getSharedPreferences("UserInfo", 0);
         SharedPreferences.Editor editor = settings.edit();
@@ -133,19 +146,25 @@ public class MainActivity extends AppCompatActivity {
         editor.commit();
         //After logout from phone, set the screen to LoginActivity
         LaunchLoginActivity();
+        pb_circular.setVisibility(View.GONE);
     }
     public void onCurrentRankingClicked(View view){
+        pb_circular.setVisibility(View.VISIBLE);
         Intent intent = new Intent(MainActivity.this ,RankingActivity.class);
         startActivityForResult(intent,2);
+        pb_circular.setVisibility(View.GONE);
     }
     private void LaunchLoginActivity() {
+        pb_circular.setVisibility(View.VISIBLE);
         Intent intent = new Intent(MainActivity.this ,LoginActivity.class);
         startActivityForResult(intent,1);
+        pb_circular.setVisibility(View.GONE);
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         //If login activity closed means the user has logged in, and the data is stored in the database
+        pb_circular.setVisibility(View.VISIBLE);
         if (requestCode == 1) {
             if(resultCode == Activity.RESULT_OK){
                 player = data.getParcelableExtra("Player");
@@ -167,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
                //Do nothing as nothing updated
             }
         }
+        pb_circular.setVisibility(View.GONE);
     }
     private static void startRetrofit(){
         //HTTP &
@@ -189,6 +209,7 @@ public class MainActivity extends AppCompatActivity {
         String username,password;
         username =  player.getUsername();
         password =  player.getPassword();
+        pb_circular.setVisibility(View.VISIBLE);
         if(username == null|| password== null){
             NotifyUser("Please fill the fields!");
         }else if(username.isEmpty()|| password.isEmpty()){
@@ -198,7 +219,9 @@ public class MainActivity extends AppCompatActivity {
         }else{
             //Now we can send the data to Server and ask for login
             String TAG = "onSignIn";
+
             try {
+
                 player = new Player(username,password,0,0,0,0);
                 player.setUsername(username);player.setPassword(password);
                 Call<Player> playerID = playerService.signIn(player);
@@ -211,6 +234,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<Player> call, Response<Player> response) {
                         Log.d(TAG, "Player Logging In from splash response Server: "+call.toString());
+                        pb_circular.setVisibility(View.GONE);
                         //SingIn Successful
                         if (response.code() == 201) {
                             //Successful we can get the ID, and call again to ask for PLayer

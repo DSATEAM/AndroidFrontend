@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,10 +45,11 @@ public class LoginActivity extends AppCompatActivity {
     public TextView passwordTextview ;
     //Player Objects
     Player player = new Player();
+    private ProgressBar pb_circular;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+                requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(
@@ -58,6 +60,7 @@ public class LoginActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         setContentView(R.layout.activity_login_activity);
+        pb_circular = findViewById(R.id.progressBar_cyclic);
         ResourceFileReader rs =  new ResourceFileReader();
         retrofitIpAddress = ResourceFileReader.ReadResourceFileFromStringNameKey("retrofit.IpAddress",this);
         //Starting Retrofit
@@ -66,8 +69,11 @@ public class LoginActivity extends AppCompatActivity {
         //Get the TextViews
         usernameTextview = this.findViewById(R.id.username);
         passwordTextview  = this.findViewById(R.id.password);
+        pb_circular.setVisibility(View.GONE);
+
     }
     private void LaunchRegisterActivity() {
+        pb_circular.setVisibility(View.VISIBLE);
         Intent intent = new Intent(LoginActivity.this ,RegisterActivity.class);
         /*
         intent.putExtra("DATA_1", "TestString");
@@ -80,6 +86,7 @@ public class LoginActivity extends AppCompatActivity {
         if(ExistPlayer()){
             finish();
         }
+        pb_circular.setVisibility(View.GONE);
     }
     private boolean ExistPlayer(){
         SharedPreferences settings = getSharedPreferences("UserInfo", 0);
