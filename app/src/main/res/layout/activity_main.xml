@@ -42,7 +42,7 @@
                         <ImageView
                             android:id="@+id/imgView1"
                             android:layout_width="240dp"
-                            android:layout_height="160dp"
+                            android:layout_height="120dp"
                             android:layout_centerHorizontal="true"
                             android:adjustViewBounds="true"
                             android:padding="8dp"
@@ -70,14 +70,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@color/line"
-                    android:layout_weight="0.45"
+                    android:layout_weight="0.3"
                     android:clickable="true"
                     android:foreground="?attr/selectableItemBackground">
                     <RelativeLayout
                         android:id="@+id/redirectWeb"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.75"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.65"
                         android:background="@color/yellow"
                         android:clickable="true"
                         android:onClick="onButtonRedirectWebClick"
@@ -91,7 +91,7 @@
                             <ImageView
                                 android:id="@+id/imgView2"
                                 android:layout_width="160dp"
-                                android:layout_height="160dp"
+                                android:layout_height="120dp"
                                 android:layout_centerHorizontal="true"
                                 android:adjustViewBounds="true"
                                 android:padding="8dp"
@@ -126,7 +126,7 @@
                         <ImageView
                             android:id="@+id/imgView4"
                             android:layout_width="140dp"
-                            android:layout_height="160dp"
+                            android:layout_height="120dp"
                             android:layout_centerHorizontal="true"
                             android:adjustViewBounds="true"
                             android:padding="8dp"
@@ -139,6 +139,74 @@
                             android:text="Ranking"
                             android:textSize="24sp"
                             android:layout_below="@+id/imgView4"
+                            android:layout_centerHorizontal="true"/>
+                    </RelativeLayout>
+                </RelativeLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp" >
+                <RelativeLayout
+                    android:id="@+id/relative_third"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorPrimary"
+                    android:layout_weight="0.55"
+                    android:clickable="true"
+                    android:onClick="onButtonEnemiesClick"
+                    android:foreground="?attr/selectableItemBackground">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true">
+                        <ImageView
+                            android:id="@+id/imgEnemy"
+                            android:layout_width="160dp"
+                            android:layout_height="120dp"
+                            android:layout_centerHorizontal="true"
+                            android:adjustViewBounds="true"
+                            android:padding="4dp"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/enemy" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Enemies"
+                            android:textSize="24sp"
+                            android:layout_below="@+id/imgEnemy"
+                            android:layout_centerHorizontal="true"/>
+                    </RelativeLayout>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/rellay_Forum"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/yellow_dark"
+                    android:layout_weight="0.45"
+                    android:clickable="true"
+                    android:onClick="onForumClicked"
+                    android:foreground="?attr/selectableItemBackground">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true">
+                        <ImageView
+                            android:id="@+id/imgForum"
+                            android:layout_width="160dp"
+                            android:layout_height="120dp"
+                            android:layout_centerHorizontal="true"
+                            android:adjustViewBounds="true"
+                            android:padding="0dp"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/forum" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Forum"
+                            android:textSize="24sp"
+                            android:layout_below="@+id/imgForum"
                             android:layout_centerHorizontal="true"/>
                     </RelativeLayout>
                 </RelativeLayout>
@@ -164,7 +232,7 @@
                         <ImageView
                             android:id="@+id/imgView5"
                             android:layout_width="160dp"
-                            android:layout_height="160dp"
+                            android:layout_height="120dp"
                             android:layout_centerHorizontal="true"
                             android:adjustViewBounds="true"
                             android:padding="8dp"
@@ -195,7 +263,7 @@
                         <ImageView
                             android:id="@+id/imgView6"
                             android:layout_width="160dp"
-                            android:layout_height="160dp"
+                            android:layout_height="120dp"
                             android:layout_centerHorizontal="true"
                             android:adjustViewBounds="true"
                             android:padding="8dp"

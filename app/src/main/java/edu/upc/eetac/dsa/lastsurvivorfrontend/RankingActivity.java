@@ -1,5 +1,6 @@
 package edu.upc.eetac.dsa.lastsurvivorfrontend;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -103,6 +104,28 @@ public class RankingActivity extends AppCompatActivity {
     public void onButtonMyCurrentRankClick(View view) {
         getRank();
     }
+    public void onButtonGraphClick(View view){
+        //Start Graph Activity and send the data of Players List recieved and saved in playerList
+        //Use parceble to send the data of playerList don't send them one by one!!!!
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //If login activity closed means the user has logged in, and the data is stored in the database
+        pb_circular.setVisibility(View.VISIBLE);
+        if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+                //Graph Activity Closed Successfully!
+            
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //User demanded to go back to main menu
+                finish();
+            }
+
+        }
+    }
+
     private void getRank(){
         //Retrofit Implementation on Button Press
         //Adding Interceptor

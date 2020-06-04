@@ -116,6 +116,13 @@ public class MainActivity extends AppCompatActivity {
         NotifyUser("Game Started: " + player.getUsername());
         pb_circular.setVisibility(View.GONE);
     }
+    public void onButtonEnemiesClick(View view){
+        //Here the press of the Button Enemies
+    }
+    public void onForumClicked(View view){
+        //Here the press of the Button Forum
+
+    }
     public void onButtonRedirectWebClick(View view){
         pb_circular.setVisibility(View.VISIBLE);
         //Launch Unity Game and after starting the game also get the data back from the unity to update the server
