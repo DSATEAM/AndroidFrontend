@@ -125,6 +125,10 @@ public class MainActivity extends AppCompatActivity {
         //Here the press of the Button Forum
 
     }
+    public void onInventoryClicked(View view){
+        //Inventory Part
+        
+    }
     public void onButtonRedirectWebClick(View view){
         pb_circular.setVisibility(View.VISIBLE);
         //Launch Unity Game and after starting the game also get the data back from the unity to update the server
