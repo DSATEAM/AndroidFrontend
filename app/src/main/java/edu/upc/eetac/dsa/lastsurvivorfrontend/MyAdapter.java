@@ -12,6 +12,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Player;
@@ -84,12 +86,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
        // final String name = values.get(position);
-        String s = "Testy";
         holder.playerUsername.setText(playerList.get(position).getUsername());
         holder.playerExperience.setText(String.valueOf(playerList.get(position).getExperience()));
         Bitmap bitmapImg  = StringToBitmap(playerList.get(position).getAvatar());
+
         holder.imageIcon.setImageBitmap(bitmapImg);
-        s = "Testy";
     }
     private Bitmap StringToBitmap(String encodedImage){
         byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);

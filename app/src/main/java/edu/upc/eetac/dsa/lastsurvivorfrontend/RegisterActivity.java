@@ -120,7 +120,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
     private String imageToString(Bitmap bitmap){
         ByteArrayOutputStream byteArrayOutputStream =  new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG,100,byteArrayOutputStream);
+        bitmap.compress(Bitmap.CompressFormat.PNG,90,byteArrayOutputStream);
         byte[] imgByte = byteArrayOutputStream.toByteArray();
         return Base64.encodeToString(imgByte,Base64.DEFAULT);
     }
@@ -155,7 +155,7 @@ public class RegisterActivity extends AppCompatActivity {
             player.setUsername(username.getText().toString());
             player.setPassword(password.getText().toString());
             Bitmap icon = BitmapFactory.decodeResource(mContext.getResources(),R.drawable.userlogo);
-            icon = getResizedBitmap(icon,120,120);
+            icon = getResizedBitmap(icon,200,200);
             player.setAvatar(imageToString(icon));
             service.signUp(player).enqueue(new Callback<Player>() {
                 @Override

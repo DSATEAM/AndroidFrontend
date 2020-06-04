@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -82,7 +83,7 @@ public class ProfileActivity extends AppCompatActivity {
         }else{
             //Drawable myDrawable = getResources().getDrawable(R.drawable.sword_png_icon_20);
             Bitmap icon = BitmapFactory.decodeResource(mContext.getResources(),R.drawable.userlogo);
-            icon = getResizedBitmap(icon,120,120);
+            icon = getResizedBitmap(icon,200,200);
             imageView.setImageBitmap(icon);
         }
         String intro = "Profile : " +player.getUsername();
@@ -136,10 +137,10 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //Check if the password is correct and new password and retype password is same
-                if(newPass.getText().equals(newPassRe.getText()) && !newPass.getText().equals("")&&!newPass.getText().toString().contains(" ")){
+                if(newPass.getText().toString().equals(newPassRe.getText().toString()) &&!newPass.getText().toString().contains(" ")){
                     //New pass and old pass is same
-                    if(currentPass.getText().equals(player.getPassword())){
-                        player.setPassword((String) newPass.getText());
+                    if(currentPass.getText().toString().equals(player.getPassword())){
+                        player.setPassword( newPass.getText().toString());
                         dialog.dismiss();
                     }else{
                         //Incorrect Current Password NOTIFY
@@ -174,17 +175,13 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
         dialog.show();
-
     }
     public void onCancelClicked(View view){
-        Intent returnIntent = new Intent();
-        setResult(Activity.RESULT_CANCELED,returnIntent);
-        finish();
+        exitDialog();
     }
     public void onAcceptClicked(View view){
         //Accept Changes and update player
         updatePlayer();
-
     }
     private void updatePlayer(){
         pb_circular.setVisibility(View.VISIBLE);
@@ -203,11 +200,17 @@ public class ProfileActivity extends AppCompatActivity {
                         if(response.isSuccessful()){
                             player =  response.body();
                             Log.w("Update Player" ,"Update Plyer Response successful"+ player.toString());
+                            SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+                            SharedPreferences.Editor editor = settings.edit();
+                            editor.putString("Username",player.getUsername());
+                            editor.putString("Password",player.getPassword());
+                            editor.putString("Id",player.getId());
+                            editor.commit();
                             Intent returnIntent = new Intent();
                             returnIntent.putExtra("Player",player);
                             setResult(Activity.RESULT_OK,returnIntent);
                             finish();
-                        }else{ Log.d("Profile","Couldn't fill player from body");}
+                        }else{ Log.e("ProfileActivity","Couldn't fill player from body");}
                     } else if(response.code() == 404){ // Not Found User
                         NotifyUser("Player Not Found");
                     }else if(response.code() == 400){ //Incorrect Password
@@ -251,7 +254,7 @@ public class ProfileActivity extends AppCompatActivity {
             imageView.setImageURI(imageUri);
             try {
                 Bitmap source = MediaStore.Images.Media.getBitmap(getContentResolver(),imageUri);
-                source = getResizedBitmap(source,120,120);
+                source = getResizedBitmap(source,200,200);
                 //Picasso.with(mContext).load(imageUri).resize(160, 160).into(imageView);
                 Log.i(TAG, "The image was obtained correctly");
                 player.setAvatar(imageToString(source));
@@ -261,6 +264,7 @@ public class ProfileActivity extends AppCompatActivity {
             //
         }
     }
+
     private Bitmap StringToBitmap(String encodedImage){
         byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
         Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
@@ -268,7 +272,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
     private String imageToString(Bitmap bitmap){
         ByteArrayOutputStream byteArrayOutputStream =  new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG,100,byteArrayOutputStream);
+        bitmap.compress(Bitmap.CompressFormat.PNG,90,byteArrayOutputStream);
         byte[] imgByte = byteArrayOutputStream.toByteArray();
        return Base64.encodeToString(imgByte,Base64.DEFAULT);
     }

@@ -224,7 +224,7 @@ public class LoginActivity extends AppCompatActivity {
                             //Successful we can get the ID, and call again to ask for PLayer
                             if(response.isSuccessful()){
                                 player =  response.body();
-                                NotifyUser("The Player ID is: "+player.getId());
+
                                 //We can close the Login Activity and get back to Splash Screen
                                 SharedPreferences settings = getSharedPreferences("UserInfo", 0);
                                 SharedPreferences.Editor editor = settings.edit();

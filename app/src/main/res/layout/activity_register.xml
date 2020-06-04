@@ -35,20 +35,17 @@
         android:id="@+id/goBackBtn"
         android:layout_width="119dp"
         android:layout_height="47dp"
-        android:layout_marginBottom="235dp"
         android:onClick="onGoBackClicked"
         android:text="@string/go_back"
-
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/RegisterBtn"
+        app:layout_constraintEnd_toStartOf="@+id/RegisterBtn"
+        app:layout_constraintTop_toBottomOf="@+id/input_password2"
         tools:ignore="OnClick" />
 
     <Button
         android:id="@+id/RegisterBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="21dp"
         android:layout_marginEnd="39dp"
         android:onClick="onRegisterClick"
         android:text="@string/register"
@@ -64,13 +61,14 @@
         android:layout_height="401dp"
         android:layout_marginTop="13dp"
         android:layout_marginBottom="13dp"
+        android:contentDescription="@string/dragonImg"
         android:foregroundTint="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.042"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/input_password2"
-        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/dragon_black_and_white_silhouette" />
 
     <ImageView
@@ -79,6 +77,7 @@
         android:layout_height="166dp"
         android:layout_marginStart="97dp"
         android:layout_marginTop="16dp"
+        android:contentDescription="@string/swordImg"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/sword_png_icon_20" />
@@ -88,9 +87,14 @@
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_centerHorizontal="true"
         android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
 
 

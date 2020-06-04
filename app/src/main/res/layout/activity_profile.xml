@@ -20,8 +20,8 @@
 
     <ImageView
         android:id="@+id/avatarImg"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         app:layout_constraintEnd_toEndOf="@id/topText"
         app:layout_constraintStart_toStartOf="@id/topText"
         app:layout_constraintTop_toBottomOf="@+id/topText"
@@ -102,15 +102,19 @@
         android:onClick="onAcceptClicked"
         app:layout_constraintStart_toEndOf="@+id/cancelbtn"
         app:layout_constraintTop_toBottomOf="@+id/changePasswordBtn" />
+
     <ProgressBar
         android:id="@+id/progressBar_cyclic"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_centerHorizontal="true"
         android:layout_centerInParent="true"
-        tools:ignore="MissingConstraints" />
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 
