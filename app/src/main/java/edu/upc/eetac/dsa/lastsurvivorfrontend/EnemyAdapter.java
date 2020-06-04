@@ -2,6 +2,7 @@ package edu.upc.eetac.dsa.lastsurvivorfrontend;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,17 +13,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso.Picasso;
-
 import java.util.List;
 
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Enemy;
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Player;
 
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
+public class EnemyAdapter extends RecyclerView.Adapter<EnemyAdapter.ViewHolder> {
     //Repo List
-    private List<Player> playerList;
+
     private List<Enemy> enemyList;
     // Adding Listener to call it from Main Activity
     private OnItemClickListener mListener;
@@ -38,16 +37,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     // you provide access to all the views for a data item in a view holder
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in our viewHolder
-        public TextView playerExperience;
-        public TextView playerUsername;
+        public TextView description;
+        public TextView enemyName;
         public ImageView imageIcon;
         public View layout;
 
         public ViewHolder(View itemView, OnItemClickListener listener) {
             super(itemView);
             layout = itemView;
-            playerExperience = itemView.findViewById(R.id.secondLine);
-            playerUsername = itemView.findViewById(R.id.firstLine);
+            description = itemView.findViewById(R.id.secondLine);
+            enemyName = itemView.findViewById(R.id.firstLine);
             imageIcon = itemView.findViewById(R.id.avatarImg);
             //Click Handler for the whole Item
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -65,9 +64,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MyAdapter(List<Player> myDataset)
+    public EnemyAdapter(List<Enemy> myDataset)
     {
-        playerList = myDataset;
+        enemyList = myDataset;
     }
 
 
@@ -85,15 +84,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull EnemyAdapter.ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
        // final String name = values.get(position);
-        holder.playerUsername.setText(playerList.get(position).getUsername());
-        holder.playerExperience.setText(String.valueOf(playerList.get(position).getExperience()));
-        Bitmap bitmapImg  = StringToBitmap(playerList.get(position).getAvatar());
-
-        holder.imageIcon.setImageBitmap(bitmapImg);
+        holder.enemyName.setText(enemyList.get(position).getName());
+        holder.description.setText(String.valueOf(enemyList.get(position).getDescription()));
+        Bitmap bitmapImg  = StringToBitmap(enemyList.get(position).getAvatar());
+        Bitmap resized= getResizedBitmap(bitmapImg,64,96);
+        holder.imageIcon.setImageBitmap(resized);
     }
     private Bitmap StringToBitmap(String encodedImage){
         byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
@@ -102,6 +101,23 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     }
     @Override
     public int getItemCount() {
-        return playerList.size();
+        return enemyList.size();
+    }
+
+    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+                bm, 0, 0, width, height, matrix, false);
+        bm.recycle();
+        return resizedBitmap;
     }
 }

@@ -117,7 +117,9 @@ public class MainActivity extends AppCompatActivity {
         pb_circular.setVisibility(View.GONE);
     }
     public void onButtonEnemiesClick(View view){
-        //Here the press of the Button Enemies
+        pb_circular.setVisibility(View.VISIBLE);
+        Intent inte = new Intent(MainActivity.this, EnemyActivity.class);
+        startActivity(inte);
     }
     public void onForumClicked(View view){
         //Here the press of the Button Forum
