@@ -4,9 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -35,7 +40,7 @@ public class EnemyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enemy);
         recyclerView = findViewById(R.id.enemy_recyclerView);
-        pb_circular = findViewById(R.id.progressBar);
+        pb_circular = findViewById(R.id.progressBar_cyclic2);
         recyclerView.setHasFixedSize(false);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -77,11 +82,23 @@ public class EnemyActivity extends AppCompatActivity {
                     if(mAdapter == null){
                         mAdapter = new EnemyAdapter(enemyList);
                         recyclerView.setAdapter(mAdapter);
+                        mAdapter.SetOnItemClickListener(new EnemyAdapter.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(int position) {
+                                enemyStats(position);
+                            }
+                        });
                     }
                     else{
                         mAdapter = null;
                         mAdapter = new EnemyAdapter(enemyList);
                         recyclerView.setAdapter(mAdapter);
+                        mAdapter.SetOnItemClickListener(new EnemyAdapter.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(int position) {
+                                enemyStats(position);
+                            }
+                        });
                     }
                 }
             }
@@ -92,5 +109,53 @@ public class EnemyActivity extends AppCompatActivity {
 
             }
         });
+    }
+    private void enemyStats(int position){
+        String stats= "Health: "+ enemyList.get(position).getHealth() +"\n Damage: "+enemyList.get(position).getDamage() +
+                "\n Experience: " + enemyList.get(position).getExperience();
+        final Dialog dialog=new Dialog(EnemyActivity.this);
+        dialog.setContentView(R.layout.dialog_enemystats);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
+        LinearLayout back =dialog.findViewById(R.id.back);
+        TextView text =dialog.findViewById(R.id.statstxt);
+        TextView enemytxt=dialog.findViewById(R.id.textView7);
+        enemytxt.setText(enemyList.get(position).getName());
+        text.setText(stats);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+    @Override
+    public void onBackPressed() {
+        exitDialog();
+    }
+    private void exitDialog(){
+        final Dialog dialog=new Dialog(this);
+        dialog.setContentView(R.layout.dialog_exit);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
+        LinearLayout cancel= dialog.findViewById(R.id.cancelbtn);
+        LinearLayout exit=dialog.findViewById(R.id.button_back);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent returnIntent = new Intent();
+                setResult(Activity.RESULT_CANCELED,returnIntent);
+                finish();
+            }
+        });
+        dialog.show();
+
     }
 }

@@ -120,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
         pb_circular.setVisibility(View.VISIBLE);
         Intent inte = new Intent(MainActivity.this, EnemyActivity.class);
         startActivity(inte);
+        pb_circular.setVisibility(View.GONE);
     }
     public void onForumClicked(View view){
         //Here the press of the Button Forum
@@ -182,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
             if(resultCode == Activity.RESULT_OK){
                 player = data.getParcelableExtra("Player");
                 Log.w("s","Test");
+
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 finish();
@@ -265,6 +267,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     @Override
                     public void onFailure(Call<Player> call, Throwable t) {
+                        pb_circular.setVisibility(View.GONE);
                         NotifyUser("Failure to logIn");
                     }
                 });
