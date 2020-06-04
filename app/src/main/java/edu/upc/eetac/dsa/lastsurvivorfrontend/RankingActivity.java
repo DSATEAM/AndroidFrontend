@@ -116,7 +116,7 @@ public class RankingActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
                 //Graph Activity Closed Successfully!
-            
+
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //User demanded to go back to main menu
