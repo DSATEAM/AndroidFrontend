@@ -121,6 +121,10 @@ public class MainActivity extends AppCompatActivity {
     }
     public void onForumClicked(View view){
         //Here the press of the Button Forum
+        pb_circular.setVisibility(View.VISIBLE);
+        Intent intent = new Intent(MainActivity.this ,ForumListActivity.class);
+        startActivityForResult(intent,4);
+        pb_circular.setVisibility(View.GONE);
 
     }
     public void onButtonRedirectWebClick(View view){
