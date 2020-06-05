@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void onInventoryClicked(View view){
         //Inventory Part
-        
+
     }
     public void onButtonRedirectWebClick(View view){
         pb_circular.setVisibility(View.VISIBLE);
