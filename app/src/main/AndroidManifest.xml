@@ -14,8 +14,9 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ForumActivity"></activity>
+        <activity android:name=".ForumActivity"/>
         <activity android:name=".ForumListActivity" />
+        <activity android:name=".EnemyActivity"/>
         <activity android:name=".ProfileActivity" />
         <activity android:name=".RankingActivity" />
         <activity

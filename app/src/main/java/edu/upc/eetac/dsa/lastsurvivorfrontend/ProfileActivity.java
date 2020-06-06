@@ -3,25 +3,21 @@ package edu.upc.eetac.dsa.lastsurvivorfrontend;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -29,11 +25,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Player;
@@ -49,6 +42,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ProfileActivity extends AppCompatActivity {
 
     private static final int GALLERY_REQUEST_CODE = 3;
+    private static final int CAMERA_REQUEST_CODE = 4;
     ImageView imageView;
     private Context mContext;
 
@@ -112,7 +106,8 @@ public class ProfileActivity extends AppCompatActivity {
     }
     public void onChangeAvatarClicked(View view){
         //Choose image from gallery
-        openGallery();
+        //openGallery();
+        selectImage(this);
     }
     public void onChangePasswordClicked(View view){
         changePasswordDialog();
@@ -125,8 +120,8 @@ public class ProfileActivity extends AppCompatActivity {
         LinearLayout cancel= dialog.findViewById(R.id.cancel_btn);
         LinearLayout accept =dialog.findViewById(R.id.button_accept);
         TextView currentPass = dialog.findViewById(R.id.currPassText);
-        TextView newPass = dialog.findViewById(R.id.newPassText);
-        TextView newPassRe = dialog.findViewById(R.id.newPassRetypeText);
+        TextView newPass = dialog.findViewById(R.id.titleText);
+        TextView newPassRe = dialog.findViewById(R.id.commentText);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -244,7 +239,38 @@ public class ProfileActivity extends AppCompatActivity {
         startActivityForResult(gallery, GALLERY_REQUEST_CODE);
         pb_circular.setVisibility(View.GONE);
     }
+    private void selectImage(Context context) {
+        final CharSequence[] options = { "Take Photo","Choose from Gallery","Cancel" };
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Choose your profile picture");
+
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+
+                if (options[item].equals("Take Photo")) {
+                    Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(takePicture, CAMERA_REQUEST_CODE);
+
+                } else if (options[item].equals("Choose from Gallery")) {
+                    Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    // Sets the type as image/*. This ensures only components of type image are selected
+                    pickPhoto.setType("image/*");
+                    //We pass an extra array with the accepted mime types. This will ensure only components with these MIME types as targeted.
+                    String[] mimeTypes = {"image/jpeg", "image/png"};
+                    pickPhoto.putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes);
+                    startActivityForResult(pickPhoto, GALLERY_REQUEST_CODE);
+
+                }else if (options[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+    /*
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data); Uri imageUri;
@@ -263,8 +289,44 @@ public class ProfileActivity extends AppCompatActivity {
             }
             //
         }
-    }
+    }*/
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode != RESULT_CANCELED) {
+            switch (requestCode) {
+                case CAMERA_REQUEST_CODE:
+                    if (resultCode == RESULT_OK && data != null) {
+                        Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
+                        selectedImage = getResizedBitmap(selectedImage, 200, 200);
+                        imageView.setImageBitmap(selectedImage);
+                        //Picasso.with(mContext).load(imageUri).resize(160, 160).into(imageView);
+                        Log.i("Camera Request", "The image was obtained correctly");
+                        player.setAvatar(imageToString(selectedImage));
+                    }
 
+                    break;
+                case GALLERY_REQUEST_CODE:
+                    Uri imageUri;
+                    if (resultCode == RESULT_OK && data != null) {
+                        imageUri = data.getData();
+                        String TAG = "Gallery Result";
+                        Log.i("Gallery Result", "Image Uri: " + imageUri);
+                        imageView.setImageURI(imageUri);
+                        try {
+                            Bitmap source = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+                            source = getResizedBitmap(source, 200, 200);
+                            //Picasso.with(mContext).load(imageUri).resize(160, 160).into(imageView);
+                            Log.i(TAG, "The image was obtained correctly");
+                            player.setAvatar(imageToString(source));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    break;
+            }
+        }
+    }
     private Bitmap StringToBitmap(String encodedImage){
         byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
         Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);

@@ -159,7 +159,6 @@ public class RegisterActivity extends AppCompatActivity {
             player.setAvatar(imageToString(icon));
             service.signUp(player).enqueue(new Callback<Player>() {
                 @Override
-
                 public void onResponse(Call<Player> call, Response<Player> response) {
                     pb_circular.setVisibility(View.GONE);
                     if (response.code() == 201) {

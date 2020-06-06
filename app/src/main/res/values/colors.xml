@@ -10,6 +10,11 @@
     <color name="yellow_dark">#d4bb46</color>
     <color name="orange">#fed8b1</color>
     <color name="line">#BCE24A</color>
+    <color name="lightPink">#ffcdab</color>
+    <color name="Pinker">#fc5c9c</color>
+    <color name="Whitish">#fcefee</color>
+    <color name="lightPurple">#cabbe9</color>
+    <color name="skyish">#a6fff2</color>
     <color name="line_dark">#9dbf35</color>
     <color name="green">#48D268</color>
     <color name="green_dark">#36b957</color>

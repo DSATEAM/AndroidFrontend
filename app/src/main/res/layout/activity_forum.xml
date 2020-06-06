@@ -9,28 +9,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:backgroundTint="#FFFF8D"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/button"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="0.5"
-                android:background="#CCFF90"
-                android:backgroundTint="@color/yellow"
-                android:clickable="true"
-                android:foregroundGravity="fill"
-                android:onClick="onButtonMyCurrentForumClick"
-                android:text="Update Forums"
-                app:layout_constraintBottom_toTopOf="@+id/textView"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
             <Button
                 android:id="@+id/BackButton"
@@ -59,6 +44,7 @@
                 android:longClickable="true"
                 android:scrollbars="vertical" />
         </TableRow>
+
     </LinearLayout>
     <ProgressBar
         android:id="@+id/progressBar_cyclic"
@@ -68,5 +54,46 @@
         android:layout_gravity="center"
         android:layout_centerHorizontal="true"
         android:layout_centerInParent="true"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="0dp"
+        android:gravity="bottom"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/time"
+            android:layout_width="647dp"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/back_ll"
+            android:layout_below="@+id/content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Say something nice:" />
+
+            <EditText
+                android:id="@+id/titleText"
+                android:layout_width="304dp"
+                android:layout_height="wrap_content"
+                android:ems="10" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="#CCFF90"
+            android:onClick="onCommentButtonClick"
+            android:text="Comment" />
+    </LinearLayout>
 
 </RelativeLayout>

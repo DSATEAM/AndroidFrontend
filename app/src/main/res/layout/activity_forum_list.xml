@@ -26,7 +26,7 @@
                 android:clickable="true"
                 android:foregroundGravity="fill"
                 android:onClick="onButtonMyCurrentForumClick"
-                android:text="Update Forums"
+                android:text="Update Forum"
                 app:layout_constraintBottom_toTopOf="@+id/textView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

@@ -103,6 +103,7 @@ public class ForumActivity extends AppCompatActivity {
     public void onBackButtonClick(View view){
         exitDialog();
     }
+    public void onCommentButtonClick(View view){}
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

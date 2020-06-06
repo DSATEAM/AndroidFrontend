@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 import java.util.List;
 
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Forum;
+import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Message;
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Player;
 import edu.upc.eetac.dsa.lastsurvivorfrontend.services.ForumService;
 import edu.upc.eetac.dsa.lastsurvivorfrontend.services.RankingService;
@@ -40,6 +42,7 @@ public class ForumListActivity extends AppCompatActivity {
     //TRACKS SERVICE OBJECT
     ForumService forumService;
     //List<Repo> Repo_List;
+    Player player;
     List<Forum> forumsList ;
     private RecyclerView recyclerView;
     //As we added new methods inside our custom Adapter, we need to create our own type of adapter
@@ -61,6 +64,8 @@ public class ForumListActivity extends AppCompatActivity {
         // use a linear layout manager
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
+
+       // player = getIntent().getParcelableExtra("Player");
         //HTTP &
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -105,26 +110,50 @@ public class ForumListActivity extends AppCompatActivity {
     public void onButtonMyCurrentForumClick(View view) {
         getForums();
     }
-    public void onButtonGraphClick(View view){
-        //Start Graph Activity and send the data of Players List recieved and saved in playerList
-        //Use parceble to send the data of playerList don't send them one by one!!!!
+    public void onButtonNewForumClick(View view){
+        newForumDialog();
+        getForums();
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         //If login activity closed means the user has logged in, and the data is stored in the database
         pb_circular.setVisibility(View.VISIBLE);
-        if (requestCode == 1) {
-            if (resultCode == Activity.RESULT_OK) {
-                //Graph Activity Closed Successfully!
+        getForums();
+    }
+    private void newForum(Forum forum){
+        try {
+            Call<Forum> forumCall = forumService.createForum(forum);
+            /* Android Doesn't allow synchronous execution of Http Request and so we must put it in queue*/
+            forumCall.enqueue(new Callback<Forum>() {
+                @Override
+                public void onResponse(Call<Forum> call, Response<Forum> response) {
 
-            }
-            if (resultCode == Activity.RESULT_CANCELED) {
-                //User demanded to go back to main menu
-                finish();
-            }
+                    pb_circular.setVisibility(View.GONE);
+                    //Retrieve the result containing in the body
+                    if (response.body()!=null) {
+                        // non empty response, Mapping Json via Gson...
+                        Log.d("Create Forum","Server Response Ok");
+                        Forum f = response.body();
 
+                    } else {
+                        // empty response...
+                        Log.d("Create Forum","Request Failed!");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Forum> call, Throwable t) {
+                    NotifyUser("Error,could not retrieve data!");
+                }
+
+            });
         }
+        catch(Exception e){
+            Log.d("RankingActivity","Exception: " + e.toString());
+        }
+
     }
 
     private void getForums(){
@@ -138,7 +167,6 @@ public class ForumListActivity extends AppCompatActivity {
             forumsCall.enqueue(new Callback<List<Forum>>() {
                 @Override
                 public void onResponse(Call<List<Forum>> call, Response<List<Forum>> response) {
-
                     pb_circular.setVisibility(View.GONE);
                     //Retrieve the result containing in the body
                     if (!response.body().isEmpty()) {
@@ -152,10 +180,9 @@ public class ForumListActivity extends AppCompatActivity {
                             mAdapter = null;
                             buildRecyclerView();
                         }
-
                     } else {
                         // empty response...
-                        Log.d("RankingActivity","Request Failed!");
+                        Log.d("ForumListActivity","Request Failed!");
                     }
                 }
 
@@ -167,7 +194,7 @@ public class ForumListActivity extends AppCompatActivity {
             });
         }
         catch(Exception e){
-            Log.d("RankingActivity","Exception: " + e.toString());
+            Log.d("ForumListActivity","Exception: " + e.toString());
         }
     }
     //Builds the RecyclerView
@@ -187,6 +214,42 @@ public class ForumListActivity extends AppCompatActivity {
         // do something on back.
         exitDialog();
     }
+    private void newForumDialog(){
+        final Dialog dialog=new Dialog(this);
+        dialog.setContentView(R.layout.dialog_new_forum);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
+
+        LinearLayout cancel= dialog.findViewById(R.id.cancel_btn);
+        LinearLayout accept =dialog.findViewById(R.id.button_accept);
+        EditText titleText=dialog.findViewById(R.id.titleText);
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        accept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String title = titleText.getText().toString();
+                if(title.isEmpty()) {
+                    NotifyUser("You must choose a title.");
+                }
+                else{
+                    Forum forum=new Forum();
+                    forum.setName(title);
+                    forum.setAdmin(player.getUsername());
+                    forum.setAvatar(player.getAvatar());
+                    newForum(forum);
+                }
+            }
+        });
+        dialog.show();
+
+    }
+
     private void exitDialog(){
         final Dialog dialog=new Dialog(this);
         dialog.setContentView(R.layout.dialog_exit);
