@@ -120,7 +120,7 @@ public class ProfileActivity extends AppCompatActivity {
         LinearLayout cancel= dialog.findViewById(R.id.cancel_btn);
         LinearLayout accept =dialog.findViewById(R.id.button_accept);
         TextView currentPass = dialog.findViewById(R.id.currPassText);
-        TextView newPass = dialog.findViewById(R.id.titleText);
+        TextView newPass = dialog.findViewById(R.id.commentText);
         TextView newPassRe = dialog.findViewById(R.id.commentText);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -19,6 +20,7 @@ import java.util.List;
 
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Forum;
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Message;
+import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Player;
 import edu.upc.eetac.dsa.lastsurvivorfrontend.services.ForumService;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -39,6 +41,7 @@ public class ForumActivity extends AppCompatActivity {
     //List<Repo> Repo_List;
     List<Message> messageList ;
     Forum forum;
+    Player player;
 
     private RecyclerView recyclerView;
     //As we added new methods inside our custom Adapter, we need to create our own type of adapter
@@ -55,14 +58,16 @@ public class ForumActivity extends AppCompatActivity {
         //Implementing RecyclerView
         recyclerView = findViewById(R.id.my_recycler_view);
         pb_circular = findViewById(R.id.progressBar_cyclic);
+
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         recyclerView.setHasFixedSize(false);
         // use a linear layout manager
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-
         forum = getIntent().getParcelableExtra("Forum");
+        player = getIntent().getParcelableExtra("Player");
+
         //HTTP &
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -103,7 +108,17 @@ public class ForumActivity extends AppCompatActivity {
     public void onBackButtonClick(View view){
         exitDialog();
     }
-    public void onCommentButtonClick(View view){}
+    public void onCommentButtonClick(View view){
+        EditText messageText=findViewById(R.id.commentText);
+        Message message = new Message();
+        message.setAvatar(player.getAvatar());
+        message.setMessage(messageText.toString());
+        message.setUsername(player.getUsername());
+        message.setParentId(forum.getId());
+        addMessage(message);
+
+
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -157,6 +172,42 @@ public class ForumActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<List<Message>> call, Throwable t) {
+                    NotifyUser("Error,could not retrieve data!");
+                }
+
+            });
+        }
+        catch(Exception e){
+            Log.d("RankingActivity","Exception: " + e.toString());
+        }
+    }
+    private void addMessage(Message message){
+        //Retrofit Implementation on Button Press
+        //Adding Interceptor
+        pb_circular.setVisibility(View.VISIBLE);
+        try {
+
+            Call<Forum> messageCall = forumService.addMessage(message);
+            /* Android Doesn't allow synchronous execution of Http Request and so we must put it in queue*/
+            messageCall.enqueue(new Callback<Forum>() {
+                @Override
+                public void onResponse(Call<Forum> call, Response<Forum> response) {
+
+                    pb_circular.setVisibility(View.GONE);
+                    //Retrieve the result containing in the body
+                    if (response.body()!=null) {
+                        // non empty response, Mapping Json via Gson...
+                        Log.d("ForumActivity","Server Response Ok");
+                        forum = response.body();
+                        getMessages(forum);
+                    } else {
+                        // empty response...
+                        Log.d("ForumActivity","Request Failed!");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Forum> call, Throwable t) {
                     NotifyUser("Error,could not retrieve data!");
                 }
 

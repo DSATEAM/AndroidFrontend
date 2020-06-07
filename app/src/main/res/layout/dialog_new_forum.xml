@@ -41,7 +41,7 @@
                 android:text="Forum Title" />
 
             <EditText
-                android:id="@+id/titleText"
+                android:id="@+id/commentText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10" />

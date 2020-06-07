@@ -79,7 +79,7 @@
                 android:text="Say something nice:" />
 
             <EditText
-                android:id="@+id/titleText"
+                android:id="@+id/commentText"
                 android:layout_width="304dp"
                 android:layout_height="wrap_content"
                 android:ems="10" />

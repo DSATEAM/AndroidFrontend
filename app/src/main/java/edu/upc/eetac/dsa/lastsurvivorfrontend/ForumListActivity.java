@@ -8,23 +8,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
 
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Forum;
-import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Message;
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Player;
 import edu.upc.eetac.dsa.lastsurvivorfrontend.services.ForumService;
-import edu.upc.eetac.dsa.lastsurvivorfrontend.services.RankingService;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -65,7 +61,7 @@ public class ForumListActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-       // player = getIntent().getParcelableExtra("Player");
+        player = getIntent().getParcelableExtra("Player");
         //HTTP &
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -132,10 +128,9 @@ public class ForumListActivity extends AppCompatActivity {
 
                     pb_circular.setVisibility(View.GONE);
                     //Retrieve the result containing in the body
-                    if (response.body()!=null) {
+                    if (response.code()==201) {
                         // non empty response, Mapping Json via Gson...
                         Log.d("Create Forum","Server Response Ok");
-                        Forum f = response.body();
 
                     } else {
                         // empty response...
@@ -153,7 +148,6 @@ public class ForumListActivity extends AppCompatActivity {
         catch(Exception e){
             Log.d("RankingActivity","Exception: " + e.toString());
         }
-
     }
 
     private void getForums(){
@@ -222,7 +216,7 @@ public class ForumListActivity extends AppCompatActivity {
 
         LinearLayout cancel= dialog.findViewById(R.id.cancel_btn);
         LinearLayout accept =dialog.findViewById(R.id.button_accept);
-        EditText titleText=dialog.findViewById(R.id.titleText);
+        EditText titleText=dialog.findViewById(R.id.commentText);
 
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -277,6 +271,7 @@ public class ForumListActivity extends AppCompatActivity {
     private void LaunchForumActivity(int position){
         Intent intent = new Intent(ForumListActivity.this ,ForumActivity.class);
         intent.putExtra("Forum",forumsList.get(position));
+        intent.putExtra("Player",player);
         startActivityForResult(intent,1);
     }
 }
