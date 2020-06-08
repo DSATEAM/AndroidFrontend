@@ -1,9 +1,8 @@
 package edu.upc.eetac.dsa.lastsurvivorfrontend.models;
 
-import java.util.LinkedList;
-import java.util.List;
-
-public class Item {
+import android.os.Parcel;
+import android.os.Parcelable;
+public class Item implements Parcelable {
 
     private String id;
     private String parentId ="";
@@ -14,19 +13,50 @@ public class Item {
     private String description;
     private int offense;
     private int defense;
+    private float hitRange;
+    private float attackCooldown;
     //Empty Constructor
     public Item() {
     }
-    public Item(String parentId, String name, String type, String rarity, String description, int credit, int offense, int defense) {
+    public Item(String parentId, String name, String type, String rarity, int credit, String description, int offense, int defense, float hitRange, float attackCooldown) {
         this.parentId = parentId;
         this.name = name;
         this.type = type;
         this.rarity = rarity;
-        this.description = description;
         this.credit = credit;
+        this.description = description;
         this.offense = offense;
         this.defense = defense;
+        this.hitRange = hitRange;
+        this.attackCooldown = attackCooldown;
     }
+
+    protected Item(Parcel in) {
+        id = in.readString();
+        parentId = in.readString();
+        name = in.readString();
+        type = in.readString();
+        rarity = in.readString();
+        credit = in.readInt();
+        description = in.readString();
+        offense = in.readInt();
+        defense = in.readInt();
+        hitRange = in.readFloat();
+        attackCooldown = in.readFloat();
+    }
+
+    public static final Creator<Item> CREATOR = new Creator<Item>() {
+        @Override
+        public Item createFromParcel(Parcel in) {
+            return new Item(in);
+        }
+
+        @Override
+        public Item[] newArray(int size) {
+            return new Item[size];
+        }
+    };
+
     public String getId() {
         return id;
     }
@@ -89,5 +119,41 @@ public class Item {
 
     public void setDefense(int defense) {
         this.defense = defense;
+    }
+
+    public float getHitRange() {
+        return hitRange;
+    }
+
+    public void setHitRange(float hitRange) {
+        this.hitRange = hitRange;
+    }
+
+    public float getAttackCooldown() {
+        return attackCooldown;
+    }
+
+    public void setAttackCooldown(float attackCooldown) {
+        this.attackCooldown = attackCooldown;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(parentId);
+        dest.writeString(name);
+        dest.writeString(type);
+        dest.writeString(rarity);
+        dest.writeInt(credit);
+        dest.writeString(description);
+        dest.writeInt(offense);
+        dest.writeInt(defense);
+        dest.writeFloat(hitRange);
+        dest.writeFloat(attackCooldown);
     }
 }

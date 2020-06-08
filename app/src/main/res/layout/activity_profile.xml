@@ -22,12 +22,12 @@
         android:id="@+id/avatarImg"
         android:layout_width="200dp"
         android:layout_height="200dp"
+        android:clickable="true"
+        android:onClick="onChangeAvatarClicked"
         app:layout_constraintEnd_toEndOf="@id/topText"
         app:layout_constraintStart_toStartOf="@id/topText"
         app:layout_constraintTop_toBottomOf="@+id/topText"
         app:layout_goneMarginTop="20dp"
-        android:clickable="true"
-        android:onClick="onChangeAvatarClicked"
         app:srcCompat="@drawable/userlogo" />
 
     <TextView
@@ -72,9 +72,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Change Password"
         android:clickable="true"
         android:onClick="onChangePasswordClicked"
+        android:text="Change Password"
         app:layout_constraintEnd_toEndOf="@+id/statsText"
         app:layout_constraintHorizontal_bias="0.483"
         app:layout_constraintStart_toStartOf="@+id/statsText"
@@ -84,9 +84,9 @@
         android:id="@+id/cancelbtn"
         android:layout_width="105dp"
         android:layout_height="46dp"
-        android:text="Cancel"
         android:clickable="true"
         android:onClick="onCancelClicked"
+        android:text="Cancel"
         app:layout_constraintStart_toStartOf="@+id/statsText"
         app:layout_constraintTop_toBottomOf="@+id/changePasswordBtn" />
 
@@ -94,12 +94,12 @@
         android:id="@+id/acceptbtn"
         android:layout_width="104dp"
         android:layout_height="45dp"
+        android:clickable="true"
+        android:onClick="onAcceptClicked"
         android:text="Accept"
         app:layout_constraintBottom_toBottomOf="@+id/cancelbtn"
         app:layout_constraintEnd_toEndOf="@+id/statsText"
         app:layout_constraintHorizontal_bias="1.0"
-        android:clickable="true"
-        android:onClick="onAcceptClicked"
         app:layout_constraintStart_toEndOf="@+id/cancelbtn"
         app:layout_constraintTop_toBottomOf="@+id/changePasswordBtn" />
 
@@ -115,7 +115,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

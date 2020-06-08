@@ -15,7 +15,9 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Map;
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Player;
+import edu.upc.eetac.dsa.lastsurvivorfrontend.services.MapService;
 import edu.upc.eetac.dsa.lastsurvivorfrontend.services.PlayerService;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -24,8 +26,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
-import com.google.gson.Gson;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -36,10 +39,15 @@ public class MainActivity extends AppCompatActivity {
     private static String retrofitIpAddress;
     //Player Service Object
     PlayerService playerService;
+    //Map Service
+    MapService mapService;
     //Player Objects
     Player player = new Player();
+    //Maps List
+    List<Map> mapList = new LinkedList<>();
     //TextView of Splash
     private ProgressBar pb_circular;
+    private static int GameRequestCode = 4;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
                 retrofitIpAddress = ResourceFileReader.ReadResourceFileFromStringNameKey("retrofit.IpAddress",this);
                 startRetrofit();
                 playerService = retrofit.create(PlayerService.class);
+                mapService = retrofit.create(MapService.class);
                 //Login with Player Object player which was written using (ExistPlayerAndSetData)
                 LoginUser();
             }catch(Exception e){
@@ -112,9 +121,17 @@ public class MainActivity extends AppCompatActivity {
 
     public void onStartGameClicked(View view){
         pb_circular.setVisibility(View.VISIBLE);
+        if(player.getId()!=null){
+        //GET MAPS
+        getMaps();
         //Launch Unity Game and after starting the game also get the data back from the unity to update the server
         NotifyUser("Game Started: " + player.getUsername());
-        pb_circular.setVisibility(View.GONE);
+        Intent intent = new Intent(MainActivity.this , GameActivity.class);
+        intent.putExtra("Player",player);
+        ArrayList<Map> maps = new ArrayList<>(mapList);
+        intent.putParcelableArrayListExtra("mapList", maps);
+        startActivityForResult(intent,GameRequestCode);
+        }
     }
     public void onButtonEnemiesClick(View view){
         pb_circular.setVisibility(View.VISIBLE);
@@ -124,12 +141,9 @@ public class MainActivity extends AppCompatActivity {
     }
     public void onForumClicked(View view){
         //Here the press of the Button Forum
-        pb_circular.setVisibility(View.VISIBLE);
         Intent intent = new Intent(MainActivity.this ,ForumListActivity.class);
-        startActivityForResult(intent,4);
+        startActivityForResult(intent,GameRequestCode);
         intent.putExtra("Player",player);
-        pb_circular.setVisibility(View.GONE);
-
     }
     public void onInventoryClicked(View view){
         //Inventory Part
@@ -206,7 +220,52 @@ public class MainActivity extends AppCompatActivity {
                //Do nothing as nothing updated
             }
         }
+        //Game Activity Request Code 4
+        if(requestCode == GameRequestCode){
+            if(resultCode == Activity.RESULT_OK){
+                player = data.getParcelableExtra("Player");
+                //Retrieved updated data from Game Activity
+                updatePlayer(); //Update Player in Server
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Do nothing as nothing changed in game!
+            }
+        }
         pb_circular.setVisibility(View.GONE);
+    }
+    private void updatePlayer(){
+        pb_circular.setVisibility(View.VISIBLE);
+        try {
+            Call<Player> playerTmp = playerService.updatePlayer(player);
+            /* Android Doesn't allow synchronous execution of Http Request and so we must put it in queue*/
+            playerTmp.enqueue(new Callback<Player>() {
+                @Override
+                public void onResponse(Call<Player> call, Response<Player> response) {
+                    //Update Successful
+                    pb_circular.setVisibility(View.GONE);
+                    if (response.code() == 201) {
+                        //Successful we can get the ID, and call again to ask for PLayer
+                        if(response.isSuccessful()){
+                            player =  response.body();
+                            Log.w("Update Player" ,"Update Plyer Response successful"+ player.toString());
+                        }else{ Log.e("MainActivity","Couldn't fill player from body");}
+                    } else if(response.code() == 404){ // Not Found User
+                        NotifyUser("Player Not Found");
+                    }else if(response.code() == 400){ //Incorrect Password
+                        NotifyUser("Bad Request");
+                    }else{
+                        NotifyUser("Something went horribly wrong!");
+                    }
+                }
+                @Override
+                public void onFailure(Call<Player> call, Throwable t) {
+                    NotifyUser("Failure to Update Profile");
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
     private static void startRetrofit(){
         //HTTP &
@@ -225,6 +284,37 @@ public class MainActivity extends AppCompatActivity {
                 .client(client)
                 .build();
     }
+    private void getMaps(){
+        try {
+
+            Call<List<Map>> mapsCaller = mapService.getMaps();
+            /* Android Doesn't allow synchronous execution of Http Request and so we must put it in queue*/
+            mapsCaller.enqueue(new Callback<List<Map>>() {
+                @Override
+                public void onResponse(Call<List<Map>> call, Response<List<Map>> response) {
+
+                    pb_circular.setVisibility(View.GONE);
+                    //Retrieve the result containing in the body
+                    if (!response.body().isEmpty()) {
+                        // non empty response, Mapping Json via Gson...
+                        Log.d("RankingActivity","Server Response Ok");
+                        mapList = response.body();
+                    } else {
+                        // empty response...
+                        Log.d("Map List","Maps Request Failed!");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<Map>> call, Throwable t) {
+                    NotifyUser("Error,could not retrieve data!");
+                }
+            });
+        }
+        catch(Exception e){
+            Log.d("MainActivity","Exception: " + e.toString());
+        }
+    }
     private void LoginUser(){
         String username,password;
         username =  player.getUsername();
@@ -241,13 +331,9 @@ public class MainActivity extends AppCompatActivity {
             String TAG = "onSignIn";
 
             try {
-
                 player = new Player(username,password,0,0,0,0);
                 player.setUsername(username);player.setPassword(password);
                 Call<Player> playerID = playerService.signIn(player);
-                Gson gson = new Gson();
-                String jsonInString = gson.toJson(player);
-                Log.d(TAG, "PlayerGson: "+jsonInString);
                 Log.d(TAG, "Player Logging In from Splash: "+playerID.toString());
                 /* Android Doesn't allow synchronous execution of Http Request and so we must put it in queue*/
                 playerID.enqueue(new Callback<Player>() {

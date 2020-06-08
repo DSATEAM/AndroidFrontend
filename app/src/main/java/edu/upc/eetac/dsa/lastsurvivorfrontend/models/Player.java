@@ -1,14 +1,9 @@
 package edu.upc.eetac.dsa.lastsurvivorfrontend.models;
-
-import android.graphics.Bitmap;
-import android.media.Image;
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import java.io.File;
 import java.util.List;
 
-public class Player implements Parcelable {
+public class Player implements Parcelable{
     private String id;
     private String username;
     private String password;
@@ -42,6 +37,7 @@ public class Player implements Parcelable {
         experience = in.readInt();
         credits = in.readInt();
     }
+
 
     public static final Creator<Player> CREATOR = new Creator<Player>() {
         @Override
@@ -123,7 +119,6 @@ public class Player implements Parcelable {
         this.listItems = listItems;
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -134,10 +129,11 @@ public class Player implements Parcelable {
         dest.writeString(id);
         dest.writeString(username);
         dest.writeString(password);
-        dest.writeString(avatar);
         dest.writeInt(gamesPlayed);
         dest.writeInt(kills);
         dest.writeInt(experience);
         dest.writeInt(credits);
+        dest.writeString(avatar);
+        dest.writeTypedList(listItems);
     }
 }
