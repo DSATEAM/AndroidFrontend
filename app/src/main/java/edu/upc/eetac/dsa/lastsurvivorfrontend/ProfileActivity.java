@@ -98,7 +98,7 @@ public class ProfileActivity extends AppCompatActivity {
         //Remember when using Local host on windows the IP is 10.0.2.2 for Android
         //Also added NullOnEmptyConverterFactory when the response from server is empty
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8080/Backend/")
+                .baseUrl("http://"+retrofitIpAddress+":8080/Backend/")
                 .addConverterFactory(new NullOnEmptyConverterFactory())
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)

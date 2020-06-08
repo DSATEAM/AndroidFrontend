@@ -141,9 +141,11 @@ public class MainActivity extends AppCompatActivity {
     }
     public void onForumClicked(View view){
         //Here the press of the Button Forum
+        pb_circular.setVisibility(View.VISIBLE);
         Intent intent = new Intent(MainActivity.this ,ForumListActivity.class);
-        startActivityForResult(intent,GameRequestCode);
-        intent.putExtra("Player",player);
+        intent.putExtra("Avatar",player.getAvatar());
+        startActivityForResult(intent,4);
+        pb_circular.setVisibility(View.GONE);
     }
     public void onInventoryClicked(View view){
         //Inventory Part
@@ -278,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
         //Remember when using Local host on windows the IP is 10.0.2.2 for Android
         //Also added NullOnEmptyConverterFactory when the response from server is empty
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8080/Backend/")
+                .baseUrl("http://"+retrofitIpAddress+":8080/Backend/")
                 .addConverterFactory(new NullOnEmptyConverterFactory())
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)

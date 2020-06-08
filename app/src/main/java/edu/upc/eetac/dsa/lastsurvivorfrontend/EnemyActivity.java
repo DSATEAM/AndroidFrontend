@@ -34,7 +34,7 @@ public class EnemyActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
     private ProgressBar pb_circular;
     private static Retrofit retrofit;
-
+    private static String retrofitIpAddress;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +44,9 @@ public class EnemyActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(false);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
+        //Read Data from player to set the avatar
+        ResourceFileReader rs =  new ResourceFileReader();
+        retrofitIpAddress = ResourceFileReader.ReadResourceFileFromStringNameKey("retrofit.IpAddress",this);
         startRetrofit();
         getEnemies();
 
@@ -60,7 +63,7 @@ public class EnemyActivity extends AppCompatActivity {
         //Remember when using Local host on windows the IP is 10.0.2.2 for Android
         //Also added NullOnEmptyConverterFactory when the response from server is empty
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8080/Backend/")
+                .baseUrl("http://"+retrofitIpAddress+":8080/Backend/")
                 .addConverterFactory(new NullOnEmptyConverterFactory())
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
