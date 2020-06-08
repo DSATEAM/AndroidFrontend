@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -41,13 +42,16 @@ public class ForumActivity extends AppCompatActivity {
     //List<Repo> Repo_List;
     List<Message> messageList ;
     Forum forum;
-    Player player;
+    String avatar;
+    String username;
 
     private RecyclerView recyclerView;
     //As we added new methods inside our custom Adapter, we need to create our own type of adapter
     private MessageAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private ProgressBar pb_circular;
+    private EditText messageText;
+    private EditText titleText;
 
 
     @Override
@@ -58,6 +62,8 @@ public class ForumActivity extends AppCompatActivity {
         //Implementing RecyclerView
         recyclerView = findViewById(R.id.my_recycler_view);
         pb_circular = findViewById(R.id.progressBar_cyclic);
+        messageText=findViewById(R.id.commentText);
+        titleText=findViewById(R.id.titleText);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -66,7 +72,11 @@ public class ForumActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         forum = getIntent().getParcelableExtra("Forum");
-        player = getIntent().getParcelableExtra("Player");
+        titleText.setText(forum.getName());
+
+        SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+        username=settings.getString("Username", "");
+        avatar=getIntent().getStringExtra("Avatar");
 
         //HTTP &
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
@@ -105,17 +115,25 @@ public class ForumActivity extends AppCompatActivity {
         Toast toast = Toast.makeText(ForumActivity.this,MSG,Toast.LENGTH_SHORT);
         toast.show();
     }
-    public void onBackButtonClick(View view){
-        exitDialog();
+    public void onUpdateButtonClick(View view){
+        getMessages(forum);
+        NotifyUser("Messages updated");
     }
     public void onCommentButtonClick(View view){
-        EditText messageText=findViewById(R.id.commentText);
-        Message message = new Message();
-        message.setAvatar(player.getAvatar());
-        message.setMessage(messageText.toString());
-        message.setUsername(player.getUsername());
-        message.setParentId(forum.getId());
-        addMessage(message);
+        String comment=messageText.getText().toString();
+        if(comment.isEmpty()|| comment.equals(" ")) {
+            NotifyUser("You need to write something!");
+        }
+        else{
+            Message message = new Message();
+            message.setMessage(comment);
+            Log.d("Message", comment);
+            Log.d("From", username);
+            message.setAvatar(avatar);
+            message.setUsername(username);
+            message.setParentId(forum.getId());
+            addMessage(message);
+        }
 
 
     }
@@ -164,9 +182,10 @@ public class ForumActivity extends AppCompatActivity {
                             buildRecyclerView();
                         }
 
+
                     } else {
                         // empty response...
-                        Log.d("RankingActivity","Request Failed!");
+                        Log.d("ForumActivity","Request Failed!");
                     }
                 }
 
@@ -178,7 +197,7 @@ public class ForumActivity extends AppCompatActivity {
             });
         }
         catch(Exception e){
-            Log.d("RankingActivity","Exception: " + e.toString());
+            Log.d("ForumActivity","Exception: " + e.toString());
         }
     }
     private void addMessage(Message message){
@@ -200,6 +219,7 @@ public class ForumActivity extends AppCompatActivity {
                         Log.d("ForumActivity","Server Response Ok");
                         forum = response.body();
                         getMessages(forum);
+                        messageText.setText("");
                     } else {
                         // empty response...
                         Log.d("ForumActivity","Request Failed!");
@@ -214,7 +234,7 @@ public class ForumActivity extends AppCompatActivity {
             });
         }
         catch(Exception e){
-            Log.d("RankingActivity","Exception: " + e.toString());
+            Log.d("ForumActivity","Exception: " + e.toString());
         }
     }
     //Builds the RecyclerView

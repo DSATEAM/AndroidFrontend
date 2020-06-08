@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -37,8 +38,8 @@ public class ForumListActivity extends AppCompatActivity {
 
     //TRACKS SERVICE OBJECT
     ForumService forumService;
-    //List<Repo> Repo_List;
-    Player player;
+    String avatar;
+    String username;
     List<Forum> forumsList ;
     private RecyclerView recyclerView;
     //As we added new methods inside our custom Adapter, we need to create our own type of adapter
@@ -61,7 +62,9 @@ public class ForumListActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        player = getIntent().getParcelableExtra("Player");
+        SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+        username=settings.getString("Username", "");
+        avatar=getIntent().getStringExtra("Avatar");
         //HTTP &
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -88,7 +91,7 @@ public class ForumListActivity extends AppCompatActivity {
         //Remember when using Local host on windows the IP is 10.0.2.2 for Android
         //Also added NullOnEmptyConverterFactory when the response from server is empty
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8080/Backend/")
+                .baseUrl("http://"+retrofitIpAddress+":8080/Backend/")
                 .addConverterFactory(new NullOnEmptyConverterFactory())
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
@@ -99,12 +102,10 @@ public class ForumListActivity extends AppCompatActivity {
         Toast toast = Toast.makeText(ForumListActivity.this,MSG,Toast.LENGTH_SHORT);
         toast.show();
     }
-    public void onBackButtonClick(View view){
-        exitDialog();
-    }
     //Gets the List of Tracks from LocalHost
     public void onButtonMyCurrentForumClick(View view) {
         getForums();
+        NotifyUser("Forums updated");
     }
     public void onButtonNewForumClick(View view){
         newForumDialog();
@@ -131,6 +132,7 @@ public class ForumListActivity extends AppCompatActivity {
                     if (response.code()==201) {
                         // non empty response, Mapping Json via Gson...
                         Log.d("Create Forum","Server Response Ok");
+                        getForums();
 
                     } else {
                         // empty response...
@@ -234,9 +236,10 @@ public class ForumListActivity extends AppCompatActivity {
                 else{
                     Forum forum=new Forum();
                     forum.setName(title);
-                    forum.setAdmin(player.getUsername());
-                    forum.setAvatar(player.getAvatar());
+                    forum.setAdmin(username);
+                    forum.setAvatar(avatar);
                     newForum(forum);
+                    dialog.dismiss();
                 }
             }
         });
@@ -271,7 +274,7 @@ public class ForumListActivity extends AppCompatActivity {
     private void LaunchForumActivity(int position){
         Intent intent = new Intent(ForumListActivity.this ,ForumActivity.class);
         intent.putExtra("Forum",forumsList.get(position));
-        intent.putExtra("Player",player);
+        intent.putExtra("Avatar",avatar);
         startActivityForResult(intent,1);
     }
 }

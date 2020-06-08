@@ -17,19 +17,37 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/BackButton"
+            <EditText
+                android:id="@+id/titleText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@color/orange"
+                android:backgroundTint="#FFD180"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:drawableTint="#FFD180"
+                android:ems="10"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:gravity="center"
+                android:inputType="textMultiLine"
+                android:textSize="24sp" />
+
+            <Button
+                android:id="@+id/UpdateButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="0.5"
-                android:background="#FF9E80"
+                android:background="@color/yellow"
                 android:clickable="true"
-                android:onClick="onBackButtonClick"
-                android:text="@string/go_back"
+                android:onClick="onUpdateButtonClick"
+                android:text="Update"
+                android:textSize="18sp"
                 app:layout_constraintBottom_toTopOf="@+id/textView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
         </LinearLayout>
 
         <TableRow
@@ -67,22 +85,17 @@
             android:id="@+id/time"
             android:layout_width="647dp"
             android:layout_height="match_parent"
-            android:layout_above="@+id/back_ll"
-            android:layout_below="@+id/content"
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Say something nice:" />
-
             <EditText
                 android:id="@+id/commentText"
-                android:layout_width="304dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10" />
+                android:ems="10"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                tools:visibility="visible" />
 
         </LinearLayout>
 
@@ -93,7 +106,7 @@
             android:layout_weight="1"
             android:backgroundTint="#CCFF90"
             android:onClick="onCommentButtonClick"
-            android:text="Comment" />
+            android:text="Send" />
     </LinearLayout>
 
 </RelativeLayout>

@@ -39,15 +39,19 @@
                 android:textColorHighlight="#FFFFFF"
                 android:textSize="24sp" />
 
-            <TextView
+            <EditText
                 android:id="@+id/secondLine"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:text="Description"
+                android:clickable="false"
+                android:background="@null"
+                android:ems="10"
+                android:gravity="start|top"
+                android:inputType="textMultiLine"
                 android:textSize="24sp"
-                tools:text="I am the Doctor!" />
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false" />
 
         </LinearLayout>
     </LinearLayout>
