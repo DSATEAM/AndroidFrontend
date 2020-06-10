@@ -148,8 +148,11 @@ public class MainActivity extends AppCompatActivity {
         pb_circular.setVisibility(View.GONE);
     }
     public void onInventoryClicked(View view){
-        //Inventory Part
-
+        pb_circular.setVisibility(View.VISIBLE);
+        Intent intent = new Intent(MainActivity.this, StoreActivity.class);
+        intent.putExtra("parentId",player.getId());
+        startActivity(intent);
+        pb_circular.setVisibility(View.GONE);
     }
     public void onButtonRedirectWebClick(View view){
         pb_circular.setVisibility(View.VISIBLE);
