@@ -20,7 +20,7 @@ import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Player;
 
 
 public class EnemyAdapter extends RecyclerView.Adapter<EnemyAdapter.ViewHolder> {
-    //Repo List
+
 
     private List<Enemy> enemyList;
     // Adding Listener to call it from Main Activity
