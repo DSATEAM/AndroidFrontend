@@ -111,27 +111,19 @@ public class GameActivity extends AppCompatActivity {
     }
     private void launchingFirstTime(){
         if(isLaunchingFirstTime){
-            /*
+            isLaunchingFirstTime =false;
             //String mapData = From Map List get the map and concatenate!;
-            String mapData = "EEEE;" +
-                    "EFFE;" +
-                    "EFFE;" +
-                    "EEEE";
-            String playerData = "P,3,50,50,50;S,4,1.5,1.5";
-            String objectData = "P,1,1;C,3,3,1,1,2";
-            //Unity with MapData, playerData,ObjectData
-            Intent intent = new Intent(this, UnityPlayerActivity.class);
-            //PlayerStats String: P,Level,Exp,Kills,Coins;Sword;Axe;Katana;Baton;Big Hammer
-            //where weapons has Damage,Defense,hitRange,attackCooldown
-
             String playerData = getPlayerData();
             String mapData = getMapData();
             String objectData = getObjectData();
+            //Unity with MapData, playerData,ObjectData
+            /*
+            Intent intent = new Intent(this, UnityPlayerActivity.class);
             intent.putExtra("playerData", playerData");
             intent.putExtra("objectData", objectData);
             intent.putExtra("mapData", mapData);
             startActivityForResult(intent,0);
-            isLaunchingFirstTime =false;*/
+            */
         }
     }
     private String getMapData(){
@@ -150,6 +142,7 @@ public class GameActivity extends AppCompatActivity {
         return type1Map;
     }
     private String getObjectData(){
+        //Objects on Map with location and other values
         String type2Objects = null;
         for(int i=0;i<mapList.size();i++){
             type2Objects = mapList.get(0).getType2Objects();
@@ -165,12 +158,15 @@ public class GameActivity extends AppCompatActivity {
         return type2Objects;
     }
     private String getPlayerStats(){
+        //PlayerStats String: P,Level,Exp,Kills,Coins;Sword;Axe;Katana;Baton;Big Hammer
         int baseExp = 50;
         int level = player.getExperience() /baseExp;
         int exp = player.getExperience()%baseExp;
         return "P,"+level+","+exp+","+player.getKills()+","+player.getCredits();
     }
     private String getPlayerData(){
+        //PlayerStats String: P,Level,Exp,Kills,Coins;Sword;Axe;Katana;Baton;Big Hammer
+        //where weapons has Damage,Defense,hitRange,attackCooldown
         String playerStatsStr = getPlayerStats();
         String itemStr = "";
         StringBuilder items;
