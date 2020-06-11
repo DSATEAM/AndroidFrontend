@@ -1,12 +1,9 @@
 package edu.upc.eetac.dsa.lastsurvivorfrontend;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -23,6 +20,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
 
@@ -52,6 +51,9 @@ public class ProfileActivity extends AppCompatActivity {
     //Player Service Object
     PlayerService playerService;
     Player player = new Player();
+    private static int widthX = 200;
+    private static int heightY = 200;
+    private static int qualityImage = 10;
     TextView statsText;
     TextView usernameText;
     private ProgressBar pb_circular;
@@ -71,15 +73,10 @@ public class ProfileActivity extends AppCompatActivity {
         retrofitIpAddress = ResourceFileReader.ReadResourceFileFromStringNameKey("retrofit.IpAddress",this);
         startRetrofit();
         playerService = retrofit.create(PlayerService.class);
-        if(!player.getAvatar().equals("basicAvatar")){
-         Bitmap bitmapImg  = StringToBitmap(player.getAvatar());
-            imageView.setImageBitmap(bitmapImg);
-        }else{
-            //Drawable myDrawable = getResources().getDrawable(R.drawable.sword_png_icon_20);
-            Bitmap icon = BitmapFactory.decodeResource(mContext.getResources(),R.drawable.userlogo);
-            icon = getResizedBitmap(icon,200,200);
-            imageView.setImageBitmap(icon);
-        }
+        //Bitmap myLogo = BitmapFactory.decodeResource(this.getResources(), R.drawable.userlogo);
+        //myLogo = getResizedBitmap(myLogo, widthX, heightY);
+        //String avat = imageToString(myLogo);
+        imageView.setImageBitmap(StringToBitmap(player.getAvatar()));
         String intro = "Profile : " +player.getUsername();
         String stats = "Credits : " +player.getCredits()+ "\nExperience : "+player.getExperience() + "\nKills : "+ player.getKills()+"\nGamesPlayed : "+player.getGamesPlayed();
         statsText.setText(stats);
@@ -164,6 +161,7 @@ public class ProfileActivity extends AppCompatActivity {
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dialog.dismiss();
                 Intent returnIntent = new Intent();
                 setResult(Activity.RESULT_CANCELED,returnIntent);
                 finish();
@@ -245,51 +243,27 @@ public class ProfileActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Choose your profile picture");
 
-        builder.setItems(options, new DialogInterface.OnClickListener() {
+        builder.setItems(options, (dialog, item) -> {
+            if (options[item].equals("Take Photo")) {
+                Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(takePicture, CAMERA_REQUEST_CODE);
 
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
+            } else if (options[item].equals("Choose from Gallery")) {
+                Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                // Sets the type as image/*. This ensures only components of type image are selected
+                pickPhoto.setType("image/*");
+                //We pass an extra array with the accepted mime types. This will ensure only components with these MIME types as targeted.
+                String[] mimeTypes = {"image/jpeg", "image/png"};
+                pickPhoto.putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes);
+                startActivityForResult(pickPhoto, GALLERY_REQUEST_CODE);
 
-                if (options[item].equals("Take Photo")) {
-                    Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(takePicture, CAMERA_REQUEST_CODE);
-
-                } else if (options[item].equals("Choose from Gallery")) {
-                    Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    // Sets the type as image/*. This ensures only components of type image are selected
-                    pickPhoto.setType("image/*");
-                    //We pass an extra array with the accepted mime types. This will ensure only components with these MIME types as targeted.
-                    String[] mimeTypes = {"image/jpeg", "image/png"};
-                    pickPhoto.putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes);
-                    startActivityForResult(pickPhoto, GALLERY_REQUEST_CODE);
-
-                }else if (options[item].equals("Cancel")) {
-                    dialog.dismiss();
-                }
+            }else if (options[item].equals("Cancel")) {
+                dialog.dismiss();
             }
         });
         builder.show();
     }
-    /*
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        super.onActivityResult(requestCode, resultCode, data); Uri imageUri;
-        if (resultCode == RESULT_OK && requestCode == GALLERY_REQUEST_CODE && data != null){
-            imageUri = data.getData();String TAG = "Gallery Result";
-            Log.i("Gallery Result","Image Uri: "+imageUri);
-            imageView.setImageURI(imageUri);
-            try {
-                Bitmap source = MediaStore.Images.Media.getBitmap(getContentResolver(),imageUri);
-                source = getResizedBitmap(source,200,200);
-                //Picasso.with(mContext).load(imageUri).resize(160, 160).into(imageView);
-                Log.i(TAG, "The image was obtained correctly");
-                player.setAvatar(imageToString(source));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            //
-        }
-    }*/
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -298,7 +272,7 @@ public class ProfileActivity extends AppCompatActivity {
                 case CAMERA_REQUEST_CODE:
                     if (resultCode == RESULT_OK && data != null) {
                         Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
-                        selectedImage = getResizedBitmap(selectedImage, 200, 200);
+                        selectedImage = getResizedBitmap(selectedImage, widthX, heightY);
                         imageView.setImageBitmap(selectedImage);
                         //Picasso.with(mContext).load(imageUri).resize(160, 160).into(imageView);
                         Log.i("Camera Request", "The image was obtained correctly");
@@ -315,7 +289,7 @@ public class ProfileActivity extends AppCompatActivity {
                         imageView.setImageURI(imageUri);
                         try {
                             Bitmap source = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
-                            source = getResizedBitmap(source, 200, 200);
+                            source = getResizedBitmap(source, widthX, heightY);
                             //Picasso.with(mContext).load(imageUri).resize(160, 160).into(imageView);
                             Log.i(TAG, "The image was obtained correctly");
                             player.setAvatar(imageToString(source));
@@ -334,7 +308,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
     private String imageToString(Bitmap bitmap){
         ByteArrayOutputStream byteArrayOutputStream =  new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG,90,byteArrayOutputStream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG,qualityImage,byteArrayOutputStream);
         byte[] imgByte = byteArrayOutputStream.toByteArray();
        return Base64.encodeToString(imgByte,Base64.DEFAULT);
     }

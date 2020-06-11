@@ -3,7 +3,6 @@ package edu.upc.eetac.dsa.lastsurvivorfrontend;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Forum;
-import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Player;
 
 public class ForumAdapter extends RecyclerView.Adapter<ForumAdapter.ViewHolder>  {
     //Repo List
@@ -90,32 +88,9 @@ public class ForumAdapter extends RecyclerView.Adapter<ForumAdapter.ViewHolder> 
         Forum forum = forumList.get(position);
         holder.title.setText(forum.getName());
         holder.username.setText(String.valueOf(forum.getAdmin()));
-        if(!forum.getAvatar().equals("basicAvatar")){
-            Bitmap bitmapImg  = StringToBitmap(forum.getAvatar());
-            holder.imageIcon.setImageBitmap(bitmapImg);
-        }else{
-            //Drawable myDrawable = getResources().getDrawable(R.drawable.sword_png_icon_20);
-            Bitmap icon = BitmapFactory.decodeResource(holder.imageIcon.getResources(),R.drawable.userlogo);
-            icon = getResizedBitmap(icon,200,200);
-            holder.imageIcon.setImageBitmap(icon);
-        }
+        Bitmap icon  = StringToBitmap(forum.getAvatar());
+        holder.imageIcon.setImageBitmap(icon);
 
-    }
-    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
-        int width = bm.getWidth();
-        int height = bm.getHeight();
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
-        // CREATE A MATRIX FOR THE MANIPULATION
-        Matrix matrix = new Matrix();
-        // RESIZE THE BIT MAP
-        matrix.postScale(scaleWidth, scaleHeight);
-
-        // "RECREATE" THE NEW BITMAP
-        Bitmap resizedBitmap = Bitmap.createBitmap(
-                bm, 0, 0, width, height, matrix, false);
-        bm.recycle();
-        return resizedBitmap;
     }
     private Bitmap StringToBitmap(String encodedImage){
         byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);

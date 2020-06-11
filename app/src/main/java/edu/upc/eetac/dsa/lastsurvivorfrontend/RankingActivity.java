@@ -1,8 +1,5 @@
 package edu.upc.eetac.dsa.lastsurvivorfrontend;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
@@ -16,6 +13,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Player;
@@ -27,9 +29,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class RankingActivity extends AppCompatActivity {
     // RETROFIT OBJECT
@@ -220,6 +219,7 @@ public class RankingActivity extends AppCompatActivity {
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dialog.dismiss();
                 Intent returnIntent = new Intent();
                 setResult(Activity.RESULT_CANCELED,returnIntent);
                 finish();

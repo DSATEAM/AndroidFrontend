@@ -1,10 +1,5 @@
 package edu.upc.eetac.dsa.lastsurvivorfrontend;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -17,10 +12,14 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Forum;
-import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Player;
 import edu.upc.eetac.dsa.lastsurvivorfrontend.services.ForumService;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -80,6 +79,7 @@ public class ForumListActivity extends AppCompatActivity {
         forumService = retrofit.create(ForumService.class);
         getForums();
     }
+
     private static void startRetrofit(){
         //HTTP &
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
@@ -237,6 +237,7 @@ public class ForumListActivity extends AppCompatActivity {
                     Forum forum=new Forum();
                     forum.setName(title);
                     forum.setAdmin(username);
+
                     forum.setAvatar(avatar);
                     newForum(forum);
                     dialog.dismiss();
@@ -263,6 +264,7 @@ public class ForumListActivity extends AppCompatActivity {
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dialog.dismiss();
                 Intent returnIntent = new Intent();
                 setResult(Activity.RESULT_CANCELED,returnIntent);
                 finish();

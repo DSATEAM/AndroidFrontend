@@ -1,18 +1,11 @@
 package edu.upc.eetac.dsa.lastsurvivorfrontend;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.os.Bundle;
-import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -22,7 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
+import androidx.appcompat.app.AppCompatActivity;
 
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Player;
 import edu.upc.eetac.dsa.lastsurvivorfrontend.services.PlayerService;
@@ -113,40 +106,12 @@ public class RegisterActivity extends AppCompatActivity {
        dialog.show();
 
    }
-    private Bitmap StringToBitmap(String encodedImage){
-        byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
-        Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        return bitmap;
-    }
-    private String imageToString(Bitmap bitmap){
-        ByteArrayOutputStream byteArrayOutputStream =  new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG,90,byteArrayOutputStream);
-        byte[] imgByte = byteArrayOutputStream.toByteArray();
-        return Base64.encodeToString(imgByte,Base64.DEFAULT);
-    }
-    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
-        int width = bm.getWidth();
-        int height = bm.getHeight();
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
-        // CREATE A MATRIX FOR THE MANIPULATION
-        Matrix matrix = new Matrix();
-        // RESIZE THE BIT MAP
-        matrix.postScale(scaleWidth, scaleHeight);
-
-        // "RECREATE" THE NEW BITMAP
-        Bitmap resizedBitmap = Bitmap.createBitmap(
-                bm, 0, 0, width, height, matrix, false);
-        bm.recycle();
-        return resizedBitmap;
-    }
-
     public void onRegisterClick(View view){
         EditText username = findViewById(R.id.input_username2);
         EditText password = findViewById(R.id.input_password2);
         pb_circular.setVisibility(View.VISIBLE);
         if (username.getText().toString().equals(null)||password.getText().toString().equals(null)||password.getText().toString().equals("Password")||username.getText().toString().equals("Username")){
-            Toast.makeText(getApplicationContext(), "Error.Campos vacíos.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Fill Fields Correctly!.", Toast.LENGTH_LONG).show();
         }
 
         else{
@@ -154,9 +119,7 @@ public class RegisterActivity extends AppCompatActivity {
             player = new Player();
             player.setUsername(username.getText().toString());
             player.setPassword(password.getText().toString());
-            Bitmap icon = BitmapFactory.decodeResource(mContext.getResources(),R.drawable.userlogo);
-            icon = getResizedBitmap(icon,200,200);
-            player.setAvatar(imageToString(icon));
+           // player.setAvatar("basicAvatar");
             service.signUp(player).enqueue(new Callback<Player>() {
                 @Override
                 public void onResponse(Call<Player> call, Response<Player> response) {

@@ -1,15 +1,9 @@
 package edu.upc.eetac.dsa.lastsurvivorfrontend;
 
-import androidx.annotation.Nullable;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +14,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Player;
 import edu.upc.eetac.dsa.lastsurvivorfrontend.services.PlayerService;
 import okhttp3.OkHttpClient;
@@ -29,8 +26,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
-import com.google.gson.Gson;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -211,9 +206,6 @@ public class LoginActivity extends AppCompatActivity {
                 player = new Player(username,password,0,0,0,0);
                 player.setUsername(username);player.setPassword(password);
                 Call<Player> playerID = playerService.signIn(player);
-                Gson gson = new Gson();
-                String jsonInString = gson.toJson(player);
-                Log.d(TAG, "PlayerGson: "+jsonInString);
                 Log.d(TAG, "onSignInClicked: "+playerID.toString());
                 /* Android Doesn't allow synchronous execution of Http Request and so we must put it in queue*/
                 playerID.enqueue(new Callback<Player>() {
@@ -226,7 +218,6 @@ public class LoginActivity extends AppCompatActivity {
                             //Successful we can get the ID, and call again to ask for PLayer
                             if(response.isSuccessful()){
                                 player =  response.body();
-
                                 //We can close the Login Activity and get back to Splash Screen
                                 SharedPreferences settings = getSharedPreferences("UserInfo", 0);
                                 SharedPreferences.Editor editor = settings.edit();
@@ -235,7 +226,6 @@ public class LoginActivity extends AppCompatActivity {
                                 editor.putString("Id",player.getId());
                                 editor.commit();
                                 Intent returnIntent = new Intent();
-                                player.setAvatar("basicAvatar");
                                 returnIntent.putExtra("Player",player);
                                 setResult(Activity.RESULT_OK,returnIntent);
                                 finish();

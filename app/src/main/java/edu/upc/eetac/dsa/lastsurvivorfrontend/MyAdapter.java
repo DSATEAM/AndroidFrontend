@@ -2,7 +2,6 @@ package edu.upc.eetac.dsa.lastsurvivorfrontend;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +11,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -94,31 +91,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         holder.playerExperience.setText(String.valueOf(playerList.get(position).getExperience()));
        // Bitmap bitmapImg  = StringToBitmap(playerList.get(position).getAvatar());
         //holder.imageIcon.setImageBitmap(bitmapImg);
-        if(!playerList.get(position).getAvatar().equals("basicAvatar")){
-            Bitmap bitmapImg  = StringToBitmap(playerList.get(position).getAvatar());
-            holder.imageIcon.setImageBitmap(bitmapImg);
-        }else{
-            //Drawable myDrawable = getResources().getDrawable(R.drawable.sword_png_icon_20);
-            Bitmap icon = BitmapFactory.decodeResource(holder.imageIcon.getResources(),R.drawable.userlogo);
-            icon = getResizedBitmap(icon,200,200);
-            holder.imageIcon.setImageBitmap(icon);
-        }
-    }
-    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
-        int width = bm.getWidth();
-        int height = bm.getHeight();
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
-        // CREATE A MATRIX FOR THE MANIPULATION
-        Matrix matrix = new Matrix();
-        // RESIZE THE BIT MAP
-        matrix.postScale(scaleWidth, scaleHeight);
-
-        // "RECREATE" THE NEW BITMAP
-        Bitmap resizedBitmap = Bitmap.createBitmap(
-                bm, 0, 0, width, height, matrix, false);
-        bm.recycle();
-        return resizedBitmap;
+        Bitmap bitmapImg  = StringToBitmap(playerList.get(position).getAvatar());
+        holder.imageIcon.setImageBitmap(bitmapImg);
     }
     private Bitmap StringToBitmap(String encodedImage){
         byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);

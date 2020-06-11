@@ -28,7 +28,7 @@
         app:layout_constraintStart_toStartOf="@id/topText"
         app:layout_constraintTop_toBottomOf="@+id/topText"
         app:layout_goneMarginTop="20dp"
-        app:srcCompat="@drawable/userlogo" />
+        />
 
     <TextView
         android:id="@+id/textAvatar"

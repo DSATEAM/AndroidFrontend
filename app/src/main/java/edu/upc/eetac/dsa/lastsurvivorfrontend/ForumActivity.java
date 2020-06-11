@@ -1,10 +1,5 @@
 package edu.upc.eetac.dsa.lastsurvivorfrontend;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -17,11 +12,15 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Forum;
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Message;
-import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Player;
 import edu.upc.eetac.dsa.lastsurvivorfrontend.services.ForumService;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -93,6 +92,7 @@ public class ForumActivity extends AppCompatActivity {
         forumService = retrofit.create(ForumService.class);
         getMessages(forum);
     }
+
     private static void startRetrofit(){
         //HTTP &
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
