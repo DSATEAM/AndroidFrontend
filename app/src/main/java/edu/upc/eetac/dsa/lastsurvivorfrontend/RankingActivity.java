@@ -3,6 +3,7 @@ package edu.upc.eetac.dsa.lastsurvivorfrontend;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -104,9 +105,27 @@ public class RankingActivity extends AppCompatActivity {
     public void onButtonMyCurrentRankClick(View view) {
         getRank();
     }
+    @SuppressLint("LongLogTag")
     public void onButtonGraphClick(View view){
         //Start Graph Activity and send the data of Players List recieved and saved in playerList
         //Use parceble to send the data of playerList don't send them one by one!!!!
+        pb_circular.setVisibility(View.VISIBLE);
+        Log.d("Cantidad de jugadores en el ranking: ", String.valueOf(playerList.size()));
+        Log.d("list", playerList.toString());
+        Intent intent = new Intent(RankingActivity.this, GraphsActivity.class);
+        //intent.putExtra("my_key", playerList.toArray());
+        startActivity(intent);
+        //intent.putExtra("Player",player);
+        /*ArrayList<Player> playersss = new ArrayList<>(playerList);
+        intent.putParcelableArrayListExtra("playerList", playersss);
+        startActivityForResult(intent,2);
+*/
+      /*  Intent intent = new Intent(RankingActivity.this, GraphsActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("data", (Parcelable) playerList);
+        intent.putExtras(bundle);
+        startActivity(intent);*/
+        pb_circular.setVisibility(View.GONE);
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
