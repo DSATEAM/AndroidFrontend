@@ -1,12 +1,13 @@
 package edu.upc.eetac.dsa.lastsurvivorfrontend;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -14,20 +15,38 @@ import java.util.List;
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Item;
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Map;
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Player;
+import edu.upc.eetac.dsa.lastsurvivorfrontend.services.MapService;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class GameActivity extends AppCompatActivity {
     boolean isLaunchingFirstTime = true;
     Player player = new Player();
     List<Map> mapList = new LinkedList<>();
+    private static Retrofit retrofit;
+    private static String retrofitIpAddress;
+    //Map Service
+    MapService mapService;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-
+        //
+        ResourceFileReader rs =  new ResourceFileReader();
+        retrofitIpAddress = ResourceFileReader.ReadResourceFileFromStringNameKey("retrofit.IpAddress",this);
+        startRetrofit();
+        mapService = retrofit.create(MapService.class);
         if(getIntent().hasExtra("Player")){
             player = getIntent().getParcelableExtra("Player");
-            mapList = getIntent().getParcelableArrayListExtra("mapList");
-            launchingFirstTime();
+            getMaps();
+            //Now ArrayList Functional Hahaha!, but changed to retrofit callback
+            //ArrayList<Map> list = getIntent().getParcelableArrayListExtra("mapList");
+            //mapList = list;
         }else{
             //Means we opened GameActivity and haven't got any Player Data!
             Intent returnIntent = new Intent();
@@ -36,10 +55,64 @@ public class GameActivity extends AppCompatActivity {
             finish();
         }
     }
+    private static void startRetrofit(){
+        //HTTP &
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        //Attaching Interceptor to a client
+        OkHttpClient client = new OkHttpClient().newBuilder().addInterceptor(interceptor).build();
+
+        // Running Retrofit to get result from Local tracks service Interface
+        //Remember when using Local host on windows the IP is 10.0.2.2 for Android
+        //Also added NullOnEmptyConverterFactory when the response from server is empty
+        retrofit = new Retrofit.Builder()
+                .baseUrl("http://"+retrofitIpAddress+":8080/Backend/")
+                .addConverterFactory(new NullOnEmptyConverterFactory())
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
+    }
+    private void getMaps(){
+        try {
+
+            Call<List<Map>> mapsCaller = mapService.getMaps();
+            /* Android Doesn't allow synchronous execution of Http Request and so we must put it in queue*/
+            mapsCaller.enqueue(new Callback<List<Map>>() {
+                @Override
+                public void onResponse(Call<List<Map>> call, Response<List<Map>> response) {
+
+                    //pb_circular.setVisibility(View.GONE);
+                    //Retrieve the result containing in the body
+                    if (!response.body().isEmpty()) {
+                        // non empty response, Mapping Json via Gson...
+                        Log.d("RankingActivity","Server Response Ok");
+                        mapList = response.body();
+                        launchingFirstTime();
+                    } else {
+                        // empty response...
+                        Log.d("Map List","Maps Request Failed!");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<Map>> call, Throwable t) {
+                    NotifyUser("Error,could not retrieve data!");
+                }
+            });
+        }
+        catch(Exception e){
+            Log.d("MainActivity","Exception: " + e.toString());
+        }
+    }
+    //User Notifier Handler using Toast
+    private void NotifyUser(String showMessage){
+        Toast toast = Toast.makeText(GameActivity.this,showMessage,Toast.LENGTH_SHORT);
+        toast.show();
+    }
     private void launchingFirstTime(){
         if(isLaunchingFirstTime){
             /*
-            //String mapData = getMaps();
+            //String mapData = From Map List get the map and concatenate!;
             String mapData = "EEEE;" +
                     "EFFE;" +
                     "EFFE;" +

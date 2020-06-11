@@ -1,8 +1,5 @@
 package edu.upc.eetac.dsa.lastsurvivorfrontend;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -15,6 +12,12 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.LinkedList;
+import java.util.List;
+
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Map;
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Player;
 import edu.upc.eetac.dsa.lastsurvivorfrontend.services.MapService;
@@ -26,9 +29,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -64,9 +64,9 @@ public class MainActivity extends AppCompatActivity {
                 retrofitIpAddress = ResourceFileReader.ReadResourceFileFromStringNameKey("retrofit.IpAddress",this);
                 startRetrofit();
                 playerService = retrofit.create(PlayerService.class);
-                mapService = retrofit.create(MapService.class);
                 //Login with Player Object player which was written using (ExistPlayerAndSetData)
                 LoginUser();
+
             }catch(Exception e){
                 //Not possible to connect to server
                 e.printStackTrace();
@@ -122,14 +122,12 @@ public class MainActivity extends AppCompatActivity {
     public void onStartGameClicked(View view){
         pb_circular.setVisibility(View.VISIBLE);
         if(player.getId()!=null){
-        //GET MAPS
-        getMaps();
         //Launch Unity Game and after starting the game also get the data back from the unity to update the server
-        NotifyUser("Game Started: " + player.getUsername());
+        //NotifyUser("Game Started: " + player.getUsername());
         Intent intent = new Intent(MainActivity.this , GameActivity.class);
         intent.putExtra("Player",player);
-        ArrayList<Map> maps = new ArrayList<>(mapList);
-        intent.putParcelableArrayListExtra("mapList", maps);
+        //ArrayList<Map> maps = new ArrayList<>(mapList);
+        //intent.putParcelableArrayListExtra("mapList", maps);
         startActivityForResult(intent,GameRequestCode);
         }
     }
@@ -289,37 +287,7 @@ public class MainActivity extends AppCompatActivity {
                 .client(client)
                 .build();
     }
-    private void getMaps(){
-        try {
 
-            Call<List<Map>> mapsCaller = mapService.getMaps();
-            /* Android Doesn't allow synchronous execution of Http Request and so we must put it in queue*/
-            mapsCaller.enqueue(new Callback<List<Map>>() {
-                @Override
-                public void onResponse(Call<List<Map>> call, Response<List<Map>> response) {
-
-                    pb_circular.setVisibility(View.GONE);
-                    //Retrieve the result containing in the body
-                    if (!response.body().isEmpty()) {
-                        // non empty response, Mapping Json via Gson...
-                        Log.d("RankingActivity","Server Response Ok");
-                        mapList = response.body();
-                    } else {
-                        // empty response...
-                        Log.d("Map List","Maps Request Failed!");
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<List<Map>> call, Throwable t) {
-                    NotifyUser("Error,could not retrieve data!");
-                }
-            });
-        }
-        catch(Exception e){
-            Log.d("MainActivity","Exception: " + e.toString());
-        }
-    }
     private void LoginUser(){
         String username,password;
         username =  player.getUsername();
