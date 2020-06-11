@@ -351,6 +351,12 @@ public class MainActivity extends AppCompatActivity {
                             //Successful we can get the ID, and call again to ask for PLayer
                             if(response.isSuccessful()){
                                 player =  response.body();
+                                if(player.getAvatar()==null){
+                                    player.setAvatar("basicAvatar");
+                                }else if(player.getAvatar().isEmpty()){
+                                    player.setAvatar("basicAvatar");
+                                }
+
                                 Log.d(TAG,"The Player ID is: "+player.getId());
                             }else{ Log.d(TAG,"Something went horribly wrong!");}
                         } else if(response.code() == 404){ // Not Found User

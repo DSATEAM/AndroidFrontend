@@ -269,7 +269,6 @@ public class ForumActivity extends AppCompatActivity {
             }
         });
         dialog.show();
-
     }
 
 }
