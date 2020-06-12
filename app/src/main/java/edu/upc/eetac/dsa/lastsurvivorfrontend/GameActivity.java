@@ -127,35 +127,32 @@ public class GameActivity extends AppCompatActivity {
         }
     }
     private String getMapData(){
-        String type1Map = null;
-        for(int i=0;i<mapList.size();i++){
-            type1Map = mapList.get(0).getType1Map();
-            if(mapList.size()>1){
-                type1Map = type1Map + "/";
+        StringBuilder type1Map = new StringBuilder();
+        if(mapList!=null){
+            for(int i=0;i<mapList.size();i++){
+                type1Map.append(mapList.get(i).getType1Map()).append("/");
+            }
+            if(type1Map.length()!=0){
+                if(type1Map.lastIndexOf("/")==(type1Map.length()-1)){
+                    type1Map = new StringBuilder(type1Map.substring(0, type1Map.length() - 2));
+                }
             }
         }
-        if(type1Map!=null){
-            if(type1Map.charAt(type1Map.length()-1) == '/'){
-                type1Map = type1Map.substring(0,type1Map.length()-1);
-            }
-        }
-        return type1Map;
+        return type1Map.toString();
     }
     private String getObjectData(){
-        //Objects on Map with location and other values
-        String type2Objects = null;
-        for(int i=0;i<mapList.size();i++){
-            type2Objects = mapList.get(0).getType2Objects();
-            if(mapList.size()>1){
-                type2Objects = type2Objects + "/";
+        StringBuilder type2Objects = new StringBuilder();
+        if(mapList!=null) {
+            for (int i = 0; i < mapList.size(); i++) {
+                type2Objects.append(mapList.get(i).getType2Objects()).append("/");
+            }
+            if (type2Objects.length() != 0) {
+                if (type2Objects.lastIndexOf("/") == (type2Objects.length() - 1)) {
+                    type2Objects = new StringBuilder(type2Objects.substring(0, type2Objects.length() - 2));
+                }
             }
         }
-        if(type2Objects!=null){
-            if(type2Objects.charAt(type2Objects.length()-1) == '/'){
-                type2Objects = type2Objects.substring(0,type2Objects.length()-1);
-            }
-        }
-        return type2Objects;
+        return type2Objects.toString();
     }
     private String getPlayerStats(){
         //PlayerStats String: P,Level,Exp,Kills,Coins;Sword;Axe;Katana;Baton;Big Hammer
