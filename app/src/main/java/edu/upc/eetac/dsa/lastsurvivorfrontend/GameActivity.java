@@ -9,6 +9,8 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.unity3d.player.UnityPlayerActivity;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,7 +27,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class GameActivity extends AppCompatActivity {
-    boolean isLaunchingFirstTime = true;
+
     Player player = new Player();
     List<Map> mapList = new LinkedList<>();
     private static Retrofit retrofit;
@@ -47,12 +49,6 @@ public class GameActivity extends AppCompatActivity {
             //Now ArrayList Functional Hahaha!, but changed to retrofit callback
             //ArrayList<Map> list = getIntent().getParcelableArrayListExtra("mapList");
             //mapList = list;
-        }else{
-            //Means we opened GameActivity and haven't got any Player Data!
-            Intent returnIntent = new Intent();
-            //returnIntent.getExtra("Player",player);
-            setResult(Activity.RESULT_CANCELED,returnIntent);
-            finish();
         }
     }
     private static void startRetrofit(){
@@ -110,21 +106,17 @@ public class GameActivity extends AppCompatActivity {
         toast.show();
     }
     private void launchingFirstTime(){
-        if(isLaunchingFirstTime){
-            isLaunchingFirstTime =false;
-            //String mapData = From Map List get the map and concatenate!;
-            String playerData = getPlayerData();
-            String mapData = getMapData();
-            String objectData = getObjectData();
-            //Unity with MapData, playerData,ObjectData
-            /*
-            Intent intent = new Intent(this, UnityPlayerActivity.class);
-            intent.putExtra("playerData", playerData");
-            intent.putExtra("objectData", objectData);
-            intent.putExtra("mapData", mapData);
-            startActivityForResult(intent,0);
-            */
-        }
+        //String mapData = From Map List get the map and concatenate!;
+        String playerData = getPlayerData();
+        String mapData = getMapData();
+        String objectData = getObjectData();
+        //Unity with MapData, playerData,ObjectData
+
+        Intent intent = new Intent(this, UnityPlayerActivity.class);
+        intent.putExtra("playerData", playerData);
+        intent.putExtra("objectData", objectData);
+        intent.putExtra("mapData", mapData);
+        startActivityForResult(intent,0);
     }
     private String getMapData(){
         StringBuilder type1Map = new StringBuilder();
@@ -173,7 +165,7 @@ public class GameActivity extends AppCompatActivity {
             for(int i=0;i<player.getListItems().size(); i++){
                 itemTmp = player.getListItems().get(i);
                 //where weapons has Damage,Defense,hitRange,attackCooldown
-                itemStr = getItemChar(itemTmp.getName()) + ","+itemTmp.getOffense()+ ","+itemTmp.getDefense();
+                itemStr = getItemChar(itemTmp.getName()) + ","+itemTmp.getOffense()+ ","+itemTmp.getDefense()+ ",";
                 itemStr = itemStr + itemTmp.getHitRange()+","+itemTmp.getAttackCooldown();
                 items.append(";").append(itemStr);
             }
