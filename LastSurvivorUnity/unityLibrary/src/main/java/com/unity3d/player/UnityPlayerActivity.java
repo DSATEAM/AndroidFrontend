@@ -49,11 +49,17 @@ public class UnityPlayerActivity extends Activity
         setIntent(intent);
         mUnityPlayer.newIntent(intent);
     }
-
+    public void receivePlayerStats(String str)
+    {//Recieved Str
+        Log.e("Unity Player Activity:","Received Player Stats: "+str);
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("playerStats",str);
+        setResult(Activity.RESULT_OK,returnIntent);
+        finish();
+    }
     // Quit Unity
     @Override protected void onDestroy ()
     {
-        //mUnityPlayer.destroy();
         super.onDestroy();
     }
 
@@ -70,14 +76,7 @@ public class UnityPlayerActivity extends Activity
         super.onResume();
         mUnityPlayer.resume();
     }
-    public void receivePlayerStats(String str)
-    {//Recieved Str
-        Log.e("Unity Player Activity:","Recievied String: "+str);
-        Intent returnIntent = new Intent();
-        returnIntent.putExtra("playerStats",str);
-        setResult(Activity.RESULT_OK,returnIntent);
-        finish();
-    }
+
     // Low Memory Unity
     @Override public void onLowMemory()
     {
