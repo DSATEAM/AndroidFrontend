@@ -48,7 +48,12 @@ public class MainActivity extends AppCompatActivity {
     List<Map> mapList = new LinkedList<>();
     //TextView of Splash
     private ProgressBar pb_circular;
-    private static int GameRequestCode = 4;
+    private static int LoginRequestCode = 1;
+    private static int RankingRequestCode = 2;
+    private static int ProfileRequestCode = 3;
+    private static int ForumRequestCode = 4;
+    private static int GameRequestCode = 5;
+    private static int InventoryRequestCode = 6;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -154,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
             pb_circular.setVisibility(View.VISIBLE);
             Intent intent = new Intent(MainActivity.this, ForumListActivity.class);
             intent.putExtra("Avatar", player.getAvatar());
-            startActivityForResult(intent, 4);
+            startActivity(intent);
             pb_circular.setVisibility(View.GONE);
         }else{
             NotifyUser("Unable to Connect to Server, Restart the Application!");
@@ -166,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
             pb_circular.setVisibility(View.VISIBLE);
             Intent intent = new Intent(MainActivity.this, StoreActivity.class);
             intent.putExtra("parentId", player.getId());
-            startActivity(intent);
+            startActivityForResult(intent,InventoryRequestCode);
             pb_circular.setVisibility(View.GONE);
         }else{
             NotifyUser("Unable to Connect to Server, Restart the Application!");
@@ -194,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
             //Launch Unity Game and after starting the game also get the data back from the unity to update the server
             Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
             intent.putExtra("Player", player);
-            startActivityForResult(intent, 3);
+            startActivityForResult(intent, ProfileRequestCode);
             pb_circular.setVisibility(View.GONE);
         }else{
             NotifyUser("Unable to Connect to Server, Restart the Application!");
@@ -223,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
         if(playerLogged ){
         pb_circular.setVisibility(View.VISIBLE);
         Intent intent = new Intent(MainActivity.this ,RankingActivity.class);
-        startActivityForResult(intent,2);
+        startActivity(intent);
         pb_circular.setVisibility(View.GONE);
         }else{
             NotifyUser("Unable to Connect to Server, Restart the Application!");
@@ -233,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
     private void LaunchLoginActivity() {
         pb_circular.setVisibility(View.VISIBLE);
         Intent intent = new Intent(MainActivity.this ,LoginActivity.class);
-        startActivityForResult(intent,1);
+        startActivityForResult(intent,LoginRequestCode);
         pb_circular.setVisibility(View.GONE);
     }
     @Override
@@ -241,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         //If login activity closed means the user has logged in, and the data is stored in the database
         pb_circular.setVisibility(View.VISIBLE);
-        if (requestCode == 1) {
+        if (requestCode == LoginRequestCode) {
             if(resultCode == Activity.RESULT_OK){
                 if (data != null) {
                     player = data.getParcelableExtra("Player");
@@ -255,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
         //Profile Modified request code 3
-        if (requestCode == 3) {
+        if (requestCode == ProfileRequestCode) {
             if(resultCode == Activity.RESULT_OK){
                 if (data != null) {
                     player = data.getParcelableExtra("Player");
@@ -287,45 +292,22 @@ public class MainActivity extends AppCompatActivity {
                 playerLogged = true;
             }
         }
-        pb_circular.setVisibility(View.GONE);
-    }
-    private void updatePlayer(){
-        pb_circular.setVisibility(View.VISIBLE);
-        try {
-            Call<Player> playerTmp = playerService.updatePlayer(player);
-            /* Android Doesn't allow synchronous execution of Http Request and so we must put it in queue*/
-            playerTmp.enqueue(new Callback<Player>() {
-                @Override
-                public void onResponse(Call<Player> call, Response<Player> response) {
-                    //Update Successful
-                    pb_circular.setVisibility(View.GONE);
-                    if (response.code() == 201) {
-                        //Successful we can get the ID, and call again to ask for PLayer
-                        if(response.isSuccessful()){
-                            player =  response.body();
-                            if (player != null) {
-                                Log.w("Update Player" ,"Update Player Response successful"+ player.toString());
-                                playerLogged = true;
-                            }else{
-                                playerLogged = false;LaunchLoginActivity();
-                            }
-                        }else{ Log.e("MainActivity","Couldn't fill player from body"); playerLogged = false;}
-                    } else if(response.code() == 404){ // Not Found User
-                        NotifyUser("Player Not Found");playerLogged = false;
-                    }else if(response.code() == 400){ //Incorrect Password
-                        NotifyUser("Bad Request");playerLogged = false;
-                    }else{
-                        NotifyUser("Something went horribly wrong!");playerLogged = false;
-                    }
+        //Inventory Activity Request Code 5
+        if(requestCode == InventoryRequestCode){
+            if(resultCode == Activity.RESULT_OK){
+                if (data != null) {
+                    LoginUser();
+                    playerLogged = true;
                 }
-                @Override
-                public void onFailure(Call<Player> call, Throwable t) {
-                    NotifyUser("Failure to Update Profile");playerLogged = false;LaunchLoginActivity();
-                }
-            });
-        }catch (Exception e){
-            e.printStackTrace();playerLogged = false;LaunchLoginActivity();
+                //Retrieved updated data from Game Activity
+                //updatePlayer(); //Update Player,No need anymore as we already do this in GameActivity!
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Do nothing as nothing changed in game!
+                playerLogged = true;
+            }
         }
+        pb_circular.setVisibility(View.GONE);
     }
     private static void startRetrofit(){
         //HTTP &
