@@ -20,7 +20,7 @@ android {
         targetSdkVersion 28
         applicationId 'com.DefaultCompany.LastSurvivor'
         ndk {
-            abiFilters 'armeabi-v7a'
+            abiFilters 
         }
         versionCode 1
         versionName '0.1'
@@ -37,15 +37,15 @@ android {
 
     buildTypes {
         debug {
-            minifyEnabled false
-            useProguard false
+            minifyEnabled true
+            useProguard true
             proguardFiles getDefaultProguardFile('proguard-android.txt')
             signingConfig signingConfigs.debug
             jniDebuggable true
         }
         release {
-            minifyEnabled false
-            useProguard false
+            minifyEnabled true
+            useProguard true
             proguardFiles getDefaultProguardFile('proguard-android.txt')
             signingConfig signingConfigs.debug
         }
@@ -53,6 +53,15 @@ android {
 
     packagingOptions {
         doNotStrip '*/armeabi-v7a/*.so'
+    }
+
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'armeabi-v7a'
+            universalApk false
+        }
     }
 
     bundle {
@@ -64,6 +73,19 @@ android {
         }
         abi {
             enableSplit = true
+        }
+    }
+}
+
+ext.abiCodes = ['armeabi-v7a': 1]
+
+import com.android.build.OutputFile
+
+android.applicationVariants.all { variant ->
+    variant.outputs.each { output ->
+        def baseAbiVersionCode = project.ext.abiCodes.get(output.getFilter(OutputFile.ABI))
+        if (baseAbiVersionCode != null) {
+            output.versionCodeOverride = baseAbiVersionCode * 100000 + variant.versionCode
         }
     }
 }

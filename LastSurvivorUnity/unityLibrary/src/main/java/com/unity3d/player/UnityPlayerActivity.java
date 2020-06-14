@@ -10,10 +10,12 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.Window;
 
+import java.util.ArrayList;
+
 public class UnityPlayerActivity extends Activity
 {
     protected UnityPlayer mUnityPlayer; // don't change the name of this variable; referenced from native code
-
+    private ArrayList<String> playerStatsArr = new ArrayList<>();
     // Override this in your custom UnityPlayerActivity to tweak the command line arguments passed to the Unity Android Player
     // The command line arguments are passed as a string, separated by spaces
     // UnityPlayerActivity calls this from 'onCreate'
@@ -50,10 +52,22 @@ public class UnityPlayerActivity extends Activity
         mUnityPlayer.newIntent(intent);
     }
     public void receivePlayerStats(String str)
-    {//Recieved Str
+    {//Received Str
         Log.e("Unity Player Activity:","Received Player Stats: "+str);
+        //Upload the data to server!
+        if(str!=null) {
+            playerStatsArr.add(str);
+        }
+    }
+    public void closeUnityPlayerActivity(String str)
+    {//Received Str & Close UnityPlayer
+        Log.e("UnityPlayer","Received Stats before Closing: "+str);
+        if(str!=null) {
+            playerStatsArr.add(str);
+        }
         Intent returnIntent = new Intent();
-        returnIntent.putExtra("playerStats",str);
+        //.putExtra("playerStats",str);
+        returnIntent.putStringArrayListExtra("playerStatsArr", playerStatsArr);
         setResult(Activity.RESULT_OK,returnIntent);
         finish();
     }

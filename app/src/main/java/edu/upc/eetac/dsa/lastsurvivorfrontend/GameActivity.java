@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.unity3d.player.UnityPlayerActivity;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Item;
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Map;
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Player;
 import edu.upc.eetac.dsa.lastsurvivorfrontend.services.MapService;
+import edu.upc.eetac.dsa.lastsurvivorfrontend.services.PlayerService;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -32,6 +34,8 @@ public class GameActivity extends AppCompatActivity {
     List<Map> mapList = new LinkedList<>();
     private static Retrofit retrofit;
     private static String retrofitIpAddress;
+    //Player Service Object
+    PlayerService playerService;
     //Map Service
     MapService mapService;
     @Override
@@ -196,22 +200,38 @@ public class GameActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         //If login activity closed means the user has logged in, and the data is stored in the database
         if (requestCode == 0) {
-            if(resultCode == Activity.RESULT_OK){
+            if(resultCode == Activity.RESULT_OK) {
                 //Get the Unity Activity Data!
-                String playerStats = data.getStringExtra("playerStats");
-                Log.w("Close Game","Received Stats from Unity: "+playerStats);
-                //TODO Convert the Incoming string to Proper Player Stats!
-                String[] strArr = playerStats.split(",");
-                //P,level,Experience,Kills,Credits
-                int level = Integer.parseInt(strArr[1]);
-                int exp = Integer.parseInt(strArr[2]);
-                int kills=Integer.parseInt(strArr[3]);
-                int coins=Integer.parseInt(strArr[4]);
-                //Updating Player Object with New Stats
-                player.setGamesPlayed(player.getGamesPlayed()+1);
-                player.setExperience(level*50+exp);
-                player.setKills(kills);
-                player.setCredits(coins);
+                ArrayList<String> playerStatsArr = new ArrayList<>();
+                //String playerStats = null;
+                if (data != null) {
+                    //playerStats = data.getStringExtra("playerStats");
+                    playerStatsArr = data.getStringArrayListExtra("playerStatsArr");
+                }
+                boolean canUpdate =false;
+                String playerStats = null;
+                if (playerStatsArr != null) {
+                    if(!playerStatsArr.isEmpty()){
+                        playerStats = playerStatsArr.get(playerStatsArr.size() - 1);
+                        canUpdate = true;
+                    }
+                }
+                if (canUpdate) {
+                    Log.w("Close Game", "Received Stats from Unity: " + playerStats);
+                    //Convert the Incoming string to Proper Player Stats!
+                    String[] strArr = playerStats.split(",");
+                    //P,level,Experience,Kills,Credits
+                    int level = Integer.parseInt(strArr[1]);
+                    int exp = Integer.parseInt(strArr[2]);
+                    int kills = Integer.parseInt(strArr[3]);
+                    int coins = Integer.parseInt(strArr[4]);
+                    //Updating Player Object with New Stats
+                    player.setGamesPlayed(player.getGamesPlayed() + 1);
+                    player.setExperience(level * 50 + exp);
+                    player.setKills(kills);
+                    player.setCredits(coins);
+                    updatePlayer();
+                }
                 //Close the GameActivity
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("Player",player);
@@ -223,6 +243,44 @@ public class GameActivity extends AppCompatActivity {
                 setResult(Activity.RESULT_CANCELED,returnIntent);
                 finish();
             }
+        }
+    }
+    private void updatePlayer(){
+        try {
+            if(player!=null) {
+                Call<Player> playerTmp = playerService.updatePlayer(player);
+                /* Android Doesn't allow synchronous execution of Http Request and so we must put it in queue*/
+                playerTmp.enqueue(new Callback<Player>() {
+                    @Override
+                    public void onResponse(Call<Player> call, Response<Player> response) {
+                        //Update Successful
+                        if (response.code() == 201) {
+                            //Successful we can get the ID, and call again to ask for PLayer
+                            if (response.isSuccessful()) {
+                                player = response.body();
+                                if (player != null) {
+                                    Log.w("GameActivity", "Update Player Response successful" + player.toString());
+                                }
+                            } else {
+                                Log.e("GameActivity", "Couldn't fill player from body");
+                            }
+                        } else if (response.code() == 404) { // Not Found User
+                            NotifyUser("Player Not Found");
+                        } else if (response.code() == 400) { //Incorrect Password
+                            NotifyUser("Bad Request");
+                        } else {
+                            NotifyUser("Something went horribly wrong!");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Player> call, Throwable t) {
+                        NotifyUser("Failure to Update Profile");
+                    }
+                });
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 }
