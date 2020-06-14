@@ -27,6 +27,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static edu.upc.eetac.dsa.lastsurvivorfrontend.ResourceFileReader.ReadResourceFileFromStringNameKey;
+
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
@@ -59,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login_activity);
         pb_circular = findViewById(R.id.progressBar_cyclic);
         ResourceFileReader rs =  new ResourceFileReader();
-        retrofitIpAddress = ResourceFileReader.ReadResourceFileFromStringNameKey("retrofit.IpAddress",this);
+        retrofitIpAddress = ReadResourceFileFromStringNameKey("retrofit.IpAddress",this);
         //Starting Retrofit
         startRetrofit();
         playerService = retrofit.create(PlayerService.class);
@@ -243,6 +245,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
                     @Override
                     public void onFailure(Call<Player> call, Throwable t) {
+
                         NotifyUser("Error");
                     }
                 });
