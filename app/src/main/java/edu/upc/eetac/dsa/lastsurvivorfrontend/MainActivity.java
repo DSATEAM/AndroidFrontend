@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
             pb_circular.setVisibility(View.VISIBLE);
             //Launch Unity Game and after starting the game also get the data back from the unity to update the server
             NotifyUser("Web Redirect: " + player.getUsername());
-            String url = "http://" + retrofitIpAddress + ":8080/LastSurvivor/Register/main.html";
+            String url = "http://147.83.7.205:8080/LastSurvivor/Register/main.html";
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse(url));
             startActivity(i);
@@ -280,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
                     playerLogged = true;
                 }
                 //Retrieved updated data from Game Activity
-                updatePlayer(); //Update Player in Server
+                //updatePlayer(); //Update Player,No need anymore as we already do this in GameActivity!
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Do nothing as nothing changed in game!
@@ -326,7 +326,6 @@ public class MainActivity extends AppCompatActivity {
         }catch (Exception e){
             e.printStackTrace();playerLogged = false;LaunchLoginActivity();
         }
-
     }
     private static void startRetrofit(){
         //HTTP &
