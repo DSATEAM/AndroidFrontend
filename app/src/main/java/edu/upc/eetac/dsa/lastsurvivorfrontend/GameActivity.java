@@ -272,7 +272,6 @@ public class GameActivity extends AppCompatActivity {
                             NotifyUser("Something went horribly wrong!");
                         }
                     }
-
                     @Override
                     public void onFailure(Call<Player> call, Throwable t) {
                         NotifyUser("Failure to Update Profile");

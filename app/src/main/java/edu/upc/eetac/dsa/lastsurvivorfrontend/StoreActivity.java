@@ -1,13 +1,8 @@
 package edu.upc.eetac.dsa.lastsurvivorfrontend;
 
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,11 +13,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.gson.Gson;
+
 import java.util.List;
 
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Item;
-import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Player;
-import edu.upc.eetac.dsa.lastsurvivorfrontend.services.RankingService;
 import edu.upc.eetac.dsa.lastsurvivorfrontend.services.StoreService;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -31,11 +32,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.gson.Gson;
 
 
 public class StoreActivity extends AppCompatActivity{
@@ -211,6 +207,7 @@ public class StoreActivity extends AppCompatActivity{
                     public void onResponse(Call<Item> call, Response<Item> response) {
                         if (response.code() == 201) {
                             NotifyUser("Successful");
+                            //Item itemRcv = response.body();
                         } else if (response.code() == 400) { // Bad Request
                             NotifyUser("Unsuccessful!");
                         } else if (response.code() == 402) { //Not enough credits
@@ -219,7 +216,6 @@ public class StoreActivity extends AppCompatActivity{
                             NotifyUser("You already have this Item");
                         }
                     }
-
                     @Override
                     public void onFailure(Call<Item> call, Throwable t) {
                         NotifyUser("Error");
@@ -262,8 +258,9 @@ public class StoreActivity extends AppCompatActivity{
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dialog.dismiss();
                 Intent returnIntent = new Intent();
-                setResult(Activity.RESULT_CANCELED, returnIntent);
+                setResult(Activity.RESULT_OK, returnIntent);
                 finish();
             }
         });
