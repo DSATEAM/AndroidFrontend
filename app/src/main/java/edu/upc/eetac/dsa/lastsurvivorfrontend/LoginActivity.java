@@ -121,11 +121,16 @@ public class LoginActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if(resultCode == Activity.RESULT_OK){
-                //Means we registered succesfully
-                player = data.getParcelableExtra("Player");
+                //Means we registered successfully
+                if (data != null) {
+                    player = data.getParcelableExtra("Player");
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra("Player",player);
+                    setResult(Activity.RESULT_OK,returnIntent);
+                }
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("Player",player);
-                setResult(Activity.RESULT_OK,returnIntent);
+                setResult(Activity.RESULT_CANCELED,returnIntent);
                 finish();
             }
             if (resultCode == Activity.RESULT_CANCELED) {
@@ -229,7 +234,6 @@ public class LoginActivity extends AppCompatActivity {
                                 editor.putString("Id",player.getId());
                                 editor.commit();
                                 Intent returnIntent = new Intent();
-                                player.setAvatar("basicAvatar");
                                 returnIntent.putExtra("Player",player);
                                 setResult(Activity.RESULT_OK,returnIntent);
                                 finish();
