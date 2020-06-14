@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     //Player Service Object
     PlayerService playerService;
     //Map Service
+    private boolean playerLogged = false;
     MapService mapService;
     //Player Objects
     Player player = new Player();
@@ -52,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         pb_circular = findViewById(R.id.progressBar_cyclic);
         //After launch check if a user exists in preferences and also set the player
         if(!ExistPlayerAndSetData()){
@@ -70,7 +70,8 @@ public class MainActivity extends AppCompatActivity {
             }catch(Exception e){
                 //Not possible to connect to server
                 e.printStackTrace();
-                NotifyUser("Can't Connect to Server!");
+                NotifyUser("Unable to Connect to Server, Restart the Application!");
+                playerLogged = false;
             }
         }
         pb_circular.setVisibility(View.GONE);
@@ -120,75 +121,114 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onStartGameClicked(View view){
-        pb_circular.setVisibility(View.VISIBLE);
-        if(player.getId()!=null){
-        //Launch Unity Game and after starting the game also get the data back from the unity to update the server
-        //NotifyUser("Game Started: " + player.getUsername());
-        Intent intent = new Intent(MainActivity.this , GameActivity.class);
-        intent.putExtra("Player",player);
-        //ArrayList<Map> maps = new ArrayList<>(mapList);
-        //intent.putParcelableArrayListExtra("mapList", maps);
-        startActivityForResult(intent,GameRequestCode);
+        if(playerLogged){
+            pb_circular.setVisibility(View.VISIBLE);
+            if(player.getId()!=null) {
+                //Launch Unity Game and after starting the game also get the data back from the unity to update the server
+                //NotifyUser("Game Started: " + player.getUsername());
+                Intent intent = new Intent(MainActivity.this, GameActivity.class);
+                intent.putExtra("Player", player);
+                //ArrayList<Map> maps = new ArrayList<>(mapList);
+                //intent.putParcelableArrayListExtra("mapList", maps);
+                startActivityForResult(intent, GameRequestCode);
+            }
+        }else{
+            NotifyUser("Unable to Connect to Server, Restart the Application!");
+            LaunchLoginActivity();
         }
     }
     public void onButtonEnemiesClick(View view){
-        pb_circular.setVisibility(View.VISIBLE);
-        Intent inte = new Intent(MainActivity.this, EnemyActivity.class);
-        startActivity(inte);
-        pb_circular.setVisibility(View.GONE);
+        if(playerLogged) {
+            pb_circular.setVisibility(View.VISIBLE);
+            Intent intent = new Intent(MainActivity.this, EnemyActivity.class);
+            startActivity(intent);
+            pb_circular.setVisibility(View.GONE);
+        }else{
+            NotifyUser("Unable to Connect to Server, Restart the Application!");
+            LaunchLoginActivity();
+        }
     }
     public void onForumClicked(View view){
-        //Here the press of the Button Forum
-        pb_circular.setVisibility(View.VISIBLE);
-        Intent intent = new Intent(MainActivity.this ,ForumListActivity.class);
-        intent.putExtra("Avatar",player.getAvatar());
-        startActivityForResult(intent,4);
-        pb_circular.setVisibility(View.GONE);
+        if(playerLogged) {
+            //Here the press of the Button Forum
+            pb_circular.setVisibility(View.VISIBLE);
+            Intent intent = new Intent(MainActivity.this, ForumListActivity.class);
+            intent.putExtra("Avatar", player.getAvatar());
+            startActivityForResult(intent, 4);
+            pb_circular.setVisibility(View.GONE);
+        }else{
+            NotifyUser("Unable to Connect to Server, Restart the Application!");
+            LaunchLoginActivity();
+        }
     }
     public void onInventoryClicked(View view){
-        pb_circular.setVisibility(View.VISIBLE);
-        Intent intent = new Intent(MainActivity.this, StoreActivity.class);
-        intent.putExtra("parentId",player.getId());
-        startActivity(intent);
-        pb_circular.setVisibility(View.GONE);
+        if(playerLogged) {
+            pb_circular.setVisibility(View.VISIBLE);
+            Intent intent = new Intent(MainActivity.this, StoreActivity.class);
+            intent.putExtra("parentId", player.getId());
+            startActivity(intent);
+            pb_circular.setVisibility(View.GONE);
+        }else{
+            NotifyUser("Unable to Connect to Server, Restart the Application!");
+            LaunchLoginActivity();
+        }
     }
     public void onButtonRedirectWebClick(View view){
-        pb_circular.setVisibility(View.VISIBLE);
-        //Launch Unity Game and after starting the game also get the data back from the unity to update the server
-        NotifyUser("Web Redirect: " + player.getUsername());
-        String url = "http://"+retrofitIpAddress+":8080/LastSurvivor/Register/main.html";
-        Intent i = new Intent(Intent.ACTION_VIEW);
-        i.setData(Uri.parse(url));
-        startActivity(i);
-        pb_circular.setVisibility(View.GONE);
+        if(playerLogged) {
+            pb_circular.setVisibility(View.VISIBLE);
+            //Launch Unity Game and after starting the game also get the data back from the unity to update the server
+            NotifyUser("Web Redirect: " + player.getUsername());
+            String url = "http://" + retrofitIpAddress + ":8080/LastSurvivor/Register/main.html";
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            startActivity(i);
+            pb_circular.setVisibility(View.GONE);
+        }else{
+            NotifyUser("Unable to Connect to Server, Restart the Application!");
+            LaunchLoginActivity();
+        }
     }
     public void onButtonModifyProfileClick(View view){
-
-        pb_circular.setVisibility(View.VISIBLE);
-        //Launch Unity Game and after starting the game also get the data back from the unity to update the server
-        Intent intent = new Intent(MainActivity.this , ProfileActivity.class);
-        intent.putExtra("Player",player);
-        startActivityForResult(intent,3);
-        pb_circular.setVisibility(View.GONE);
+        if(playerLogged) {
+            pb_circular.setVisibility(View.VISIBLE);
+            //Launch Unity Game and after starting the game also get the data back from the unity to update the server
+            Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+            intent.putExtra("Player", player);
+            startActivityForResult(intent, 3);
+            pb_circular.setVisibility(View.GONE);
+        }else{
+            NotifyUser("Unable to Connect to Server, Restart the Application!");
+            LaunchLoginActivity();
+        }
     }
     public void onSignOutClicked(View view){
-        pb_circular.setVisibility(View.VISIBLE);
-        //Launch Unity Game and after starting the game also get the data back from the unity to update the server
-        SharedPreferences settings = getSharedPreferences("UserInfo", 0);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("Username","");
-        editor.putString("Password","");
-        editor.putString("Id","");
-        editor.commit();
-        //After logout from phone, set the screen to LoginActivity
-        LaunchLoginActivity();
-        pb_circular.setVisibility(View.GONE);
+        if(playerLogged) {
+            pb_circular.setVisibility(View.VISIBLE);
+            //Launch Unity Game and after starting the game also get the data back from the unity to update the server
+            SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putString("Username", "");
+            editor.putString("Password", "");
+            editor.putString("Id", "");
+            editor.commit();
+            //After logout from phone, set the screen to LoginActivity
+            LaunchLoginActivity();
+            pb_circular.setVisibility(View.GONE);
+        }else{
+            NotifyUser("Unable to Connect to Server, Restart the Application!");
+            LaunchLoginActivity();
+        }
     }
     public void onCurrentRankingClicked(View view){
+        if(playerLogged ){
         pb_circular.setVisibility(View.VISIBLE);
         Intent intent = new Intent(MainActivity.this ,RankingActivity.class);
         startActivityForResult(intent,2);
         pb_circular.setVisibility(View.GONE);
+        }else{
+            NotifyUser("Unable to Connect to Server, Restart the Application!");
+            LaunchLoginActivity();
+        }
     }
     private void LaunchLoginActivity() {
         pb_circular.setVisibility(View.VISIBLE);
@@ -203,11 +243,13 @@ public class MainActivity extends AppCompatActivity {
         pb_circular.setVisibility(View.VISIBLE);
         if (requestCode == 1) {
             if(resultCode == Activity.RESULT_OK){
-                player = data.getParcelableExtra("Player");
-                Log.w("s","Test");
-
+                if (data != null) {
+                    player = data.getParcelableExtra("Player");
+                    playerLogged = true;
+                }
             }
             if (resultCode == Activity.RESULT_CANCELED) {
+                playerLogged = false;
                 finish();
             }
 
@@ -215,23 +257,34 @@ public class MainActivity extends AppCompatActivity {
         //Profile Modified request code 3
         if (requestCode == 3) {
             if(resultCode == Activity.RESULT_OK){
-                player = data.getParcelableExtra("Player");
+                if (data != null) {
+                    player = data.getParcelableExtra("Player");
+                    playerLogged = true;
+                }
                 //Retrieved updated data from Profile Modified
-                Log.w("Main Modify",player.getAvatar());
+                if (player != null) {
+                    Log.w("Main Modify",player.getAvatar());
+                    playerLogged = true;
+                }
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                //Do nothing as nothing updated
+                playerLogged = true;
             }
         }
         //Game Activity Request Code 4
         if(requestCode == GameRequestCode){
             if(resultCode == Activity.RESULT_OK){
-                player = data.getParcelableExtra("Player");
+                if (data != null) {
+                    player = data.getParcelableExtra("Player");
+                    playerLogged = true;
+                }
                 //Retrieved updated data from Game Activity
                 updatePlayer(); //Update Player in Server
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Do nothing as nothing changed in game!
+                playerLogged = true;
             }
         }
         pb_circular.setVisibility(View.GONE);
@@ -250,23 +303,28 @@ public class MainActivity extends AppCompatActivity {
                         //Successful we can get the ID, and call again to ask for PLayer
                         if(response.isSuccessful()){
                             player =  response.body();
-                            Log.w("Update Player" ,"Update Plyer Response successful"+ player.toString());
-                        }else{ Log.e("MainActivity","Couldn't fill player from body");}
+                            if (player != null) {
+                                Log.w("Update Player" ,"Update Player Response successful"+ player.toString());
+                                playerLogged = true;
+                            }else{
+                                playerLogged = false;LaunchLoginActivity();
+                            }
+                        }else{ Log.e("MainActivity","Couldn't fill player from body"); playerLogged = false;}
                     } else if(response.code() == 404){ // Not Found User
-                        NotifyUser("Player Not Found");
+                        NotifyUser("Player Not Found");playerLogged = false;
                     }else if(response.code() == 400){ //Incorrect Password
-                        NotifyUser("Bad Request");
+                        NotifyUser("Bad Request");playerLogged = false;
                     }else{
-                        NotifyUser("Something went horribly wrong!");
+                        NotifyUser("Something went horribly wrong!");playerLogged = false;
                     }
                 }
                 @Override
                 public void onFailure(Call<Player> call, Throwable t) {
-                    NotifyUser("Failure to Update Profile");
+                    NotifyUser("Failure to Update Profile");playerLogged = false;LaunchLoginActivity();
                 }
             });
         }catch (Exception e){
-            e.printStackTrace();
+            e.printStackTrace();playerLogged = false;LaunchLoginActivity();
         }
 
     }
@@ -319,26 +377,26 @@ public class MainActivity extends AppCompatActivity {
                             //Successful we can get the ID, and call again to ask for PLayer
                             if(response.isSuccessful()){
                                 player =  response.body();
-                                if(player.getAvatar()==null){
-                                    player.setAvatar("basicAvatar");
-                                }else if(player.getAvatar().isEmpty()){
-                                    player.setAvatar("basicAvatar");
-                                }
 
-                                Log.d(TAG,"The Player ID is: "+player.getId());
-                            }else{ Log.d(TAG,"Something went horribly wrong!");}
+                                if (player != null) {
+                                    Log.d(TAG,"The Player ID is: "+player.getId());
+                                    playerLogged = true;
+                                }else{
+                                    playerLogged = false;LaunchLoginActivity();
+                                }
+                            }else{ Log.d(TAG,"Something went horribly wrong!");LaunchLoginActivity();}
                         } else if(response.code() == 404){ // Not Found User
-                            NotifyUser("Unsuccessful!");
+                            NotifyUser("Unsuccessful!");playerLogged = false;LaunchLoginActivity();
                         }else if(response.code() == 401){ //Incorrect Password
-                            NotifyUser("Incorrect Password");
+                            NotifyUser("Incorrect Password");playerLogged = false;LaunchLoginActivity();
                         }else{
-                            NotifyUser("Something went horribly wrong!");
+                            NotifyUser("Something went horribly wrong!");playerLogged = false;LaunchLoginActivity();
                         }
                     }
                     @Override
                     public void onFailure(Call<Player> call, Throwable t) {
                         pb_circular.setVisibility(View.GONE);
-                        NotifyUser("Failure to logIn");
+                        NotifyUser("Failure to logIn");playerLogged = false;LaunchLoginActivity();
                     }
                 });
             }catch (Exception e){
@@ -372,6 +430,7 @@ public class MainActivity extends AppCompatActivity {
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dialog.dismiss();
                 Intent returnIntent = new Intent();
                 setResult(Activity.RESULT_CANCELED,returnIntent);
                 finish();
