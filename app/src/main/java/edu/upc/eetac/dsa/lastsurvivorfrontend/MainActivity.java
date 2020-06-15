@@ -60,17 +60,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         pb_circular = findViewById(R.id.progressBar_cyclic);
         //After launch check if a user exists in preferences and also set the player
-        if(!ExistPlayerAndSetData()){
+        if(!isPlayerLocalStorageDataAvailable()){
             LaunchLoginActivity();
         }else{
             //Connect with retrofit & Login Automatically and Retrieve the Player Data
             try{
-                ResourceFileReader rs =  new ResourceFileReader();
                 retrofitIpAddress = ResourceFileReader.ReadResourceFileFromStringNameKey("retrofit.IpAddress",this);
                 startRetrofit();
                 playerService = retrofit.create(PlayerService.class);
                 //Login with Player Object player which was written using (ExistPlayerAndSetData)
-                LoginUser();
+                getPlayerServer();
 
             }catch(Exception e){
                 //Not possible to connect to server
@@ -81,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         }
         pb_circular.setVisibility(View.GONE);
     }
-    private boolean ExistPlayerAndSetData(){
+    private boolean isPlayerLocalStorageDataAvailable(){
         //Access the shared preference UserInfo and obtain the parameters, default =string empty
         SharedPreferences settings = getSharedPreferences("UserInfo", 0);
         player.setUsername(settings.getString("Username", ""));
@@ -215,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("Username", "");
             editor.putString("Password", "");
             editor.putString("Id", "");
-            editor.commit();
+            editor.apply();
             //After logout from phone, set the screen to LoginActivity
             LaunchLoginActivity();
             pb_circular.setVisibility(View.GONE);
@@ -296,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
         if(requestCode == InventoryRequestCode){
             if(resultCode == Activity.RESULT_OK){
                 if (data != null) {
-                    LoginUser();
+                    getPlayerServer();
                     playerLogged = true;
                 }
                 //Retrieved updated data from Game Activity
@@ -327,63 +326,53 @@ public class MainActivity extends AppCompatActivity {
                 .build();
     }
 
-    private void LoginUser(){
-        String username,password;
-        username =  player.getUsername();
-        password =  player.getPassword();
+    private void getPlayerServer(){
         pb_circular.setVisibility(View.VISIBLE);
-        if(username == null|| password== null){
-            NotifyUser("Please fill the fields!");
-        }else if(username.isEmpty()|| password.isEmpty()){
-            NotifyUser("Please Type something other than space");
-        }else if(username.contains(" ")|| password.contains(" ")){
-            NotifyUser("Please Type that doesn't contain spaces");
-        }else{
-            //Now we can send the data to Server and ask for login
-            String TAG = "onSignIn";
+        //Now we can send the data to Server and ask for login
+        String TAG = "onSignIn";
 
-            try {
-                player = new Player(username,password,0,0,0,0);
-                player.setUsername(username);player.setPassword(password);
-                Call<Player> playerID = playerService.signIn(player);
-                Log.d(TAG, "Player Logging In from Splash: "+playerID.toString());
-                /* Android Doesn't allow synchronous execution of Http Request and so we must put it in queue*/
-                playerID.enqueue(new Callback<Player>() {
-                    @Override
-                    public void onResponse(Call<Player> call, Response<Player> response) {
-                        Log.d(TAG, "Player Logging In from splash response Server: "+call.toString());
-                        pb_circular.setVisibility(View.GONE);
-                        //SingIn Successful
-                        if (response.code() == 201) {
-                            //Successful we can get the ID, and call again to ask for PLayer
-                            if(response.isSuccessful()){
-                                player =  response.body();
+        try {
+            //player = new Player(username,password,0,0,0,0);
+            //player.setUsername(username);player.setPassword(password);
+            Call<Player> playerID = playerService.signIn(player);
+            Log.d(TAG, "Player Logging In from Splash: "+playerID.toString());
+            /* Android Doesn't allow synchronous execution of Http Request and so we must put it in queue*/
+            playerID.enqueue(new Callback<Player>() {
+                @Override
+                public void onResponse(Call<Player> call, Response<Player> response) {
+                    Log.d(TAG, "Player Logging In from splash response Server: "+call.toString());
+                    pb_circular.setVisibility(View.GONE);
+                    //SingIn Successful
+                    if (response.code() == 201) {
+                        //Successful we can get the ID, and call again to ask for PLayer
+                        if(response.isSuccessful()){
+                            player =  response.body();
 
-                                if (player != null) {
-                                    Log.d(TAG,"The Player ID is: "+player.getId());
-                                    playerLogged = true;
-                                }else{
-                                    playerLogged = false;LaunchLoginActivity();
-                                }
-                            }else{ Log.d(TAG,"Something went horribly wrong!");LaunchLoginActivity();}
-                        } else if(response.code() == 404){ // Not Found User
-                            NotifyUser("Unsuccessful!");playerLogged = false;LaunchLoginActivity();
-                        }else if(response.code() == 401){ //Incorrect Password
-                            NotifyUser("Incorrect Password");playerLogged = false;LaunchLoginActivity();
-                        }else{
-                            NotifyUser("Something went horribly wrong!");playerLogged = false;LaunchLoginActivity();
-                        }
+                            if (player != null) {
+                                Log.d(TAG,"The Player ID is: "+player.getId());
+                                playerLogged = true;
+                            }else{
+                                playerLogged = false;LaunchLoginActivity();
+                            }
+                        }else{ Log.d(TAG,"Something went horribly wrong!");LaunchLoginActivity();}
+                    } else if(response.code() == 404){ // Not Found User
+                        NotifyUser("Unsuccessful!");playerLogged = false;LaunchLoginActivity();
+                    }else if(response.code() == 401){ //Incorrect Password
+                        NotifyUser("Incorrect Password");playerLogged = false;LaunchLoginActivity();
+                    }else{
+                        NotifyUser("Something went horribly wrong!");playerLogged = false;LaunchLoginActivity();
                     }
-                    @Override
-                    public void onFailure(Call<Player> call, Throwable t) {
-                        pb_circular.setVisibility(View.GONE);
-                        NotifyUser("Failure to logIn");playerLogged = false;LaunchLoginActivity();
-                    }
-                });
-            }catch (Exception e){
-                e.printStackTrace();
-            }
+                }
+                @Override
+                public void onFailure(Call<Player> call, Throwable t) {
+                    pb_circular.setVisibility(View.GONE);
+                    NotifyUser("Failure to logIn");playerLogged = false;LaunchLoginActivity();
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
     }
     //User Notifier Handler using Toast
     private void NotifyUser(String showMessage){

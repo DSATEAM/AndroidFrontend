@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -38,10 +40,13 @@ public class GameActivity extends AppCompatActivity {
     PlayerService playerService;
     //Map Service
     MapService mapService;
+    private ProgressBar pb_circular;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+        pb_circular = findViewById(R.id.progressBar_cyclic);
+        pb_circular.setVisibility(View.VISIBLE);
         //
         ResourceFileReader rs =  new ResourceFileReader();
         retrofitIpAddress = ResourceFileReader.ReadResourceFileFromStringNameKey("retrofit.IpAddress",this);
@@ -87,6 +92,7 @@ public class GameActivity extends AppCompatActivity {
                         // non empty response, Mapping Json via Gson...
                         Log.d("RankingActivity","Server Response Ok");
                         mapList = response.body();
+
                         launchingFirstTime();
                     } else {
                         // empty response...
@@ -120,6 +126,7 @@ public class GameActivity extends AppCompatActivity {
         intent.putExtra("playerData", playerData);
         intent.putExtra("objectData", objectData);
         intent.putExtra("mapData", mapData);
+        pb_circular.setVisibility(View.GONE);
         startActivityForResult(intent,0);
     }
     private String getMapData(){
@@ -201,41 +208,33 @@ public class GameActivity extends AppCompatActivity {
         //If login activity closed means the user has logged in, and the data is stored in the database
         if (requestCode == 0) {
             if(resultCode == Activity.RESULT_OK) {
+                pb_circular.setVisibility(View.VISIBLE);
                 //Get the Unity Activity Data!
                 ArrayList<String> playerStatsArr = new ArrayList<>();
-                //String playerStats = null;
-                if (data != null) {
-                    //playerStats = data.getStringExtra("playerStats");
+                if(data != null && data.hasExtra("playerStatsArr")) {
                     playerStatsArr = data.getStringArrayListExtra("playerStatsArr");
-                }
-                boolean canUpdate =false;
-                String playerStats = null;
-                if (playerStatsArr != null) {
-                    if(!playerStatsArr.isEmpty()){
-                        playerStats = playerStatsArr.get(playerStatsArr.size() - 1);
-                        canUpdate = true;
+                    for (String playerStats : playerStatsArr) {
+                        Log.w("Close Game", "Received Stats from Unity: " + playerStats);
+                        //Convert the Incoming string to Proper Player Stats!
+                        String[] strArr = playerStats.split(",");
+                        //P,level,Experience,Kills,Credits
+                        int level = Integer.parseInt(strArr[1]);
+                        int exp = Integer.parseInt(strArr[2]);
+                        int kills = Integer.parseInt(strArr[3]);
+                        int coins = Integer.parseInt(strArr[4]);
+                        //Updating Player Object with New Stats
+                        player.setGamesPlayed(player.getGamesPlayed() + 1);
+                        player.setExperience(level * 50 + exp);
+                        player.setKills(kills);
+                        player.setCredits(coins);
+                        updatePlayer();
                     }
-                }
-                if (canUpdate) {
-                    Log.w("Close Game", "Received Stats from Unity: " + playerStats);
-                    //Convert the Incoming string to Proper Player Stats!
-                    String[] strArr = playerStats.split(",");
-                    //P,level,Experience,Kills,Credits
-                    int level = Integer.parseInt(strArr[1]);
-                    int exp = Integer.parseInt(strArr[2]);
-                    int kills = Integer.parseInt(strArr[3]);
-                    int coins = Integer.parseInt(strArr[4]);
-                    //Updating Player Object with New Stats
-                    player.setGamesPlayed(player.getGamesPlayed() + 1);
-                    player.setExperience(level * 50 + exp);
-                    player.setKills(kills);
-                    player.setCredits(coins);
-                    updatePlayer();
                 }
                 //Close the GameActivity
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("Player",player);
                 setResult(Activity.RESULT_OK,returnIntent);
+                pb_circular.setVisibility(View.GONE);
                 finish();
             }
             if (resultCode == Activity.RESULT_CANCELED) {

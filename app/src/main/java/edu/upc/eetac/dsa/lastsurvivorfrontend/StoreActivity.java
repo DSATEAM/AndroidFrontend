@@ -19,8 +19,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.Gson;
-
 import java.util.List;
 
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Item;
@@ -196,9 +194,9 @@ public class StoreActivity extends AppCompatActivity{
                 String user = getIntent().getStringExtra("parentId");
                 itemsList.get(position).setParentId(user);
                 Call<Item> itemID = storeService.addItem(itemsList.get(position));
-                Gson gson = new Gson();
-                String jsonInString = gson.toJson(itemsList.get(position));
-                Log.d(TAG, "ItemGson: "+jsonInString);
+                //Gson gson = new Gson();
+                //String jsonInString = gson.toJson(itemsList.get(position));
+                //Log.d(TAG, "ItemGson: "+jsonInString);
                 Log.d(TAG, "onAddItemClicked: "+ itemID.toString());
                 /* Android Doesn't allow synchronous execution of Http Request and so we must put it in queue*/
                 itemID.enqueue(new Callback<Item>() {
@@ -260,6 +258,7 @@ public class StoreActivity extends AppCompatActivity{
             public void onClick(View v) {
                 dialog.dismiss();
                 Intent returnIntent = new Intent();
+
                 setResult(Activity.RESULT_OK, returnIntent);
                 finish();
             }
