@@ -40,6 +40,7 @@ public class GameActivity extends AppCompatActivity {
     PlayerService playerService;
     //Map Service
     MapService mapService;
+    protected static int playerMaxFloor;
     private ProgressBar pb_circular;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +56,7 @@ public class GameActivity extends AppCompatActivity {
         playerService = retrofit.create(PlayerService.class);
         if(getIntent().hasExtra("Player")){
             player = getIntent().getParcelableExtra("Player");
+            playerMaxFloor = player.getMaxFloor();
             getMaps();
             //Now ArrayList Functional Hahaha!, but changed to retrofit callback
             //ArrayList<Map> list = getIntent().getParcelableArrayListExtra("mapList");
@@ -223,13 +225,14 @@ public class GameActivity extends AppCompatActivity {
                         int exp = Integer.parseInt(strArr[2]);
                         int kills = Integer.parseInt(strArr[3]);
                         int coins = Integer.parseInt(strArr[4]);
+                        int maxFloor = Integer.parseInt(strArr[5]);
                         //Updating Player Object with New Stats
                         player.setGamesPlayed(player.getGamesPlayed() + 1);
                         player.setExperience(level * 50 + exp);
                         player.setKills(kills);
                         player.setCredits(coins);
+                        if(playerMaxFloor<maxFloor){player.setMaxFloor(maxFloor);}
                         updatePlayer();
-
                 }
                 //Close the GameActivity
                 Intent returnIntent = new Intent();

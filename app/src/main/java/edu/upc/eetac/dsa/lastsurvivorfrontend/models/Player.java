@@ -13,8 +13,9 @@ public class Player implements Parcelable{
     private int kills;
     private int experience;
     private int credits;
+    private int maxFloor;
     private String avatar;
-    List<Item> listItems;
+    private List<Item> listItems;
 
     public Player(String username, String password, int gamesPlayed, int kills, int experience, int credits) {
         this.username = username;
@@ -24,7 +25,6 @@ public class Player implements Parcelable{
         this.experience = experience;
         this.credits = credits;
     }
-
 
     //Empty Constructor
     public Player(){}
@@ -40,6 +40,7 @@ public class Player implements Parcelable{
         avatar = in.readString();
         listItems = in.createTypedArrayList(Item.CREATOR);
     }
+
 
     public static final Creator<Player> CREATOR = new Creator<Player>() {
         @Override
@@ -120,6 +121,9 @@ public class Player implements Parcelable{
     public void setListItems(List<Item> listItems) {
         this.listItems = listItems;
     }
+    public int getMaxFloor() {return maxFloor;}
+
+    public void setMaxFloor(int maxFloor) {this.maxFloor = maxFloor;}
 
     @Override
     public int describeContents() {
@@ -135,6 +139,7 @@ public class Player implements Parcelable{
         dest.writeInt(kills);
         dest.writeInt(experience);
         dest.writeInt(credits);
+        dest.writeInt(maxFloor);
         dest.writeString(avatar);
         dest.writeTypedList(listItems);
     }
