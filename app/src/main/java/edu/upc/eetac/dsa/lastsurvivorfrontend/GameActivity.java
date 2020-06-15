@@ -52,6 +52,7 @@ public class GameActivity extends AppCompatActivity {
         retrofitIpAddress = ResourceFileReader.ReadResourceFileFromStringNameKey("retrofit.IpAddress",this);
         startRetrofit();
         mapService = retrofit.create(MapService.class);
+        playerService = retrofit.create(PlayerService.class);
         if(getIntent().hasExtra("Player")){
             player = getIntent().getParcelableExtra("Player");
             getMaps();
@@ -213,7 +214,7 @@ public class GameActivity extends AppCompatActivity {
                 ArrayList<String> playerStatsArr = new ArrayList<>();
                 if(data != null && data.hasExtra("playerStatsArr")) {
                     playerStatsArr = data.getStringArrayListExtra("playerStatsArr");
-                    for (String playerStats : playerStatsArr) {
+                    String playerStats = playerStatsArr.get(playerStatsArr.size()-1);
                         Log.w("Close Game", "Received Stats from Unity: " + playerStats);
                         //Convert the Incoming string to Proper Player Stats!
                         String[] strArr = playerStats.split(",");
@@ -228,7 +229,7 @@ public class GameActivity extends AppCompatActivity {
                         player.setKills(kills);
                         player.setCredits(coins);
                         updatePlayer();
-                    }
+
                 }
                 //Close the GameActivity
                 Intent returnIntent = new Intent();
