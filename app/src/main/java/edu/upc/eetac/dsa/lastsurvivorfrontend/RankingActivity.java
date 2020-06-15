@@ -231,7 +231,7 @@ public class RankingActivity extends AppCompatActivity {
     private void LaunchPlayerStatsDetailPopup(int position){
         //Create Multiline String of Choosen Player Stats
         pb_circular.setVisibility(View.VISIBLE);
-        String statsString = "Experience: "+ playerList.get(position).getExperience() +"\n Kills: "+playerList.get(position).getKills() +
+        String statsString = "Max Floor reached: "+playerList.get(position).getMaxFloor()+"\n Experience: "+ playerList.get(position).getExperience() +"\n Kills: "+playerList.get(position).getKills() +
                 "\n GamesPlayed: " + playerList.get(position).getGamesPlayed() + "\n Credits: " +playerList.get(position).getCredits();
         //Create a dialog as unchanging
         final Dialog dialog=new Dialog(RankingActivity.this);

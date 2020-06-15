@@ -88,7 +88,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         // - replace the contents of the view with that element
        // final String name = values.get(position);
         holder.playerUsername.setText(playerList.get(position).getUsername());
-        holder.playerExperience.setText(String.valueOf(playerList.get(position).getExperience()));
+        holder.playerExperience.setText(String.valueOf(playerList.get(position).getMaxFloor()));
        // Bitmap bitmapImg  = StringToBitmap(playerList.get(position).getAvatar());
         //holder.imageIcon.setImageBitmap(bitmapImg);
         Bitmap bitmapImg  = StringToBitmap(playerList.get(position).getAvatar());
