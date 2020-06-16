@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/whitish"
     tools:context=".RankingActivity">
 
     <LinearLayout
@@ -53,7 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:background="#FF9E80"
+                android:background="@color/redish"
                 android:clickable="true"
                 android:onClick="onBackButtonClick"
                 android:text="@string/go_back"
@@ -71,7 +72,7 @@
                 android:id="@+id/my_recycler_view"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:background="#FFFFFF"
+                android:background="@color/whitish"
                 android:longClickable="true"
                 android:scrollbars="vertical" />
         </TableRow>

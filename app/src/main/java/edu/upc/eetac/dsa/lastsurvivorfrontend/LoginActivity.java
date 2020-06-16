@@ -37,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     // RETROFIT OBJECT
     private static Retrofit retrofit;
     private static String retrofitIpAddress;
+    private static int RegisterActivityCode = 7;
     //Player Service Object
     PlayerService playerService;
     //TextViews
@@ -44,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
     public TextView passwordTextview ;
     //Player Objects
     Player player = new Player();
-    private ProgressBar pb_circular;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,8 +60,7 @@ public class LoginActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         setContentView(R.layout.activity_login_activity);
-        pb_circular = findViewById(R.id.progressBar_cyclic);
-        ResourceFileReader rs =  new ResourceFileReader();
+        ProgressBar pb_circular = findViewById(R.id.progressBar_cyclic);
         retrofitIpAddress = ReadResourceFileFromStringNameKey("retrofit.IpAddress",this);
         //Starting Retrofit
         startRetrofit();
@@ -72,29 +72,11 @@ public class LoginActivity extends AppCompatActivity {
 
     }
     private void LaunchRegisterActivity() {
-        pb_circular.setVisibility(View.VISIBLE);
+        //pb_circular.setVisibility(View.VISIBLE);
         Intent intent = new Intent(LoginActivity.this ,RegisterActivity.class);
-        /*
-        intent.putExtra("DATA_1", "TestString");
-        intent.putExtra("DATA_2", true);
-        intent.putExtra("DATA_3", 6969);
-        intent.putExtra("DATA_4",0.6969);
-        */
-        startActivityForResult(intent,1);
-        //After Launching check if userExists in SharedPreference if Yes than close this LoginActivity
-        if(ExistPlayer()){
-            finish();
-        }
-        pb_circular.setVisibility(View.GONE);
+        startActivityForResult(intent,RegisterActivityCode);
+        //pb_circular.setVisibility(View.GONE);
     }
-    private boolean ExistPlayer(){
-        SharedPreferences settings = getSharedPreferences("UserInfo", 0);
-        player.setUsername(settings.getString("Username", ""));
-        player.setPassword(settings.getString("Password", ""));
-        player.setId(settings.getString("Id", ""));
-        return !player.getId().equals("");
-    }
-
     @Override
     public void onBackPressed(){
         hideSystemUI();
@@ -119,28 +101,19 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
+        if (requestCode == RegisterActivityCode) {
             if(resultCode == Activity.RESULT_OK){
                 //Means we registered successfully
-                if (data != null) {
+                if(data != null){
                     player = data.getParcelableExtra("Player");
                     Intent returnIntent = new Intent();
                     returnIntent.putExtra("Player",player);
                     setResult(Activity.RESULT_OK,returnIntent);
+                    NotifyUser("Received Player->username "+player.getUsername());
+                    finish();
                 }
-                Intent returnIntent = new Intent();
-                returnIntent.putExtra("Player",player);
-                setResult(Activity.RESULT_CANCELED,returnIntent);
-                finish();
-            }
-            if (resultCode == Activity.RESULT_CANCELED) {
-                //Do nothing as user cancelled operation
             }
         }
-        if(requestCode == 2){
-            //Ranking Return Activity Do Nothing
-        }
-
     }
 
     private static void startRetrofit(){
@@ -201,9 +174,7 @@ public class LoginActivity extends AppCompatActivity {
         String username,password;
         username =  this.usernameTextview.getText().toString();
         password =  this.passwordTextview.getText().toString();
-        if(username == null|| password== null){
-            NotifyUser("Please fill the fields!");
-        }else if(username.isEmpty()|| password.isEmpty()){
+        if(username.isEmpty()|| password.isEmpty()){
             NotifyUser("Please Type something other than space");
         }else if(username.contains(" ")|| password.contains(" ")){
             NotifyUser("Please Type that doesn't contain spaces");
@@ -211,7 +182,7 @@ public class LoginActivity extends AppCompatActivity {
             //Now we can send the data to Server and ask for login
             String TAG = "onSignIn";
             try {
-                player = new Player(username,password,0,0,0,0);
+                player = new Player(username,password,0,0,0,0,0,"",null);
                 player.setUsername(username);player.setPassword(password);
                 Call<Player> playerID = playerService.signIn(player);
                 Log.d(TAG, "onSignInClicked: "+playerID.toString());

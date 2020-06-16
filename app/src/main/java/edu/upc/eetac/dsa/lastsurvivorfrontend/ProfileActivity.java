@@ -192,7 +192,7 @@ public class ProfileActivity extends AppCompatActivity {
                         //Successful we can get the ID, and call again to ask for PLayer
                         if(response.isSuccessful()){
                             player =  response.body();
-                            Log.w("Update Player" ,"Update Plyer Response successful"+ player.toString());
+                            Log.w("Update Player" ,"Update Player Response successful"+ player.toString());
                             SharedPreferences settings = getSharedPreferences("UserInfo", 0);
                             SharedPreferences.Editor editor = settings.edit();
                             editor.putString("Username",player.getUsername());

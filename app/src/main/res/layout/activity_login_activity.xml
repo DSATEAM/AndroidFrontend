@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:alpha="1"
-    android:background="#C6A9FA"
-    android:backgroundTint="#a7ffeb"
+    android:background="@color/bluer"
     tools:context=".LoginActivity">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:alpha="100"
-        android:backgroundTintMode="add"
         android:orientation="vertical"
         android:paddingLeft="24dp"
         android:paddingTop="56dp"
@@ -19,8 +17,8 @@
         android:theme="@style/AppTheme">
 
         <ImageView
-            android:layout_width="277dp"
-            android:layout_height="232dp"
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="0dp"
             android:adjustViewBounds="true"
@@ -42,11 +40,10 @@
                 android:id="@+id/username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="#f0f4c3"
                 android:hint="@string/username"
                 android:importantForAutofill="no"
                 android:inputType="textPersonName"
-                android:textColor="#FFFFFF" />
+                android:textColor="@color/black" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Password Label -->
@@ -61,7 +58,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints=""
-                android:backgroundTint="#f0f4c3"
+                android:textColor="@color/black"
                 android:hint="@string/password"
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -70,11 +67,13 @@
             android:id="@+id/btn_login"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
-            android:backgroundTint="#f0f4c3"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="@color/navyBlue"
             android:onClick="onSignInClicked"
-            android:padding="12dp"
+            android:padding="0dp"
+            android:textColor="@color/whitish"
+            android:textStyle="bold"
             android:text="@string/signIn" />
 
         <TextView
@@ -83,7 +82,6 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             android:clickable="true"
-            android:backgroundTint="#f0f4c3"
             android:focusable="true"
             android:gravity="center"
             android:onClick="onSignUpClicked"
@@ -103,4 +101,4 @@
         android:layout_gravity="center"
         android:layout_centerHorizontal="true"
         android:layout_centerInParent="true"/>
-</FrameLayout>
+</RelativeLayout>

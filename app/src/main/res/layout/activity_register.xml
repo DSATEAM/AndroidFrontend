@@ -1,97 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FA5252"
+    android:background="@color/limish"
     tools:context=".RegisterActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="100"
+        android:layout_weight="1"
+        android:backgroundTintMode="add"
+        android:orientation="vertical"
+        android:paddingLeft="24dp"
+        android:paddingTop="56dp"
+        android:paddingRight="24dp"
+        android:theme="@style/AppTheme">
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="1dp"
+            android:contentDescription="@string/dragonImg"
+            android:foregroundTint="#FFFFFF"
+            app:srcCompat="@drawable/dragon_black_and_white_silhouette" />
+        <EditText
+            android:id="@+id/input_username2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/username"
+            android:importantForAutofill="no"
+            android:inputType="textPersonName"/>
+        <EditText
+            android:id="@+id/input_password2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints=""
+            android:hint="@string/password"
+            android:inputType="textPassword"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/input_username2" />
+        <EditText
+            android:id="@+id/input_repassword2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints=""
+            android:hint="@string/retype_password"
+            android:inputType="textPassword"/>
 
-    <EditText
-        android:id="@+id/input_password2"
-        android:layout_width="337dp"
-        android:layout_height="44dp"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="38dp"
-        android:autofillHints=""
-        android:hint="@string/password"
-        android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/input_username2" />
-
-    <EditText
-        android:id="@+id/input_username2"
-        android:layout_width="333dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="192dp"
-        android:layout_marginEnd="42dp"
-        android:hint="@string/username"
-        android:importantForAutofill="no"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!---->
-
-
-    <Button
-        android:id="@+id/goBackBtn"
-        android:layout_width="119dp"
-        android:layout_height="47dp"
-        android:layout_marginStart="180dp"
-        android:layout_marginEnd="5dp"
-        android:onClick="onGoBackClicked"
-        android:text="@string/go_back"
-        app:layout_constraintEnd_toStartOf="@+id/RegisterBtn"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/input_password2"
-        tools:ignore="OnClick" />
-
-    <Button
-        android:id="@+id/RegisterBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="288dp"
-        android:layout_marginEnd="32dp"
-        android:onClick="onRegisterClick"
-        android:text="@string/register"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/input_password2" />
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="288dp"
-        android:layout_height="401dp"
-        android:layout_marginTop="13dp"
-        android:layout_marginBottom="13dp"
-        android:contentDescription="@string/dragonImg"
-        android:foregroundTint="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/input_password2"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/dragon_black_and_white_silhouette" />
-
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="225dp"
-        android:layout_height="166dp"
-        android:layout_marginStart="97dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="89dp"
-        android:contentDescription="@string/swordImg"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/sword_png_icon_20" />
-
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <RelativeLayout
+                android:id="@+id/rellay_contacts"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/skyish"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground">
+                <RelativeLayout
+                    android:id="@+id/redirectWeb"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/redish"
+                    android:clickable="true"
+                    android:onClick="onGoBackClicked"
+                    android:foreground="?attr/selectableItemBackground"
+                    tools:ignore="KeyboardInaccessibleWidget">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="12dp"
+                            android:textAlignment="center"
+                            android:text="@string/cancel"
+                            android:textSize="24sp" />
+                    </RelativeLayout>
+                </RelativeLayout>
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/Inventory"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/lightbluish"
+                android:layout_weight="1"
+                android:clickable="true"
+                tools:ignore="KeyboardInaccessibleWidget"
+                android:onClick="onRegisterClick"
+                android:foreground="?attr/selectableItemBackground">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/register"
+                        android:textSize="24sp"
+                        android:layout_centerHorizontal="true"/>
+                </RelativeLayout>
+            </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
     <ProgressBar
         android:id="@+id/progressBar_cyclic"
         style="?android:attr/progressBarStyleLarge"
@@ -106,6 +124,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

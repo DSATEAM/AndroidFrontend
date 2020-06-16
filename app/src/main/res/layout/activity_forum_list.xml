@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/whitish"
     tools:context=".ForumListActivity">
 
     <LinearLayout
@@ -20,9 +21,9 @@
                 android:id="@+id/button"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="0.5"
+                android:layout_weight="0.3"
                 android:background="#CCFF90"
-                android:backgroundTint="@color/yellow"
+                android:backgroundTint="@color/skyish"
                 android:clickable="true"
                 android:foregroundGravity="fill"
                 android:onClick="onButtonMyCurrentForumClick"
@@ -37,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="0.5"
-                android:background="@color/blue"
+                android:background="@color/bluish"
                 android:backgroundTint="@color/blue"
                 android:clickable="true"
                 android:foregroundGravity="fill"
@@ -58,7 +59,7 @@
                 android:id="@+id/my_recycler_view"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:background="#FFFFFF"
+                android:background="@color/whitish"
                 android:longClickable="true"
                 android:scrollbars="vertical" />
         </TableRow>

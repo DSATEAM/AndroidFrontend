@@ -2,7 +2,7 @@ package edu.upc.eetac.dsa.lastsurvivorfrontend.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-public class Item implements Parcelable {
+public class Item implements Parcelable{
 
     private String id;
     private String parentId ="";
@@ -19,7 +19,7 @@ public class Item implements Parcelable {
     //Empty Constructor
     public Item() {
     }
-    public Item(String parentId, String name, String type, String rarity, int credit, String description, int offense, int defense, float hitRange, float attackCooldown) {
+    public Item(String parentId, String name, String type, String rarity, int credit, String description, int offense, int defense, float hitRange, float attackCooldown, String avatar) {
         this.parentId = parentId;
         this.name = name;
         this.type = type;
@@ -30,6 +30,7 @@ public class Item implements Parcelable {
         this.defense = defense;
         this.hitRange = hitRange;
         this.attackCooldown = attackCooldown;
+        this.avatar = avatar;
     }
 
     protected Item(Parcel in) {
@@ -44,6 +45,7 @@ public class Item implements Parcelable {
         defense = in.readInt();
         hitRange = in.readFloat();
         attackCooldown = in.readFloat();
+        avatar = in.readString();
     }
 
     public static final Creator<Item> CREATOR = new Creator<Item>() {
@@ -160,5 +162,7 @@ public class Item implements Parcelable {
         dest.writeInt(defense);
         dest.writeFloat(hitRange);
         dest.writeFloat(attackCooldown);
+        dest.writeString(avatar);
     }
+
 }

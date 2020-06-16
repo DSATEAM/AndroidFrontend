@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/transparent"
@@ -18,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:layout_below="@+id/title"
-            android:background="#000000"
+            android:background="@color/gray"
             android:gravity="center"
             android:text="Are you sure you want to exit?"
             android:textAlignment="center"
@@ -53,7 +52,7 @@
                 android:id="@+id/cancelbtn"
                 android:layout_width="150dp"
                 android:layout_height="50dp"
-                android:background="#DC1A1A"
+                android:background="@color/green"
                 android:gravity="center"
                 android:orientation="horizontal"
                 android:text="@android:string/cancel">
@@ -74,7 +73,7 @@
                 android:id="@+id/button_back"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:background="#2238FF"
+                android:background="@color/red"
                 android:gravity="center">
 
                 <TextView

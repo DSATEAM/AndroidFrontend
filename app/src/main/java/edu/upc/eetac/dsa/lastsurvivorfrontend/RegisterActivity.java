@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -29,7 +28,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RegisterActivity extends AppCompatActivity {
     private static Retrofit retrofit;
-    Player player;private Context mContext;
+    Player player;
+    private Context mContext;
     private static String retrofitIpAddress;
     private ProgressBar pb_circular;
     @Override
@@ -47,9 +47,7 @@ public class RegisterActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         setContentView(R.layout.activity_register);
         pb_circular = findViewById(R.id.progressBar_cyclic);
-        Button registerBtn = findViewById(R.id.RegisterBtn);mContext = this.getApplicationContext();
-        Button goBack = findViewById(R.id.goBackBtn);
-        ResourceFileReader rs =  new ResourceFileReader();
+        mContext = this.getApplicationContext();
         retrofitIpAddress = ResourceFileReader.ReadResourceFileFromStringNameKey("retrofit.IpAddress",this);
         startRetrofit();
         pb_circular.setVisibility(View.GONE);
@@ -109,11 +107,20 @@ public class RegisterActivity extends AppCompatActivity {
     public void onRegisterClick(View view){
         EditText username = findViewById(R.id.input_username2);
         EditText password = findViewById(R.id.input_password2);
+        EditText repassword = findViewById(R.id.input_repassword2);
         pb_circular.setVisibility(View.VISIBLE);
-        if (username.getText().toString().equals(null)||password.getText().toString().equals(null)||password.getText().toString().equals("Password")||username.getText().toString().equals("Username")){
+        //username.getText().toString();
+        //password.getText().toString();
+        if (password.getText().toString().equals("Password") || username.getText().toString().equals("Username")||
+            password.getText().toString().equals("") || username.getText().toString().equals("")||
+                password.getText().toString().isEmpty() || username.getText().toString().isEmpty()||
+                password.getText().toString().contains(" ") || username.getText().toString().contains(" ")){
             Toast.makeText(getApplicationContext(), "Fill Fields Correctly!.", Toast.LENGTH_LONG).show();
+            pb_circular.setVisibility(View.GONE);
+        }else if(!password.getText().toString().equals(repassword.getText().toString())){
+            Toast.makeText(getApplicationContext(), "Passwords must be same...", Toast.LENGTH_LONG).show();
+            pb_circular.setVisibility(View.GONE);
         }
-
         else{
             PlayerService service = retrofit.create(PlayerService.class);
             player = new Player();
@@ -127,6 +134,9 @@ public class RegisterActivity extends AppCompatActivity {
                     if (response.code() == 201) {
                         Toast.makeText(getApplicationContext(), "Signed Up successfully", Toast.LENGTH_LONG).show();
                         player = response.body();
+                        Intent returnIntent = new Intent();
+                        returnIntent.putExtra("Player",player);
+                        setResult(Activity.RESULT_OK,returnIntent);
                         //Close Register and return result to login which will also close the activity for splash
                         SharedPreferences settings = getSharedPreferences("UserInfo", 0);
                         SharedPreferences.Editor editor = settings.edit();
@@ -134,26 +144,22 @@ public class RegisterActivity extends AppCompatActivity {
                         editor.putString("Password",player.getPassword());
                         editor.putString("Id",player.getId());
                         editor.commit();
-                        Intent returnIntent = new Intent();
-                        returnIntent.putExtra("Player",player);
-                        setResult(Activity.RESULT_OK,returnIntent);
                         finish();
                     }
                     else if (response.code() == 404){
-                        Toast.makeText(getApplicationContext(),"Couldn't Register...",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),"Please Fill Correctly!",Toast.LENGTH_LONG).show();
+                    }else if(response.code()==409){
+                        Toast.makeText(getApplicationContext(),"Username already Taken!",Toast.LENGTH_LONG).show();
                     }
                 }
 
                 @Override
                 public void onFailure(Call call, Throwable t) {
 
-                        Toast.makeText(getApplicationContext(),"Failed...",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),"Unable to Connect...",Toast.LENGTH_LONG).show();
                 }
             });
 
         }
-
-
-
     }
 }

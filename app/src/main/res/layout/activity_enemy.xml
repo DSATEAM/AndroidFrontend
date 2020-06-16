@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background= "@color/whitish"
     tools:context=".EnemyActivity">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -11,17 +12,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="45dp"
-        android:background="#FFFFFF"
+        android:background="@color/whitish"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="1dp" />
 
     <TextView
         android:id="@+id/textView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="177dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="157dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/redish"
+        android:gravity="center"
         android:text="ENEMY LIST"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

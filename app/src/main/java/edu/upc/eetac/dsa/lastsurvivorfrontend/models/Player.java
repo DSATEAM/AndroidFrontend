@@ -1,11 +1,10 @@
 package edu.upc.eetac.dsa.lastsurvivorfrontend.models;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.List;
 
-public class Player implements Parcelable{
+public class Player implements Parcelable {
     private String id;
     private String username;
     private String password;
@@ -17,17 +16,31 @@ public class Player implements Parcelable{
     private String avatar;
     private List<Item> listItems;
 
-    public Player(String username, String password, int gamesPlayed, int kills, int experience, int credits) {
+    //Empty Constructor
+    public Player(){}
+
+    /**
+     * @param username
+     * @param password
+     * @param gamesPlayed
+     * @param kills
+     * @param experience
+     * @param credits
+     * @param maxFloor
+     * @param avatar
+     * @param listItems
+     */
+    public Player(String username, String password, int gamesPlayed, int kills, int experience, int credits, int maxFloor, String avatar, List<Item> listItems) {
         this.username = username;
         this.password = password;
         this.gamesPlayed = gamesPlayed;
         this.kills = kills;
         this.experience = experience;
         this.credits = credits;
+        this.maxFloor = maxFloor;
+        this.avatar = avatar;
+        this.listItems = listItems;
     }
-
-    //Empty Constructor
-    public Player(){}
 
     protected Player(Parcel in) {
         id = in.readString();
@@ -37,10 +50,10 @@ public class Player implements Parcelable{
         kills = in.readInt();
         experience = in.readInt();
         credits = in.readInt();
+        maxFloor = in.readInt();
         avatar = in.readString();
         listItems = in.createTypedArrayList(Item.CREATOR);
     }
-
 
     public static final Creator<Player> CREATOR = new Creator<Player>() {
         @Override
@@ -125,11 +138,28 @@ public class Player implements Parcelable{
 
     public void setMaxFloor(int maxFloor) {this.maxFloor = maxFloor;}
 
+    /**
+     * Describe the kinds of special objects contained in this Parcelable
+     * instance's marshaled representation. For example, if the object will
+     * include a file descriptor in the output of {@link #writeToParcel(Parcel, int)},
+     * the return value of this method must include the
+     * {@link #CONTENTS_FILE_DESCRIPTOR} bit.
+     *
+     * @return a bitmask indicating the set of special object types marshaled
+     * by this Parcelable object instance.
+     */
     @Override
     public int describeContents() {
         return 0;
     }
 
+    /**
+     * Flatten this object in to a Parcel.
+     *
+     * @param dest  The Parcel in which the object should be written.
+     * @param flags Additional flags about how the object should be written.
+     *              May be 0 or {@link #PARCELABLE_WRITE_RETURN_VALUE}.
+     */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
