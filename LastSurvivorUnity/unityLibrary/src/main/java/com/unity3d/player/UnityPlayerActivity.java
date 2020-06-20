@@ -4,19 +4,18 @@ package com.unity3d.player;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
-import android.os.Process;
 
-public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecycleEvents
+import java.util.ArrayList;
+
+public class UnityPlayerActivity extends Activity
 {
     protected UnityPlayer mUnityPlayer; // don't change the name of this variable; referenced from native code
-
+    private ArrayList<String> playerStatsArr = new ArrayList<>();
     // Override this in your custom UnityPlayerActivity to tweak the command line arguments passed to the Unity Android Player
     // The command line arguments are passed as a string, separated by spaces
     // UnityPlayerActivity calls this from 'onCreate'
@@ -38,19 +37,9 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
         String cmdLine = updateUnityCommandLineArguments(getIntent().getStringExtra("unity"));
         getIntent().putExtra("unity", cmdLine);
 
-        mUnityPlayer = new UnityPlayer(this, this);
+        mUnityPlayer = new UnityPlayer(this);
         setContentView(mUnityPlayer);
         mUnityPlayer.requestFocus();
-    }
-
-    // When Unity player unloaded move task to background
-    @Override public void onUnityPlayerUnloaded() {
-        moveTaskToBack(true);
-    }
-
-    // When Unity player quited kill process
-    @Override public void onUnityPlayerQuitted() {
-        Process.killProcess(Process.myPid());
     }
 
     @Override protected void onNewIntent(Intent intent)
@@ -62,11 +51,29 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
         setIntent(intent);
         mUnityPlayer.newIntent(intent);
     }
-
+    public void receivePlayerStats(String str)
+    {//Received Str
+        Log.e("Unity Player Activity:","Received Player Stats: "+str);
+        //Upload the data to server!
+        if(str!=null) {
+            playerStatsArr.add(str);
+        }
+    }
+    public void closeUnityPlayerActivity(String str)
+    {//Received Str & Close UnityPlayer
+        Log.e("UnityPlayer","Received Stats before Closing: "+str);
+        if(str!=null) {
+            playerStatsArr.add(str);
+        }
+        Intent returnIntent = new Intent();
+        //.putExtra("playerStats",str);
+        returnIntent.putStringArrayListExtra("playerStatsArr", playerStatsArr);
+        setResult(Activity.RESULT_OK,returnIntent);
+        finish();
+    }
     // Quit Unity
     @Override protected void onDestroy ()
     {
-        mUnityPlayer.destroy();
         super.onDestroy();
     }
 
