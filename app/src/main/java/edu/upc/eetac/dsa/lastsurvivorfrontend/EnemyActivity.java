@@ -77,10 +77,9 @@ public class EnemyActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<Enemy>> call, Response<List<Enemy>> response) {
                 pb_circular.setVisibility(View.GONE);
-                if(response.body().isEmpty()){
-                    Toast.makeText(EnemyActivity.this,"No enemies available",Toast.LENGTH_LONG);
-                }
-                else{
+                if(response.body()==null){
+                    Toast.makeText(EnemyActivity.this,"No enemies available",Toast.LENGTH_LONG).show();
+                }else{
                     enemyList=response.body();
                     if(mAdapter == null){
                         mAdapter = new EnemyAdapter(enemyList);

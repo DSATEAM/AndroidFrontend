@@ -8,8 +8,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.ImageDecoder;
 import android.graphics.Matrix;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
@@ -288,11 +290,20 @@ public class ProfileActivity extends AppCompatActivity {
                         Log.i("Gallery Result", "Image Uri: " + imageUri);
                         imageView.setImageURI(imageUri);
                         try {
-                            Bitmap source = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
-                            source = getResizedBitmap(source, widthX, heightY);
-                            //Picasso.with(mContext).load(imageUri).resize(160, 160).into(imageView);
-                            Log.i(TAG, "The image was obtained correctly");
-                            player.setAvatar(imageToString(source));
+                            if(imageUri!=null) {
+                                if (Build.VERSION.SDK_INT < 28) {
+                                    Bitmap bitSource = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+                                    //imageView.setImageBitmap(bitmap);
+                                    player.setAvatar(imageToString(getResizedBitmap(bitSource, widthX, heightY)));
+                                } else {
+                                    ImageDecoder.Source source = ImageDecoder.createSource(getContentResolver(), imageUri);
+                                    //val bitmap = ImageDecoder.decodeBitmap(source);
+                                    player.setAvatar(imageToString(getResizedBitmap(ImageDecoder.decodeBitmap(source), widthX, heightY)));
+                                }
+                                //Bitmap source = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+                                //Picasso.with(mContext).load(imageUri).resize(160, 160).into(imageView);
+                                Log.i(TAG, "The image was obtained correctly");
+                            }
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

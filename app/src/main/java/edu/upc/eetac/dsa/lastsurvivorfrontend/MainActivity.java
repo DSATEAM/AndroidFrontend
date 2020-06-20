@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
         if(playerLogged) {
             //Launch Unity Game and after starting the game also get the data back from the unity to update the server
             NotifyUser("Web Redirect: " + player.getUsername());
-            String url = "http://147.83.7.205:8080/LastSurvivor/Register/main.html";
+            String url = "http://147.83.7.205:8080/LastSurvivor/index.html";
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse(url));
             startActivity(i);
