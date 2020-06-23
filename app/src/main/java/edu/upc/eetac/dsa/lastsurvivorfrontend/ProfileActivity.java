@@ -30,10 +30,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.google.gson.Gson;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Objects;
 
 import edu.upc.eetac.dsa.lastsurvivorfrontend.models.Player;
 import edu.upc.eetac.dsa.lastsurvivorfrontend.services.PlayerService;
@@ -190,8 +189,6 @@ public class ProfileActivity extends AppCompatActivity {
         pb_circular.setVisibility(View.VISIBLE);
         try {
             Call<Player> playerTmp = playerService.updatePlayer(player);
-            Gson gson = new Gson();
-            String jsonInString = gson.toJson(player);
             /* Android Doesn't allow synchronous execution of Http Request and so we must put it in queue*/
             playerTmp.enqueue(new Callback<Player>() {
                 @Override
@@ -208,7 +205,7 @@ public class ProfileActivity extends AppCompatActivity {
                             editor.putString("Username",player.getUsername());
                             editor.putString("Password",player.getPassword());
                             editor.putString("Id",player.getId());
-                            editor.commit();
+                            editor.apply();
                             Intent returnIntent = new Intent();
                             returnIntent.putExtra("Player",player);
                             setResult(Activity.RESULT_OK,returnIntent);
@@ -240,7 +237,7 @@ public class ProfileActivity extends AppCompatActivity {
         pb_circular.setVisibility(View.VISIBLE);
         Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
         // Sets the type as image/*. This ensures only components of type image are selected
-        gallery.setType("image/*");
+        gallery.setDataAndType(MediaStore.Images.Media.INTERNAL_CONTENT_URI,"image/*");
         //We pass an extra array with the accepted mime types. This will ensure only components with these MIME types as targeted.
         String[] mimeTypes = {"image/jpeg", "image/png"};
         gallery.putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes);
@@ -261,7 +258,7 @@ public class ProfileActivity extends AppCompatActivity {
             } else if (options[item].equals("Choose from Gallery")) {
                 Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 // Sets the type as image/*. This ensures only components of type image are selected
-                pickPhoto.setType("image/*");
+                pickPhoto.setDataAndType( MediaStore.Images.Media.EXTERNAL_CONTENT_URI,"image/*");
                 //We pass an extra array with the accepted mime types. This will ensure only components with these MIME types as targeted.
                 String[] mimeTypes = {"image/jpeg", "image/png","image/jpg"};
                 pickPhoto.putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes);
@@ -281,12 +278,14 @@ public class ProfileActivity extends AppCompatActivity {
             switch (requestCode) {
                 case CAMERA_REQUEST_CODE:
                     if (resultCode == RESULT_OK && data != null) {
-                        Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
-                        selectedImage = getResizedBitmap(selectedImage, widthX, heightY);
-                        imageView.setImageBitmap(selectedImage);
-                        //Picasso.with(mContext).load(imageUri).resize(160, 160).into(imageView);
-                        Log.i("Camera Request", "The image was obtained correctly");
-                        player.setAvatar(imageToString(selectedImage));
+                        Bitmap selectedImage = (Bitmap) Objects.requireNonNull(data.getExtras()).get("data");
+                        if (selectedImage != null) {
+                            selectedImage = getResizedBitmap(selectedImage, widthX, heightY);
+                            imageView.setImageBitmap(selectedImage);
+                            //Picasso.with(mContext).load(imageUri).resize(160, 160).into(imageView);
+                            Log.i("Camera Request", "The image was obtained correctly");
+                            player.setAvatar(imageToString(selectedImage));
+                        }
                     }
 
                     break;
@@ -301,14 +300,24 @@ public class ProfileActivity extends AppCompatActivity {
                             if(globalImageUri!=null) {
                                 if (checkPermissionREAD_EXTERNAL_STORAGE(this, globalImageUri)) {
                                     if (SDK_INT < 28) {
+
                                         Bitmap bitSource = getResizedBitmap(MediaStore.Images.Media.getBitmap(getContentResolver(), globalImageUri), widthX, heightY);
-                                        player.setAvatar(imageToString(bitSource));
-                                        imageView.setImageBitmap(bitSource);
+                                        if(!bitSource.isRecycled()) {
+                                            player.setAvatar(imageToString(bitSource));
+                                            imageView.setImageBitmap(bitSource);
+                                        }else{
+                                            NotifyUser("Only JPEG!");
+                                        }
                                     } else {
-                                        ImageDecoder.Source source = ImageDecoder.createSource(getContentResolver(), globalImageUri);
-                                        Bitmap bitmap = getResizedBitmap(ImageDecoder.decodeBitmap(source), widthX, heightY);
-                                        player.setAvatar(imageToString(bitmap));
-                                        imageView.setImageBitmap(bitmap);
+
+                                        Bitmap bitmap = getResizedBitmap(ImageDecoder.decodeBitmap(ImageDecoder.createSource(getContentResolver(), globalImageUri)), widthX, heightY);
+                                        //bitmap.recycle();
+                                        if(!bitmap.isRecycled()) {
+                                            player.setAvatar(imageToString(bitmap));
+                                            imageView.setImageBitmap(bitmap);
+                                        }else{
+                                            NotifyUser("Only JPEG!");
+                                        }
                                     }
                                     //Bitmap source = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
                                     //Picasso.with(mContext).load(imageUri).resize(160, 160).into(imageView);
@@ -320,44 +329,53 @@ public class ProfileActivity extends AppCompatActivity {
                         }
                     }
                     break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + requestCode);
             }
         }
     }
     public void onRequestPermissionsResult(int requestCode,String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // do your stuff
-                    try {
-                        if (SDK_INT < 28) {
-                            Bitmap bitSource = getResizedBitmap(MediaStore.Images.Media.getBitmap(getContentResolver(), globalImageUri), widthX, heightY);
+        if (requestCode == MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // do your stuff
+                try {
+                    if (SDK_INT < 28) {
+
+                        Bitmap bitSource = getResizedBitmap(MediaStore.Images.Media.getBitmap(getContentResolver(), globalImageUri), widthX, heightY);
+                        if (!bitSource.isRecycled()) {
                             player.setAvatar(imageToString(bitSource));
                             imageView.setImageBitmap(bitSource);
                         } else {
-                            ImageDecoder.Source source = ImageDecoder.createSource(getContentResolver(), globalImageUri);
-                            Bitmap bitmap = getResizedBitmap(ImageDecoder.decodeBitmap(source), widthX, heightY);
+                            NotifyUser("Only JPEG!");
+                        }
+                    } else {
+
+                        Bitmap bitmap = getResizedBitmap(ImageDecoder.decodeBitmap(ImageDecoder.createSource(getContentResolver(), globalImageUri)), widthX, heightY);
+                        //bitmap.recycle();
+                        if (!bitmap.isRecycled()) {
                             player.setAvatar(imageToString(bitmap));
                             imageView.setImageBitmap(bitmap);
+                        } else {
+                            NotifyUser("Only JPEG!");
                         }
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
-                    //imageView.setImageBitmap(bitmap);
-                } else {
-                    Toast.makeText(ProfileActivity.this, "Cannot Change ProfilePic without Permission",
-                            Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                break;
-            default:
-                super.onRequestPermissionsResult(requestCode, permissions,
-                        grantResults);
+                //imageView.setImageBitmap(bitmap);
+            } else {
+                Toast.makeText(ProfileActivity.this, "Cannot Change ProfilePic without Permission",
+                        Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions,
+                    grantResults);
         }
     }
     public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
 
     public boolean checkPermissionREAD_EXTERNAL_STORAGE(final Context context,Uri ImageURI) {
-        int currentAPIVersion = Build.VERSION.SDK_INT;
-        if (currentAPIVersion >= android.os.Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(context,
                     Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) context,Manifest.permission.READ_EXTERNAL_STORAGE)) {
