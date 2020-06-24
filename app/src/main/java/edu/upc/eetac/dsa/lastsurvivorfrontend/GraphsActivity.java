@@ -189,15 +189,15 @@ public class GraphsActivity extends AppCompatActivity {
         ArrayList<BarEntry> entries = new ArrayList<>();
 
 
-        entries.add(new BarEntry(0, (int) playerList.get(count).getExperience()));
-        entries.add(new BarEntry(1, (float) playerList.get(count).getKills()));
-        entries.add(new BarEntry(2, (float) playerList.get(count).getGamesPlayed()));
-        entries.add(new BarEntry(3, (float) (playerList.get(count).getKills()) / (playerList.get(count).getGamesPlayed())));
+        entries.add(new BarEntry(0, (int) playerList.get(count).getMaxFloor()));
+        entries.add(new BarEntry(1, (int) playerList.get(count).getExperience()));
+        entries.add(new BarEntry(2, (int) playerList.get(count).getKills()));
+        entries.add(new BarEntry(3, (int) (playerList.get(count).getGamesPlayed())));
         // username.setText(playerList.get(count).getUsername());
         BarDataSet dataSet = new BarDataSet(entries, "");
 
 
-        dataSet.setLabel("Experience · Kills · Games · Kills x Game  ");
+        dataSet.setLabel("maxFloor · Exp · kills · Games played  ");
 
         dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
         //dataSet.setValueTextSize(40f); si se introduce aqui luego causa errores al volver a entrar al al GraphsActivity desde el rankingactivity creando numeros monstruosamente grandes
